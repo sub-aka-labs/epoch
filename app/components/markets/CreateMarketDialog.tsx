@@ -25,7 +25,7 @@ interface CreateMarketDialogProps {
 
 export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps) {
   const wallet = useWallet();
-  const { createMarket, loading, error } = useMarket();
+  const { createMarket, openMarket, loading, error } = useMarket();
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   // Default to wrapped SOL for devnet testing
@@ -110,7 +110,16 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
       });
 
       if (tx) {
-        toast.success("Market created successfully!");
+        toast.success("Market created! Opening for betting...");
+
+        // Auto-open the market so users can bet immediately when betting starts
+        const openTx = await openMarket(marketId.toNumber());
+        if (openTx) {
+          toast.success("Market is now open for betting!");
+        } else {
+          toast.warning("Market created but failed to auto-open. You can open it manually.");
+        }
+
         setOpen(false);
         resetForm();
         onMarketCreated?.();

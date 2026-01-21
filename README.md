@@ -35,7 +35,6 @@ epoch/
 - Next.js 16
 - React 19
 - Tailwind CSS
-- shadcn/ui components
 - Solana Wallet Adapter
 
 **Smart Contract**
@@ -139,7 +138,7 @@ NEXT_PUBLIC_HELIUS_API_KEY=your_helius_api_key
 - `useMarket` - Fetch market data and admin actions
 - `useMarkets` - List all markets
 - `usePosition` - User position and claim actions
-- `useBet` - Place encrypted bets
+- `useBet` - Place encrypted bets (Arcium)
 - `useHeliusWebSocket` - Real-time market updates
 
 ### Smart Contract Instructions
@@ -176,7 +175,6 @@ cd app && npm run build
 
 - Bets are encrypted using x25519 key exchange with Arcium MPC
 - Only the MPC network can decrypt bets collectively
-- No single party can see bet directions before resolution
 - Smart contract enforces all market rules on-chain
 
 ## License

@@ -2,16 +2,6 @@
 
 import { PositionDisplay } from "@/hooks/usePosition";
 import { PositionStatus } from "@/types/market";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { formatTokenAmount } from "@/lib/contracts/program";
 import Link from "next/link";
 
@@ -21,21 +11,20 @@ interface PositionCardProps {
   claimLoading?: boolean;
 }
 
-function getStatusBadgeVariant(
-  status: PositionStatus
-): "default" | "secondary" | "destructive" | "outline" {
+function getStatusStyle(status: PositionStatus): { bg: string; text: string } {
   switch (status) {
     case PositionStatus.Claimed:
+      return { bg: "bg-purple-500/20", text: "text-purple-400" };
     case PositionStatus.Refunded:
-      return "outline";
+      return { bg: "bg-zinc-500/20", text: "text-zinc-400" };
     case PositionStatus.PayoutComputed:
-      return "default";
+      return { bg: "bg-green-500/20", text: "text-green-400" };
     case PositionStatus.Processed:
-      return "secondary";
+      return { bg: "bg-blue-500/20", text: "text-blue-400" };
     case PositionStatus.Pending:
-      return "secondary";
+      return { bg: "bg-yellow-500/20", text: "text-yellow-400" };
     default:
-      return "secondary";
+      return { bg: "bg-zinc-500/20", text: "text-zinc-400" };
   }
 }
 
@@ -46,80 +35,84 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
 
   const hasClaimed = position.status === PositionStatus.Claimed;
   const hasRefunded = position.status === PositionStatus.Refunded;
+  const statusStyle = getStatusStyle(position.status);
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <CardTitle className="text-base">
-              Position #{position.publicKey.toBase58().slice(0, 8)}...
-            </CardTitle>
-            <CardDescription>
-              Created {position.createdAt.toLocaleDateString()}
-            </CardDescription>
-          </div>
-          <Badge variant={getStatusBadgeVariant(position.status)}>
-            {position.status}
-          </Badge>
+    <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 hover:border-zinc-700 transition-all">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <p className="text-sm text-zinc-400">Position</p>
+          <p className="font-mono text-white">
+            {position.publicKey.toBase58().slice(0, 8)}...
+          </p>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm text-muted-foreground">Deposit</p>
-            <p className="font-medium">
-              {formatTokenAmount(BigInt(position.depositAmount))} SOL
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Payout</p>
-            <p className="font-medium">
-              {position.status === PositionStatus.PayoutComputed ||
-              position.status === PositionStatus.Claimed
-                ? `${formatTokenAmount(BigInt(position.payoutAmount))} SOL`
-                : "Pending..."}
-            </p>
-          </div>
-        </div>
+        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
+          {position.status}
+        </span>
+      </div>
 
+      {/* Amounts */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="bg-zinc-800/50 rounded-xl p-3">
+          <p className="text-xs text-zinc-400 mb-1">Deposit</p>
+          <p className="text-lg font-semibold text-white">
+            {formatTokenAmount(BigInt(position.depositAmount))} <span className="text-zinc-400 text-sm">SOL</span>
+          </p>
+        </div>
+        <div className="bg-zinc-800/50 rounded-xl p-3">
+          <p className="text-xs text-zinc-400 mb-1">Payout</p>
+          <p className="text-lg font-semibold">
+            {position.status === PositionStatus.PayoutComputed ||
+            position.status === PositionStatus.Claimed ? (
+              <span className="text-green-400">
+                {formatTokenAmount(BigInt(position.payoutAmount))} <span className="text-green-400/70 text-sm">SOL</span>
+              </span>
+            ) : (
+              <span className="text-zinc-500">Pending...</span>
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Timestamps */}
+      <div className="text-xs text-zinc-500 mb-4 space-y-1">
+        <p>Created {position.createdAt.toLocaleDateString()}</p>
         {position.processedAt && (
-          <div className="text-xs text-muted-foreground">
-            Processed on {position.processedAt.toLocaleString()}
-          </div>
+          <p>Processed {position.processedAt.toLocaleString()}</p>
         )}
-
         {position.claimedAt && (
-          <div className="text-xs text-muted-foreground">
-            Claimed on {position.claimedAt.toLocaleString()}
-          </div>
+          <p>Claimed {position.claimedAt.toLocaleString()}</p>
         )}
-      </CardContent>
-      <CardFooter className="gap-2">
-        <Link
-          href={`/markets/${position.market.toBase58()}`}
-          className="flex-1"
-        >
-          <Button variant="outline" className="w-full">
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2">
+        <Link href={`/markets/${position.market.toBase58()}`} className="flex-1">
+          <button className="w-full py-2.5 px-4 rounded-xl bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all text-sm font-medium">
             View Market
-          </Button>
+          </button>
         </Link>
         {canClaim && (
-          <Button onClick={onClaim} disabled={claimLoading} className="flex-1">
+          <button
+            onClick={onClaim}
+            disabled={claimLoading}
+            className="flex-1 py-2.5 px-4 rounded-xl bg-green-600 text-white hover:bg-green-700 transition-all text-sm font-medium disabled:opacity-50"
+          >
             {claimLoading ? "Claiming..." : "Claim Payout"}
-          </Button>
+          </button>
         )}
         {hasClaimed && (
-          <Badge variant="outline" className="flex-1 justify-center py-2">
+          <div className="flex-1 py-2.5 px-4 rounded-xl bg-purple-500/20 text-purple-400 text-center text-sm font-medium">
             Claimed
-          </Badge>
+          </div>
         )}
         {hasRefunded && (
-          <Badge variant="outline" className="flex-1 justify-center py-2">
+          <div className="flex-1 py-2.5 px-4 rounded-xl bg-zinc-800 text-zinc-400 text-center text-sm font-medium">
             Refunded
-          </Badge>
+          </div>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -107,9 +107,15 @@ export function useMarket(marketId?: string) {
     [connection, wallet, fetchMarket]
   );
 
-  const openMarket = useCallback(async (): Promise<string | null> => {
-    if (!wallet.publicKey || !wallet.signTransaction || !market) {
-      setError("Wallet not connected or market not loaded");
+  const openMarket = useCallback(async (marketIdOverride?: string | number): Promise<string | null> => {
+    if (!wallet.publicKey || !wallet.signTransaction) {
+      setError("Wallet not connected");
+      return null;
+    }
+
+    const marketIdToUse = marketIdOverride ?? market?.marketId;
+    if (!marketIdToUse) {
+      setError("No market ID provided");
       return null;
     }
 
@@ -122,7 +128,7 @@ export function useMarket(marketId?: string) {
       });
       const program = getProgram(provider);
 
-      const marketIdNum = parseInt(market.marketId);
+      const marketIdNum = typeof marketIdToUse === 'string' ? parseInt(marketIdToUse) : marketIdToUse;
       const [marketPda] = getMarketPDA(marketIdNum);
       const [poolStatePda] = getPoolStatePDA(marketIdNum);
 
