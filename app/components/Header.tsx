@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IconMenu2, IconX, IconChartBar, IconWallet } from "@tabler/icons-react";
+import Image from "next/image";
 import { WalletButton } from "./WalletButton";
 
 interface HeaderProps {
@@ -33,10 +34,8 @@ export function Header({ showLive }: HeaderProps) {
           <div className="flex h-14 items-center justify-between">
             {/* Left side - Logo & Nav */}
             <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center gap-2 group">
-                <div className="w-6 h-6 bg-[#10b981] flex items-center justify-center shrink-0">
-                  <span className="text-black font-bold text-sm">E</span>
-                </div>
+              <Link href="/" className="flex items-center gap-0 group">
+                <Image src="/logo.png" alt="Epoch" width={48} height={48} className="shrink-0" />
                 <span className="text-lg font-semibold tracking-tight text-white group-hover:text-zinc-300 transition-colors">
                   Epoch
                 </span>
@@ -104,10 +103,8 @@ export function Header({ showLive }: HeaderProps) {
       >
         {/* Sheet Header */}
         <div className="flex items-center justify-between h-14 px-4 border-b border-zinc-800">
-          <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-            <div className="w-6 h-6 bg-[#10b981] flex items-center justify-center">
-              <span className="text-black font-bold text-sm">E</span>
-            </div>
+          <Link href="/" className="flex items-center gap-0" onClick={() => setMobileMenuOpen(false)}>
+            <Image src="/logo.png" alt="Epoch" width={48} height={48} />
             <span className="text-lg font-semibold tracking-tight text-white">
               Epoch
             </span>
