@@ -3,22 +3,20 @@
 import { use, useCallback, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import Link from "next/link";
+import { Header } from "@/components/Header";
 import { WalletButton } from "@/components/WalletButton";
 import { useMarket } from "@/hooks/useMarket";
 import { usePosition } from "@/hooks/usePosition";
 import { useBet } from "@/hooks/useBet";
 import { useHeliusWebSocket } from "@/hooks/useHeliusWebSocket";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CountdownBadge } from "@/components/ui/countdown";
 import { toast } from "sonner";
 import { formatTokenAmount } from "@/lib/contracts/program";
-import { MarketDisplay, MarketStatus, PositionStatus } from "@/types/market";
-import { NATIVE_MINT } from "@solana/spl-token";
+import { MarketStatus, PositionStatus } from "@/types/market";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -111,9 +109,9 @@ export default function MarketPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0d0d0d]">
-        <Header wsConnected={wsConnected} />
-        <main className="max-w-4xl mx-auto px-4 py-8">
+      <div className="min-h-screen bg-[#0a0a0a]">
+        <Header showLive={wsConnected} />
+        <main className="max-w-6xl mx-auto px-4 py-8">
           <Skeleton className="h-8 w-3/4 mb-4 bg-zinc-800" />
           <Skeleton className="h-64 w-full bg-zinc-800" />
         </main>
@@ -123,10 +121,10 @@ export default function MarketPage({ params }: PageProps) {
 
   if (error || !market) {
     return (
-      <div className="min-h-screen bg-[#0d0d0d]">
-        <Header wsConnected={wsConnected} />
-        <main className="max-w-4xl mx-auto px-4 py-8">
-          <div className="text-center text-red-400 py-12">
+      <div className="min-h-screen bg-[#0a0a0a]">
+        <Header showLive={wsConnected} />
+        <main className="max-w-6xl mx-auto px-4 py-8">
+          <div className="text-center text-rose-400 py-12">
             {error || "Market not found"}
           </div>
         </main>
@@ -138,44 +136,44 @@ export default function MarketPage({ params }: PageProps) {
   const isResolved = market.status === MarketStatus.Resolved;
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
       <Toaster theme="dark" />
-      <Header wsConnected={wsConnected} />
+      <Header showLive={wsConnected} />
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Market Header */}
         <div className="mb-8">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <h1 className="text-2xl font-bold leading-tight">{market.question}</h1>
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight">{market.question}</h1>
             <StatusBadge status={market.status} />
           </div>
 
           {isResolved && market.winningOutcome && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800">
-              <span className="text-zinc-400">Outcome:</span>
-              <span className={`font-bold ${market.winningOutcome === "yes" ? "text-green-400" : "text-red-400"}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800">
+              <span className="text-zinc-500">Outcome:</span>
+              <span className={`font-medium ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}>
                 {market.winningOutcome.toUpperCase()}
               </span>
             </div>
           )}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-5">
+        <div className="grid gap-6 lg:grid-cols-5 overflow-hidden">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
             {/* Open Market for Authority */}
             {isAuthority && market.status === MarketStatus.Created && (
-              <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+              <div className="bg-zinc-900 p-6 border border-zinc-800">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 rounded-full bg-yellow-400 animate-pulse" />
-                  <h2 className="text-lg font-semibold">Market Not Open</h2>
+                  <div className="w-2 h-2 bg-amber-400" />
+                  <h2 className="text-lg font-medium">Market Not Open</h2>
                 </div>
-                <p className="text-zinc-400 text-sm mb-4">
+                <p className="text-zinc-500 text-sm mb-4">
                   This market is created but not yet open for betting. Open it to allow users to place bets.
                 </p>
                 <Button
                   onClick={handleOpenMarket}
-                  className="w-full h-12 text-lg font-semibold bg-blue-600 hover:bg-blue-700"
+                  className="w-full h-12 text-lg font-medium"
                 >
                   Open Market for Betting
                 </Button>
@@ -184,12 +182,12 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Waiting for Market to Open - for non-authority users */}
             {!isAuthority && market.status === MarketStatus.Created && (
-              <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+              <div className="bg-zinc-900 p-6 border border-zinc-800">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-3 h-3 rounded-full bg-yellow-400 animate-pulse" />
-                  <h2 className="text-lg font-semibold">Market Not Active</h2>
+                  <div className="w-2 h-2 bg-amber-400" />
+                  <h2 className="text-lg font-medium">Market Not Active</h2>
                 </div>
-                <p className="text-zinc-400 text-sm">
+                <p className="text-zinc-500 text-sm">
                   This market needs to be opened by the market authority before betting can begin.
                 </p>
               </div>
@@ -197,16 +195,16 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Betting Ended - Awaiting Resolution */}
             {market.status === MarketStatus.Open && !canBet && new Date() >= market.bettingEndTime && (
-              <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+              <div className="bg-zinc-900 p-6 border border-zinc-800">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-3 h-3 rounded-full bg-orange-400 animate-pulse" />
-                  <h2 className="text-lg font-semibold">Betting Closed</h2>
+                  <div className="w-2 h-2 bg-emerald-400" />
+                  <h2 className="text-lg font-medium">Betting Closed</h2>
                 </div>
-                <p className="text-zinc-400 text-sm">
+                <p className="text-zinc-500 text-sm">
                   The betting period has ended. Awaiting market resolution.
                 </p>
                 {isAuthority && (
-                  <p className="text-blue-400 text-sm mt-2">
+                  <p className="text-white text-sm mt-2">
                     As the market authority, you can resolve this market below.
                   </p>
                 )}
@@ -215,12 +213,12 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Betting Not Started Yet */}
             {market.status === MarketStatus.Open && !canBet && new Date() < market.bettingStartTime && (
-              <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+              <div className="bg-zinc-900 p-6 border border-zinc-800">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-400 animate-pulse" />
-                  <h2 className="text-lg font-semibold">Betting Opens Soon</h2>
+                  <div className="w-2 h-2 bg-sky-400" />
+                  <h2 className="text-lg font-medium">Betting Opens Soon</h2>
                 </div>
-                <p className="text-zinc-400 text-sm">
+                <p className="text-zinc-500 text-sm">
                   Betting starts on {market.bettingStartTime.toLocaleString()}
                 </p>
               </div>
@@ -228,29 +226,35 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Betting Card */}
             {canBet && (
-              <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+              <div className="bg-zinc-900 p-6 border border-zinc-800">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold">Place Your Bet</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_3px_rgba(52,211,153,0.6)]"></span>
+                    </span>
+                    <h2 className="text-lg font-medium">Place Your Bet</h2>
+                  </div>
                   <CountdownBadge targetDate={market.bettingEndTime} label="Ends in" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <button
                     onClick={() => setSelectedOutcome("yes")}
-                    className={`py-4 rounded-xl font-semibold text-lg transition-all ${
+                    className={`py-4 font-medium text-lg transition-colors border ${
                       selectedOutcome === "yes"
-                        ? "bg-green-500 text-white"
-                        : "bg-green-500/10 text-green-400 hover:bg-green-500/20"
+                        ? "bg-emerald-500 text-black border-emerald-500"
+                        : "bg-zinc-800 text-emerald-400 border-zinc-700 hover:border-emerald-500"
                     }`}
                   >
                     YES
                   </button>
                   <button
                     onClick={() => setSelectedOutcome("no")}
-                    className={`py-4 rounded-xl font-semibold text-lg transition-all ${
+                    className={`py-4 font-medium text-lg transition-colors border ${
                       selectedOutcome === "no"
-                        ? "bg-red-500 text-white"
-                        : "bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                        ? "bg-rose-500 text-white border-rose-500"
+                        : "bg-zinc-800 text-rose-400 border-zinc-700 hover:border-rose-500"
                     }`}
                   >
                     NO
@@ -258,7 +262,7 @@ export default function MarketPage({ params }: PageProps) {
                 </div>
 
                 <div className="mb-4">
-                  <label className="text-sm text-zinc-400 mb-2 block">Amount (SOL)</label>
+                  <label className="text-sm text-zinc-500 mb-2 block">Amount (SOL)</label>
                   <Input
                     type="number"
                     placeholder="0.00"
@@ -273,7 +277,7 @@ export default function MarketPage({ params }: PageProps) {
                     <button
                       key={amount}
                       onClick={() => setBetAmount(amount.toString())}
-                      className="px-4 py-2 rounded-lg bg-zinc-800 text-zinc-400 hover:bg-zinc-700 text-sm"
+                      className="px-4 py-2 bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white text-sm border border-zinc-700"
                     >
                       {amount} SOL
                     </button>
@@ -284,7 +288,7 @@ export default function MarketPage({ params }: PageProps) {
                   <Button
                     onClick={handlePlaceBet}
                     disabled={!selectedOutcome || !betAmount || betLoading}
-                    className="w-full h-12 text-lg font-semibold bg-blue-600 hover:bg-blue-700"
+                    className="w-full h-12 text-lg font-medium"
                   >
                     {betLoading ? "Placing Bet..." : "Place Bet"}
                   </Button>
@@ -292,7 +296,7 @@ export default function MarketPage({ params }: PageProps) {
                   <WalletButton />
                 )}
 
-                <p className="text-xs text-zinc-500 text-center mt-3">
+                <p className="text-xs text-zinc-600 text-center mt-3">
                   Your bet is encrypted with Arcium MPC
                 </p>
               </div>
@@ -300,10 +304,10 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Resolved State */}
             {isResolved && (
-              <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+              <div className="bg-zinc-900 p-6 border border-zinc-800">
                 <div className="text-center py-4">
-                  <p className="text-zinc-400 mb-2">Market Resolved</p>
-                  <p className={`text-4xl font-bold ${market.winningOutcome === "yes" ? "text-green-400" : "text-red-400"}`}>
+                  <p className="text-zinc-500 mb-2">Market Resolved</p>
+                  <p className={`text-4xl font-bold ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}>
                     {market.winningOutcome?.toUpperCase()}
                   </p>
                 </div>
@@ -312,18 +316,18 @@ export default function MarketPage({ params }: PageProps) {
 
             {/* Resolution Controls for Authority - only show after betting ends */}
             {isAuthority && !isResolved && market.status !== MarketStatus.Cancelled && new Date() >= market.bettingEndTime && (
-              <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
-                <h2 className="text-lg font-semibold mb-4">Resolve Market</h2>
+              <div className="bg-zinc-900 p-6 border border-zinc-800">
+                <h2 className="text-lg font-medium mb-4">Resolve Market</h2>
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     onClick={() => handleResolve(1)}
-                    className="h-12 bg-green-600 hover:bg-green-700 font-semibold"
+                    className="h-12 bg-emerald-500 hover:bg-emerald-600 text-black font-medium"
                   >
                     Resolve YES
                   </Button>
                   <Button
                     onClick={() => handleResolve(0)}
-                    className="h-12 bg-red-600 hover:bg-red-700 font-semibold"
+                    className="h-12 bg-rose-500 hover:bg-rose-600 text-white font-medium"
                   >
                     Resolve NO
                   </Button>
@@ -337,26 +341,26 @@ export default function MarketPage({ params }: PageProps) {
           <div className="lg:col-span-2 space-y-6">
             {/* Position Card */}
             {wallet.publicKey && (
-              <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-                <h3 className="font-semibold mb-4">Your Position</h3>
+              <div className="bg-zinc-900 p-5 border border-zinc-800">
+                <h3 className="font-medium mb-4">Your Position</h3>
                 {positionLoading ? (
                   <Skeleton className="h-16 bg-zinc-800" />
                 ) : position ? (
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-zinc-400">Deposit</span>
+                      <span className="text-zinc-500">Deposit</span>
                       <span className="font-medium">
                         {formatTokenAmount(BigInt(position.depositAmount))} SOL
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-400">Status</span>
+                      <span className="text-zinc-500">Status</span>
                       <PositionStatusBadge status={position.status} />
                     </div>
                     {position.payoutAmount !== "0" && (
                       <div className="flex justify-between">
-                        <span className="text-zinc-400">Payout</span>
-                        <span className="text-green-400 font-medium">
+                        <span className="text-zinc-500">Payout</span>
+                        <span className="text-emerald-400 font-medium">
                           {formatTokenAmount(BigInt(position.payoutAmount))} SOL
                         </span>
                       </div>
@@ -366,7 +370,7 @@ export default function MarketPage({ params }: PageProps) {
                     {isResolved && position.status === PositionStatus.Processed && (
                       <Button
                         onClick={handleComputePayout}
-                        className="w-full mt-2 bg-blue-600 hover:bg-blue-700"
+                        className="w-full mt-2"
                       >
                         Compute Payout
                       </Button>
@@ -374,7 +378,7 @@ export default function MarketPage({ params }: PageProps) {
                     {position.status === PositionStatus.PayoutComputed && position.payoutAmount !== "0" && (
                       <Button
                         onClick={handleClaimPayout}
-                        className="w-full mt-2 bg-green-600 hover:bg-green-700"
+                        className="w-full mt-2"
                       >
                         Claim Payout
                       </Button>
@@ -386,43 +390,37 @@ export default function MarketPage({ params }: PageProps) {
                     )}
                   </div>
                 ) : (
-                  <p className="text-zinc-500 text-sm">No position yet</p>
+                  <p className="text-zinc-600 text-sm">No position yet</p>
                 )}
               </div>
             )}
 
             {/* Market Info */}
-            <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-              <h3 className="font-semibold mb-4">Market Info</h3>
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <h3 className="font-medium mb-4">Market Info</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Positions</span>
+                  <span className="text-zinc-500">Positions</span>
                   <span>{market.totalPositions}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Betting Ends</span>
+                  <span className="text-zinc-500">Betting Ends</span>
                   <span>{market.bettingEndTime.toLocaleDateString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Resolution</span>
+                  <span className="text-zinc-500">Resolution</span>
                   <span>{market.resolutionEndTime.toLocaleDateString()}</span>
                 </div>
               </div>
             </div>
 
             {/* Tech Stack */}
-            <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-              <h3 className="font-semibold mb-3">Powered By</h3>
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <h3 className="font-medium mb-3">Powered By</h3>
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-purple-500/20 text-purple-400 hover:bg-purple-500/30">
-                  Arcium MPC
-                </Badge>
-                <Badge className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30">
-                  Helius
-                </Badge>
-                <Badge className="bg-orange-500/20 text-orange-400 hover:bg-orange-500/30">
-                  Solana
-                </Badge>
+                <span className="px-2 py-1 text-xs bg-zinc-800 text-zinc-400">Arcium MPC</span>
+                <span className="px-2 py-1 text-xs bg-zinc-800 text-zinc-400">Helius</span>
+                <span className="px-2 py-1 text-xs bg-zinc-800 text-zinc-400">Solana</span>
               </div>
             </div>
           </div>
@@ -432,49 +430,18 @@ export default function MarketPage({ params }: PageProps) {
   );
 }
 
-function Header({ wsConnected }: { wsConnected: boolean }) {
-  return (
-    <header className="border-b border-zinc-800">
-      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="text-xl font-bold">
-            Epoch
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/markets" className="text-sm text-zinc-400 hover:text-white transition-colors">
-              Markets
-            </Link>
-            <Link href="/markets/positions" className="text-sm text-zinc-400 hover:text-white transition-colors">
-              Portfolio
-            </Link>
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          {wsConnected && (
-            <div className="flex items-center gap-2 text-xs text-green-400">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              Live
-            </div>
-          )}
-          <WalletButton />
-        </div>
-      </div>
-    </header>
-  );
-}
-
 function StatusBadge({ status }: { status: MarketStatus }) {
-  const styles: Record<MarketStatus, string> = {
-    [MarketStatus.Created]: "bg-yellow-500/20 text-yellow-400",
-    [MarketStatus.Open]: "bg-green-500/20 text-green-400",
-    [MarketStatus.BettingClosed]: "bg-orange-500/20 text-orange-400",
-    [MarketStatus.Resolved]: "bg-blue-500/20 text-blue-400",
-    [MarketStatus.Settled]: "bg-purple-500/20 text-purple-400",
-    [MarketStatus.Cancelled]: "bg-red-500/20 text-red-400",
+  const styles: Record<MarketStatus, { bg: string; text: string }> = {
+    [MarketStatus.Created]: { bg: "bg-amber-500/10", text: "text-amber-400" },
+    [MarketStatus.Open]: { bg: "bg-emerald-500/10", text: "text-emerald-400" },
+    [MarketStatus.BettingClosed]: { bg: "bg-emerald-500/10", text: "text-emerald-400" },
+    [MarketStatus.Resolved]: { bg: "bg-sky-500/10", text: "text-sky-400" },
+    [MarketStatus.Settled]: { bg: "bg-zinc-500/10", text: "text-zinc-400" },
+    [MarketStatus.Cancelled]: { bg: "bg-rose-500/10", text: "text-rose-400" },
   };
 
   return (
-    <span className={`px-3 py-1 rounded-full text-sm font-medium ${styles[status]}`}>
+    <span className={`px-3 py-1 text-sm font-medium ${styles[status].bg} ${styles[status].text}`}>
       {status}
     </span>
   );
@@ -482,10 +449,10 @@ function StatusBadge({ status }: { status: MarketStatus }) {
 
 function PositionStatusBadge({ status }: { status: PositionStatus }) {
   const styles: Record<PositionStatus, string> = {
-    [PositionStatus.Pending]: "text-yellow-400",
-    [PositionStatus.Processed]: "text-blue-400",
-    [PositionStatus.PayoutComputed]: "text-green-400",
-    [PositionStatus.Claimed]: "text-purple-400",
+    [PositionStatus.Pending]: "text-amber-400",
+    [PositionStatus.Processed]: "text-violet-400",
+    [PositionStatus.PayoutComputed]: "text-sky-400",
+    [PositionStatus.Claimed]: "text-emerald-400",
     [PositionStatus.Refunded]: "text-zinc-400",
   };
 

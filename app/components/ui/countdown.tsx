@@ -53,7 +53,7 @@ export function Countdown({ targetDate, onComplete, className = "", size = "md" 
   }, [targetDate, onComplete]);
 
   if (timeLeft.total <= 0) {
-    return <span className={`text-red-400 ${className}`}>Ended</span>;
+    return <span className={`text-rose-400 ${className}`}>Ended</span>;
   }
 
   const sizeClasses = {
@@ -81,7 +81,7 @@ export function Countdown({ targetDate, onComplete, className = "", size = "md" 
 
   // Less than 1 hour - show with urgency
   return (
-    <span className={`font-mono ${sizeClasses[size]} text-orange-400 ${className}`}>
+    <span className={`font-mono ${sizeClasses[size]} text-amber-400 ${className}`}>
       {timeLeft.minutes}m {timeLeft.seconds}s
     </span>
   );
@@ -100,9 +100,9 @@ export function CountdownBadge({ targetDate, label }: { targetDate: Date; label?
 
   if (timeLeft.total <= 0) {
     return (
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-        <div className="w-2 h-2 rounded-full bg-red-400" />
-        <span className="text-xs text-red-400">Ended</span>
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 border border-rose-500/20">
+        <div className="w-1.5 h-1.5 bg-rose-400" />
+        <span className="text-xs text-rose-400">Ended</span>
       </div>
     );
   }
@@ -110,13 +110,9 @@ export function CountdownBadge({ targetDate, label }: { targetDate: Date; label?
   const isUrgent = timeLeft.days === 0 && timeLeft.hours < 1;
 
   return (
-    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${
-      isUrgent
-        ? "bg-orange-500/10 border border-orange-500/20"
-        : "bg-zinc-800 border border-zinc-700"
-    }`}>
-      <div className={`w-2 h-2 rounded-full ${isUrgent ? "bg-orange-400 animate-pulse" : "bg-green-400"}`} />
-      <span className={`text-xs font-mono ${isUrgent ? "text-orange-400" : "text-zinc-300"}`}>
+    <div className={`flex items-center gap-2 px-3 py-1.5 ${isUrgent ? "bg-amber-500/10 border border-amber-500/20" : "bg-zinc-800 border border-zinc-700"}`}>
+      <div className={`w-1.5 h-1.5 ${isUrgent ? "bg-amber-400" : "bg-emerald-400"}`} />
+      <span className={`text-xs font-mono ${isUrgent ? "text-amber-400" : "text-zinc-300"}`}>
         {label && <span className="text-zinc-500 mr-1">{label}</span>}
         {timeLeft.days > 0 && `${timeLeft.days}d `}
         {timeLeft.hours > 0 && `${timeLeft.hours}h `}

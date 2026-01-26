@@ -1,8 +1,10 @@
 "use client";
 
 import { useWallet } from "@solana/wallet-adapter-react";
+import { IconWallet, IconChartBar, IconArrowRight } from "@tabler/icons-react";
+import { Header } from "@/components/Header";
 import { WalletButton } from "@/components/WalletButton";
-import { usePosition, PositionDisplay } from "@/hooks/usePosition";
+import { usePosition } from "@/hooks/usePosition";
 import { PositionCard } from "@/components/markets";
 import { Toaster } from "@/components/ui/sonner";
 import { PositionStatus } from "@/types/market";
@@ -30,45 +32,23 @@ export default function PositionsPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
       <Toaster theme="dark" />
-
-      {/* Header */}
-      <header className="border-b border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="text-xl font-bold">
-              Epoch
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link
-                href="/markets"
-                className="text-sm text-zinc-400 hover:text-white transition-colors"
-              >
-                Markets
-              </Link>
-              <Link href="/markets/positions" className="text-sm text-white font-medium">
-                Portfolio
-              </Link>
-            </nav>
-          </div>
-          <WalletButton />
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Page Header */}
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Portfolio</h1>
-            <p className="text-zinc-400">View and manage your betting positions</p>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 tracking-tight">Portfolio</h1>
+            <p className="text-zinc-500 text-sm sm:text-base">View and manage your betting positions</p>
           </div>
           {wallet.publicKey && (
             <button
               onClick={refetchAll}
               disabled={loading}
-              className="px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all text-sm font-medium disabled:opacity-50"
+              className="px-4 py-2 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors text-sm font-medium disabled:opacity-50 border border-zinc-700"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -86,66 +66,65 @@ export default function PositionsPage() {
         </div>
 
         {!wallet.publicKey ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-20 h-20 mb-6 rounded-full bg-zinc-800 flex items-center justify-center">
-              <svg className="w-10 h-10 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="w-16 h-16 mb-6 border border-zinc-800 flex items-center justify-center">
+              <IconWallet size={28} className="text-zinc-600" stroke={1.5} />
             </div>
-            <p className="text-zinc-400 text-lg mb-4">Connect your wallet to view positions</p>
+            <p className="text-zinc-300 text-lg font-medium mb-2">Connect Wallet</p>
+            <p className="text-zinc-600 text-sm mb-6">Connect your wallet to view your positions</p>
             <WalletButton />
           </div>
         ) : loading ? (
           <PositionsLoading />
         ) : error ? (
-          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+          <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400">
             {error}
           </div>
         ) : allPositions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-20 h-20 mb-6 rounded-full bg-zinc-800 flex items-center justify-center">
-              <svg className="w-10 h-10 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="w-16 h-16 mb-6 border border-zinc-800 flex items-center justify-center">
+              <IconChartBar size={28} className="text-zinc-600" stroke={1.5} />
             </div>
-            <p className="text-zinc-400 text-lg mb-4">No positions yet</p>
+            <p className="text-zinc-300 text-lg font-medium mb-2">No Positions Yet</p>
+            <p className="text-zinc-600 text-sm mb-6">Start betting on markets to build your portfolio</p>
             <Link href="/markets">
-              <button className="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all font-medium">
+              <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#10b981] text-black hover:bg-[#059669] transition-colors text-sm font-medium">
                 Browse Markets
+                <IconArrowRight size={16} stroke={2} />
               </button>
             </Link>
           </div>
         ) : (
           <>
             {/* Stats Banner */}
-            <div className="grid grid-cols-4 gap-4 mb-8">
-              <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-                <p className="text-zinc-400 text-sm mb-1">Total Positions</p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+              <div className="bg-zinc-900 p-5 border border-zinc-800">
+                <p className="text-zinc-500 text-sm mb-1">Total Positions</p>
                 <p className="text-2xl font-bold">{allPositions.length}</p>
               </div>
-              <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-                <p className="text-zinc-400 text-sm mb-1">Total Deposited</p>
+              <div className="bg-zinc-900 p-5 border border-zinc-800">
+                <p className="text-zinc-500 text-sm mb-1">Total Deposited</p>
                 <p className="text-2xl font-bold">
-                  {formatTokenAmount(totalDeposited)} <span className="text-zinc-400 text-base">SOL</span>
+                  {formatTokenAmount(totalDeposited)} <span className="text-zinc-500 text-base">SOL</span>
                 </p>
               </div>
-              <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-                <p className="text-zinc-400 text-sm mb-1">Total Payout</p>
-                <p className="text-2xl font-bold text-green-400">
-                  {formatTokenAmount(totalPayout)} <span className="text-green-400/70 text-base">SOL</span>
+              <div className="bg-zinc-900 p-5 border border-zinc-800">
+                <p className="text-zinc-500 text-sm mb-1">Total Payout</p>
+                <p className="text-2xl font-bold text-emerald-400">
+                  {formatTokenAmount(totalPayout)} <span className="text-emerald-400/70 text-base">SOL</span>
                 </p>
               </div>
-              <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-                <p className="text-zinc-400 text-sm mb-1">Status</p>
+              <div className="bg-zinc-900 p-5 border border-zinc-800">
+                <p className="text-zinc-500 text-sm mb-1">Status</p>
                 <div className="flex items-center gap-3">
                   {pendingCount > 0 && (
-                    <span className="text-yellow-400 text-sm">{pendingCount} pending</span>
+                    <span className="text-amber-400 text-sm">{pendingCount} pending</span>
                   )}
                   {claimableCount > 0 && (
-                    <span className="text-green-400 text-sm">{claimableCount} claimable</span>
+                    <span className="text-emerald-400 text-sm">{claimableCount} claimable</span>
                   )}
                   {pendingCount === 0 && claimableCount === 0 && (
-                    <span className="text-zinc-400 text-sm">All settled</span>
+                    <span className="text-zinc-500 text-sm">All settled</span>
                   )}
                 </div>
               </div>
@@ -175,11 +154,11 @@ function PositionsLoading() {
   return (
     <>
       {/* Stats Skeleton */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-            <div className="h-4 w-24 bg-zinc-800 rounded animate-pulse mb-2" />
-            <div className="h-8 w-16 bg-zinc-800 rounded animate-pulse" />
+          <div key={i} className="bg-zinc-900 p-5 border border-zinc-800">
+            <div className="h-4 w-24 bg-zinc-800 animate-pulse mb-2" />
+            <div className="h-8 w-16 bg-zinc-800 animate-pulse" />
           </div>
         ))}
       </div>
@@ -187,16 +166,16 @@ function PositionsLoading() {
       {/* Cards Skeleton */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 space-y-4">
+          <div key={i} className="bg-zinc-900 p-5 border border-zinc-800 space-y-4">
             <div className="flex justify-between">
-              <div className="h-10 w-24 bg-zinc-800 rounded animate-pulse" />
-              <div className="h-6 w-16 bg-zinc-800 rounded-full animate-pulse" />
+              <div className="h-10 w-24 bg-zinc-800 animate-pulse" />
+              <div className="h-6 w-16 bg-zinc-800 animate-pulse" />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="h-16 bg-zinc-800 rounded-xl animate-pulse" />
-              <div className="h-16 bg-zinc-800 rounded-xl animate-pulse" />
+              <div className="h-16 bg-zinc-800 animate-pulse" />
+              <div className="h-16 bg-zinc-800 animate-pulse" />
             </div>
-            <div className="h-10 bg-zinc-800 rounded-xl animate-pulse" />
+            <div className="h-10 bg-zinc-800 animate-pulse" />
           </div>
         ))}
       </div>

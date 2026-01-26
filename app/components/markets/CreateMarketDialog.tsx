@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
+import { IconPlus } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogContent,
+  DialogSlideOver,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -28,8 +29,7 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
   const { createMarket, openMarket, loading, error } = useMarket();
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
-  // Default to wrapped SOL for devnet testing
-  const [tokenMint, setTokenMint] = useState("So11111111111111111111111111111111111111112");
+  const [tokenMint, setTokenMint] = useState("");
 
   // Helper to format date for datetime-local input (local time, not UTC)
   const formatDateTimeLocal = (date: Date) => {
@@ -132,7 +132,7 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
   const resetForm = () => {
     const newDefaults = getDefaultTimes();
     setQuestion("");
-    setTokenMint("So11111111111111111111111111111111111111112");
+    setTokenMint("");
     setBettingStart(newDefaults.start);
     setBettingEnd(newDefaults.end);
     setResolutionEnd(newDefaults.resolution);
@@ -141,86 +141,114 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button>Create Market</Button>
+        <Button>
+          <IconPlus size={18} stroke={2} />
+          Create Market
+        </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogSlideOver>
         <DialogHeader>
-          <DialogTitle>Create Prediction Market</DialogTitle>
-          <DialogDescription>
-            Create a new private prediction market. All bets will be encrypted
-            using Arcium MPC.
+          <DialogTitle className="text-xl">Create Market</DialogTitle>
+          <DialogDescription className="text-zinc-500">
+            Create a new private prediction market with encrypted bets.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="flex-1 overflow-y-auto py-6 space-y-6">
+          {/* Question */}
           <div className="space-y-2">
-            <Label htmlFor="question">Question</Label>
+            <Label htmlFor="question" className="text-zinc-400 text-sm">
+              Question
+            </Label>
             <Input
               id="question"
               placeholder="Will ETH reach $10,000 by end of 2025?"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               maxLength={200}
+              className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-zinc-600">
               {question.length}/200 characters
             </p>
           </div>
 
+          {/* Token Mint */}
           <div className="space-y-2">
-            <Label htmlFor="tokenMint">Token Mint Address</Label>
+            <Label htmlFor="tokenMint" className="text-zinc-400 text-sm">
+              Token Mint Address
+            </Label>
             <Input
               id="tokenMint"
-              placeholder="So11111111111111111111111111111111111111112"
+              placeholder="Enter SPL token mint address"
               value={tokenMint}
               onChange={(e) => setTokenMint(e.target.value)}
+              className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 font-mono text-sm"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-zinc-600">
               The SPL token used for betting (e.g., USDC, SOL)
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="bettingStart">Betting Starts</Label>
-              <Input
-                id="bettingStart"
-                type="datetime-local"
-                value={bettingStart}
-                onChange={(e) => setBettingStart(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bettingEnd">Betting Ends</Label>
-              <Input
-                id="bettingEnd"
-                type="datetime-local"
-                value={bettingEnd}
-                onChange={(e) => setBettingEnd(e.target.value)}
-              />
+          {/* Betting Period */}
+          <div className="space-y-3">
+            <p className="text-zinc-400 text-sm">Betting Period</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="bettingStart" className="text-zinc-500 text-xs">
+                  Starts
+                </Label>
+                <Input
+                  id="bettingStart"
+                  type="datetime-local"
+                  value={bettingStart}
+                  onChange={(e) => setBettingStart(e.target.value)}
+                  className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 text-sm "
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bettingEnd" className="text-zinc-500 text-xs">
+                  Ends
+                </Label>
+                <Input
+                  id="bettingEnd"
+                  type="datetime-local"
+                  value={bettingEnd}
+                  onChange={(e) => setBettingEnd(e.target.value)}
+                  className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 text-sm "
+                />
+              </div>
             </div>
           </div>
 
+          {/* Resolution Deadline */}
           <div className="space-y-2">
-            <Label htmlFor="resolutionEnd">Resolution Deadline</Label>
+            <Label htmlFor="resolutionEnd" className="text-zinc-400 text-sm">
+              Resolution Deadline
+            </Label>
             <Input
               id="resolutionEnd"
               type="datetime-local"
               value={resolutionEnd}
               onChange={(e) => setResolutionEnd(e.target.value)}
+              className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 text-sm "
             />
+            <p className="text-xs text-zinc-600">
+              Deadline for the market to be resolved
+            </p>
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+        <DialogFooter className="border-t border-zinc-800 pt-4 mt-auto">
+          <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
           </Button>
           <Button onClick={handleCreate} disabled={loading || !wallet.publicKey}>
+            <IconPlus size={16} stroke={2} />
             {loading ? "Creating..." : "Create Market"}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </DialogSlideOver>
     </Dialog>
   );
 }

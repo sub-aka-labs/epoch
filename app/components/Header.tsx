@@ -1,0 +1,158 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { IconMenu2, IconX, IconChartBar, IconWallet } from "@tabler/icons-react";
+import { WalletButton } from "./WalletButton";
+
+interface HeaderProps {
+  showLive?: boolean;
+}
+
+export function Header({ showLive }: HeaderProps) {
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const isActive = (path: string) => {
+    if (path === "/markets") {
+      return pathname === "/markets" || pathname?.startsWith("/markets/") && !pathname?.includes("/positions");
+    }
+    return pathname === path || pathname?.startsWith(path);
+  };
+
+  const navLinks = [
+    { href: "/markets", label: "Markets", icon: IconChartBar, isActive: isActive("/markets") && !pathname?.includes("/positions") },
+    { href: "/markets/positions", label: "Portfolio", icon: IconWallet, isActive: isActive("/markets/positions") },
+  ];
+
+  return (
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-[#0a0a0a]/80 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex h-14 items-center justify-between">
+            {/* Left side - Logo & Nav */}
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center gap-2 group">
+                <div className="w-6 h-6 bg-[#10b981] flex items-center justify-center shrink-0">
+                  <span className="text-black font-bold text-sm">E</span>
+                </div>
+                <span className="text-lg font-semibold tracking-tight text-white group-hover:text-zinc-300 transition-colors">
+                  Epoch
+                </span>
+              </Link>
+
+              {/* Desktop Nav */}
+              <nav className="hidden md:flex items-center gap-1">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                      link.isActive
+                        ? "text-white bg-zinc-800"
+                        : "text-zinc-500 hover:text-white hover:bg-zinc-800/50"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* Right side - Status, Wallet & Menu */}
+            <div className="flex items-center gap-3">
+              {showLive && (
+                <div className="hidden sm:flex items-center gap-2 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex h-2 w-2 bg-emerald-400"></span>
+                  </span>
+                  <span className="text-xs text-emerald-400 font-medium">Live</span>
+                </div>
+              )}
+              <div className="hidden md:block">
+                <WalletButton />
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+                aria-label="Open menu"
+              >
+                <IconMenu2 size={22} stroke={1.5} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Menu Sheet */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-300 ease-out md:hidden ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Sheet Header */}
+        <div className="flex items-center justify-between h-14 px-4 border-b border-zinc-800">
+          <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+            <div className="w-6 h-6 bg-[#10b981] flex items-center justify-center">
+              <span className="text-black font-bold text-sm">E</span>
+            </div>
+            <span className="text-lg font-semibold tracking-tight text-white">
+              Epoch
+            </span>
+          </Link>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="p-1.5 text-zinc-400 hover:text-white transition-colors"
+            aria-label="Close menu"
+          >
+            <IconX size={20} stroke={1.5} />
+          </button>
+        </div>
+
+        {/* Sheet Content */}
+        <nav className="p-4 space-y-1">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors ${
+                  link.isActive
+                    ? "text-white bg-zinc-800"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                }`}
+              >
+                <Icon size={18} stroke={1.5} />
+                {link.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Sheet Footer */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-zinc-800 space-y-4">
+          <div className="[&_.wallet-adapter-button]:w-full [&_.wallet-adapter-dropdown]:w-full">
+            <WalletButton />
+          </div>
+          <p className="text-xs text-zinc-600 text-center">
+            Powered by Arcium MPC
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { IconChartBar } from "@tabler/icons-react";
 import { MarketDisplay, MarketStatus } from "@/types/market";
 import { MarketCard } from "./MarketCard";
 
@@ -10,22 +11,49 @@ interface MarketListProps {
   onBetPlaced?: () => void;
 }
 
+// Encrypted number effect component
+function ScrambleNumber() {
+  const [display, setDisplay] = useState("0");
+  const chars = "0123456789";
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDisplay(chars[Math.floor(Math.random() * chars.length)]);
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className="font-mono text-emerald-400/70">{display}</span>
+  );
+}
+
+function MarketCardSkeleton() {
+  return (
+    <div className="bg-zinc-900 p-5 border border-zinc-800 space-y-4">
+      <div className="flex justify-between items-start">
+        <div className="h-6 w-3/4 bg-zinc-800 animate-pulse" />
+        <div className="h-5 w-16 bg-zinc-800 animate-pulse" />
+      </div>
+      <div className="h-4 w-1/2 bg-zinc-800 animate-pulse" />
+      <div className="grid grid-cols-2 gap-2">
+        <div className="h-10 bg-zinc-800 animate-pulse" />
+        <div className="h-10 bg-zinc-800 animate-pulse" />
+      </div>
+      <div className="flex justify-between">
+        <div className="h-4 w-24 bg-zinc-800 animate-pulse" />
+        <div className="h-4 w-16 bg-zinc-800 animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
 export function MarketListSkeleton() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 space-y-4">
-          <div className="h-6 w-3/4 bg-zinc-800 rounded animate-pulse" />
-          <div className="h-4 w-1/2 bg-zinc-800 rounded animate-pulse" />
-          <div className="grid grid-cols-2 gap-2">
-            <div className="h-10 bg-zinc-800 rounded-xl animate-pulse" />
-            <div className="h-10 bg-zinc-800 rounded-xl animate-pulse" />
-          </div>
-          <div className="flex justify-between">
-            <div className="h-4 w-24 bg-zinc-800 rounded animate-pulse" />
-            <div className="h-4 w-16 bg-zinc-800 rounded animate-pulse" />
-          </div>
-        </div>
+        <MarketCardSkeleton key={i} />
       ))}
     </div>
   );
@@ -35,10 +63,6 @@ type TabType = "active" | "resolved" | "cancelled" | "all";
 
 export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
   const [activeTab, setActiveTab] = useState<TabType>("active");
-
-  if (loading) {
-    return <MarketListSkeleton />;
-  }
 
   const activeMarkets = markets.filter(
     (m) => m.status === MarketStatus.Open || m.status === MarketStatus.Created || m.status === MarketStatus.BettingClosed
@@ -74,28 +98,35 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
 
   return (
     <div>
-      {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 bg-zinc-900 rounded-xl mb-6 w-fit">
+      {/* Tabs - Always visible */}
+      <div className="flex items-center gap-0 mb-6 border-b border-zinc-800">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            disabled={loading}
+            className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
               activeTab === tab.id
-                ? "bg-zinc-800 text-white"
-                : "text-zinc-400 hover:text-white"
-            }`}
+                ? "border-white text-white"
+                : "border-transparent text-zinc-500 hover:text-white"
+            } ${loading ? "cursor-wait" : ""}`}
           >
             {tab.label}
-            <span className={`ml-2 ${activeTab === tab.id ? "text-blue-400" : "text-zinc-500"}`}>
-              {tab.count}
+            <span className={`ml-2 ${activeTab === tab.id ? "text-zinc-400" : "text-zinc-600"}`}>
+              {loading ? <ScrambleNumber /> : tab.count}
             </span>
           </button>
         ))}
       </div>
 
       {/* Content */}
-      {currentMarkets.length === 0 ? (
+      {loading ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <MarketCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : currentMarkets.length === 0 ? (
         <EmptyState tab={activeTab} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -109,22 +140,20 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
 }
 
 function EmptyState({ tab }: { tab: TabType }) {
-  const messages: Record<TabType, string> = {
-    active: "No active markets yet",
-    resolved: "No resolved markets yet",
-    cancelled: "No cancelled markets",
-    all: "No markets found",
+  const messages: Record<TabType, { title: string; subtitle: string }> = {
+    active: { title: "No Active Markets", subtitle: "Create a market to get started" },
+    resolved: { title: "No Resolved Markets", subtitle: "Markets will appear here once resolved" },
+    cancelled: { title: "No Cancelled Markets", subtitle: "Cancelled markets will appear here" },
+    all: { title: "No Markets Found", subtitle: "Create a market to get started" },
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800 flex items-center justify-center">
-        <svg className="w-8 h-8 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="w-14 h-14 mb-5 border border-zinc-800 flex items-center justify-center">
+        <IconChartBar size={24} className="text-zinc-600" stroke={1.5} />
       </div>
-      <p className="text-zinc-400 text-lg">{messages[tab]}</p>
-      <p className="text-zinc-500 text-sm mt-1">Create a market to get started</p>
+      <p className="text-zinc-300 font-medium mb-1">{messages[tab].title}</p>
+      <p className="text-zinc-600 text-sm">{messages[tab].subtitle}</p>
     </div>
   );
 }
