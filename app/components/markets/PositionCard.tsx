@@ -38,12 +38,12 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
   const statusStyle = getStatusStyle(position.status);
 
   return (
-    <div className="bg-zinc-900 p-5 border border-zinc-800 hover:border-zinc-600 transition-colors">
+    <div className="bg-zinc-900 p-4 border border-zinc-800 hover:border-zinc-600 transition-colors">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 mb-4">
+      <div className="flex items-start justify-between gap-3 mb-3">
         <div>
-          <p className="text-sm text-zinc-500">Position</p>
-          <p className="font-mono text-white">
+          <p className="text-[13px] text-zinc-500">Position</p>
+          <p className="font-mono text-[13px] text-white">
             {position.publicKey.toBase58().slice(0, 8)}...
           </p>
         </div>
@@ -53,20 +53,20 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
       </div>
 
       {/* Amounts */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="bg-zinc-800 p-3">
-          <p className="text-xs text-zinc-500 mb-1">Deposit</p>
-          <p className="text-lg font-medium text-white">
-            {formatTokenAmount(BigInt(position.depositAmount))} <span className="text-zinc-500 text-sm">SOL</span>
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <div className="bg-zinc-800 p-2.5">
+          <p className="text-xs text-zinc-500 mb-0.5">Deposit</p>
+          <p className="text-sm font-medium text-white">
+            {formatTokenAmount(BigInt(position.depositAmount))} <span className="text-zinc-500 text-xs">SOL</span>
           </p>
         </div>
-        <div className="bg-zinc-800 p-3">
-          <p className="text-xs text-zinc-500 mb-1">Payout</p>
-          <p className="text-lg font-medium">
+        <div className="bg-zinc-800 p-2.5">
+          <p className="text-xs text-zinc-500 mb-0.5">Payout</p>
+          <p className="text-sm font-medium">
             {position.status === PositionStatus.PayoutComputed ||
             position.status === PositionStatus.Claimed ? (
               <span className="text-emerald-400">
-                {formatTokenAmount(BigInt(position.payoutAmount))} <span className="text-emerald-400/70 text-sm">SOL</span>
+                {formatTokenAmount(BigInt(position.payoutAmount))} <span className="text-emerald-400/70 text-xs">SOL</span>
               </span>
             ) : (
               <span className="text-zinc-600">Pending...</span>
@@ -76,7 +76,7 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
       </div>
 
       {/* Timestamps */}
-      <div className="text-xs text-zinc-600 mb-4 space-y-1">
+      <div className="text-xs text-zinc-600 mb-3 space-y-0.5">
         <p>Created {position.createdAt.toLocaleDateString()}</p>
         {position.processedAt && (
           <p>Processed {position.processedAt.toLocaleString()}</p>
@@ -89,7 +89,7 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
       {/* Actions */}
       <div className="flex gap-2">
         <Link href={`/markets/${position.market.toBase58()}`} className="flex-1">
-          <button className="w-full py-2.5 px-4 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors text-sm font-medium border border-zinc-700">
+          <button className="w-full h-8 px-3 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors text-[13px] font-medium border border-zinc-700 cursor-pointer">
             View Market
           </button>
         </Link>
@@ -97,18 +97,18 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
           <button
             onClick={onClaim}
             disabled={claimLoading}
-            className="flex-1 py-2.5 px-4 bg-white text-black hover:bg-zinc-200 transition-colors text-sm font-medium disabled:opacity-50"
+            className="flex-1 h-8 px-3 bg-[#10b981] text-black hover:bg-[#059669] transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {claimLoading ? "Claiming..." : "Claim Payout"}
           </button>
         )}
         {hasClaimed && (
-          <div className="flex-1 py-2.5 px-4 bg-zinc-800 text-zinc-500 text-center text-sm font-medium">
+          <div className="flex-1 h-8 px-3 bg-zinc-800 text-zinc-500 text-center text-[13px] font-medium flex items-center justify-center">
             Claimed
           </div>
         )}
         {hasRefunded && (
-          <div className="flex-1 py-2.5 px-4 bg-zinc-800 text-zinc-500 text-center text-sm font-medium">
+          <div className="flex-1 h-8 px-3 bg-zinc-800 text-zinc-500 text-center text-[13px] font-medium flex items-center justify-center">
             Refunded
           </div>
         )}

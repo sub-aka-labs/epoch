@@ -142,14 +142,14 @@ export default function MarketPage({ params }: PageProps) {
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Market Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
-            <h1 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight">{market.question}</h1>
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
+            <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight">{market.question}</h1>
             <StatusBadge status={market.status} />
           </div>
 
           {isResolved && market.winningOutcome && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-800 text-[13px]">
               <span className="text-zinc-500">Outcome:</span>
               <span className={`font-medium ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}>
                 {market.winningOutcome.toUpperCase()}
@@ -158,247 +158,230 @@ export default function MarketPage({ params }: PageProps) {
           )}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-5 overflow-hidden">
-          {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Open Market for Authority */}
-            {isAuthority && market.status === MarketStatus.Created && (
-              <div className="bg-zinc-900 p-6 border border-zinc-800">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-2 h-2 bg-amber-400" />
-                  <h2 className="text-lg font-medium">Market Not Open</h2>
-                </div>
-                <p className="text-zinc-500 text-sm mb-4">
-                  This market is created but not yet open for betting. Open it to allow users to place bets.
+        <div className="space-y-4">
+          {/* Main Status/Action Card - Full Width */}
+          {/* Open Market for Authority */}
+          {isAuthority && market.status === MarketStatus.Created && (
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1.5 h-1.5 bg-amber-400" />
+                <h2 className="text-sm font-medium">Market Not Open</h2>
+              </div>
+              <p className="text-zinc-500 text-[13px] mb-4">
+                This market is created but not yet open for betting. Open it to allow users to place bets.
+              </p>
+              <Button onClick={handleOpenMarket}>
+                Open Market for Betting
+              </Button>
+            </div>
+          )}
+
+          {/* Waiting for Market to Open - for non-authority users */}
+          {!isAuthority && market.status === MarketStatus.Created && (
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-1.5 bg-amber-400" />
+                <h2 className="text-sm font-medium">Market Not Active</h2>
+              </div>
+              <p className="text-zinc-500 text-[13px]">
+                This market needs to be opened by the market authority before betting can begin.
+              </p>
+            </div>
+          )}
+
+          {/* Betting Ended - Awaiting Resolution */}
+          {market.status === MarketStatus.Open && !canBet && new Date() >= market.bettingEndTime && (
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-1.5 bg-emerald-400" />
+                <h2 className="text-sm font-medium">Betting Closed</h2>
+              </div>
+              <p className="text-zinc-500 text-[13px]">
+                The betting period has ended. Awaiting market resolution.
+              </p>
+              {isAuthority && (
+                <p className="text-white text-[13px] mt-2">
+                  As the market authority, you can resolve this market below.
                 </p>
-                <Button
-                  onClick={handleOpenMarket}
-                  className="w-full h-12 text-lg font-medium"
+              )}
+            </div>
+          )}
+
+          {/* Betting Not Started Yet */}
+          {market.status === MarketStatus.Open && !canBet && new Date() < market.bettingStartTime && (
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-1.5 bg-sky-400" />
+                <h2 className="text-sm font-medium">Betting Opens Soon</h2>
+              </div>
+              <p className="text-zinc-500 text-[13px]">
+                Betting starts on {market.bettingStartTime.toLocaleString()}
+              </p>
+            </div>
+          )}
+
+          {/* Betting Card */}
+          {canBet && (
+            <div className="bg-zinc-900 p-6 border border-zinc-800">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_3px_rgba(52,211,153,0.6)]"></span>
+                  </span>
+                  <h2 className="text-lg font-medium">Place Your Bet</h2>
+                </div>
+                <CountdownBadge targetDate={market.bettingEndTime} label="Ends in" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                <button
+                  onClick={() => setSelectedOutcome("yes")}
+                  className={`h-14 font-semibold text-base transition-colors border cursor-pointer ${
+                    selectedOutcome === "yes"
+                      ? "bg-emerald-500 text-black border-emerald-500"
+                      : "bg-zinc-800 text-emerald-400 border-zinc-700 hover:border-emerald-500"
+                  }`}
                 >
-                  Open Market for Betting
-                </Button>
+                  YES
+                </button>
+                <button
+                  onClick={() => setSelectedOutcome("no")}
+                  className={`h-14 font-semibold text-base transition-colors border cursor-pointer ${
+                    selectedOutcome === "no"
+                      ? "bg-rose-500 text-white border-rose-500"
+                      : "bg-zinc-800 text-rose-400 border-zinc-700 hover:border-rose-500"
+                  }`}
+                >
+                  NO
+                </button>
               </div>
-            )}
 
-            {/* Waiting for Market to Open - for non-authority users */}
-            {!isAuthority && market.status === MarketStatus.Created && (
-              <div className="bg-zinc-900 p-6 border border-zinc-800">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-amber-400" />
-                  <h2 className="text-lg font-medium">Market Not Active</h2>
-                </div>
-                <p className="text-zinc-500 text-sm">
-                  This market needs to be opened by the market authority before betting can begin.
-                </p>
-              </div>
-            )}
-
-            {/* Betting Ended - Awaiting Resolution */}
-            {market.status === MarketStatus.Open && !canBet && new Date() >= market.bettingEndTime && (
-              <div className="bg-zinc-900 p-6 border border-zinc-800">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-emerald-400" />
-                  <h2 className="text-lg font-medium">Betting Closed</h2>
-                </div>
-                <p className="text-zinc-500 text-sm">
-                  The betting period has ended. Awaiting market resolution.
-                </p>
-                {isAuthority && (
-                  <p className="text-white text-sm mt-2">
-                    As the market authority, you can resolve this market below.
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Betting Not Started Yet */}
-            {market.status === MarketStatus.Open && !canBet && new Date() < market.bettingStartTime && (
-              <div className="bg-zinc-900 p-6 border border-zinc-800">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-sky-400" />
-                  <h2 className="text-lg font-medium">Betting Opens Soon</h2>
-                </div>
-                <p className="text-zinc-500 text-sm">
-                  Betting starts on {market.bettingStartTime.toLocaleString()}
-                </p>
-              </div>
-            )}
-
-            {/* Betting Card */}
-            {canBet && (
-              <div className="bg-zinc-900 p-6 border border-zinc-800">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_3px_rgba(52,211,153,0.6)]"></span>
-                    </span>
-                    <h2 className="text-lg font-medium">Place Your Bet</h2>
-                  </div>
-                  <CountdownBadge targetDate={market.bettingEndTime} label="Ends in" />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <button
-                    onClick={() => setSelectedOutcome("yes")}
-                    className={`py-4 font-medium text-lg transition-colors border ${
-                      selectedOutcome === "yes"
-                        ? "bg-emerald-500 text-black border-emerald-500"
-                        : "bg-zinc-800 text-emerald-400 border-zinc-700 hover:border-emerald-500"
-                    }`}
-                  >
-                    YES
-                  </button>
-                  <button
-                    onClick={() => setSelectedOutcome("no")}
-                    className={`py-4 font-medium text-lg transition-colors border ${
-                      selectedOutcome === "no"
-                        ? "bg-rose-500 text-white border-rose-500"
-                        : "bg-zinc-800 text-rose-400 border-zinc-700 hover:border-rose-500"
-                    }`}
-                  >
-                    NO
-                  </button>
-                </div>
-
-                <div className="mb-4">
-                  <label className="text-sm text-zinc-500 mb-2 block">Amount (SOL)</label>
+              <div className="mb-5">
+                <label className="text-sm text-zinc-500 mb-2 block">Amount (SOL)</label>
+                <div className="flex gap-3">
                   <Input
                     type="number"
                     placeholder="0.00"
                     value={betAmount}
                     onChange={(e) => setBetAmount(e.target.value)}
-                    className="bg-zinc-800 border-zinc-700 text-white text-lg h-12"
+                    className="bg-zinc-800 border-zinc-700 text-white flex-1 h-12 text-base"
                   />
-                </div>
-
-                <div className="flex gap-2 mb-4">
                   {[0.1, 0.5, 1].map((amount) => (
                     <button
                       key={amount}
                       onClick={() => setBetAmount(amount.toString())}
-                      className="px-4 py-2 bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white text-sm border border-zinc-700"
+                      className="h-12 px-5 bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white text-sm font-medium border border-zinc-700 cursor-pointer"
                     >
-                      {amount} SOL
+                      {amount}
                     </button>
                   ))}
                 </div>
+              </div>
 
-                {wallet.publicKey ? (
-                  <Button
-                    onClick={handlePlaceBet}
-                    disabled={!selectedOutcome || !betAmount || betLoading}
-                    className="w-full h-12 text-lg font-medium"
-                  >
-                    {betLoading ? "Placing Bet..." : "Place Bet"}
-                  </Button>
-                ) : (
-                  <WalletButton />
-                )}
+              {wallet.publicKey ? (
+                <Button
+                  onClick={handlePlaceBet}
+                  disabled={!selectedOutcome || !betAmount || betLoading}
+                  className="w-full h-12 text-base font-semibold"
+                >
+                  {betLoading ? "Placing Bet..." : "Place Bet"}
+                </Button>
+              ) : (
+                <WalletButton />
+              )}
 
-                <p className="text-xs text-zinc-600 text-center mt-3">
-                  Your bet is encrypted with Arcium MPC
+              <p className="text-xs text-zinc-600 text-center mt-4">
+                Your bet is encrypted with Arcium MPC
+              </p>
+            </div>
+          )}
+
+          {/* Resolved State */}
+          {isResolved && (
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <div className="text-center py-3">
+                <p className="text-zinc-500 text-[13px] mb-1">Market Resolved</p>
+                <p className={`text-2xl font-bold ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}>
+                  {market.winningOutcome?.toUpperCase()}
                 </p>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Resolved State */}
-            {isResolved && (
-              <div className="bg-zinc-900 p-6 border border-zinc-800">
-                <div className="text-center py-4">
-                  <p className="text-zinc-500 mb-2">Market Resolved</p>
-                  <p className={`text-4xl font-bold ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}>
-                    {market.winningOutcome?.toUpperCase()}
-                  </p>
-                </div>
+          {/* Resolution Controls for Authority */}
+          {isAuthority && !isResolved && market.status !== MarketStatus.Cancelled && new Date() >= market.bettingEndTime && (
+            <div className="bg-zinc-900 p-5 border border-zinc-800">
+              <h2 className="text-sm font-medium mb-3">Resolve Market</h2>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() => handleResolve(1)}
+                  className="bg-emerald-500 hover:bg-emerald-600 text-black"
+                >
+                  Resolve YES
+                </Button>
+                <Button
+                  onClick={() => handleResolve(0)}
+                  className="bg-rose-500 hover:bg-rose-600 text-white"
+                >
+                  Resolve NO
+                </Button>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Resolution Controls for Authority - only show after betting ends */}
-            {isAuthority && !isResolved && market.status !== MarketStatus.Cancelled && new Date() >= market.bettingEndTime && (
-              <div className="bg-zinc-900 p-6 border border-zinc-800">
-                <h2 className="text-lg font-medium mb-4">Resolve Market</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button
-                    onClick={() => handleResolve(1)}
-                    className="h-12 bg-emerald-500 hover:bg-emerald-600 text-black font-medium"
-                  >
-                    Resolve YES
-                  </Button>
-                  <Button
-                    onClick={() => handleResolve(0)}
-                    className="h-12 bg-rose-500 hover:bg-rose-600 text-white font-medium"
-                  >
-                    Resolve NO
-                  </Button>
-                </div>
-              </div>
-            )}
-
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Info Cards Row - Equal Height */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Position Card */}
-            {wallet.publicKey && (
-              <div className="bg-zinc-900 p-5 border border-zinc-800">
-                <h3 className="font-medium mb-4">Your Position</h3>
-                {positionLoading ? (
-                  <Skeleton className="h-16 bg-zinc-800" />
-                ) : position ? (
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-zinc-500">Deposit</span>
-                      <span className="font-medium">
-                        {formatTokenAmount(BigInt(position.depositAmount))} SOL
+            <div className="bg-zinc-900 p-4 border border-zinc-800">
+              <h3 className="text-sm font-medium mb-3">Your Position</h3>
+              {!wallet.publicKey ? (
+                <p className="text-zinc-600 text-[13px]">Connect wallet to view</p>
+              ) : positionLoading ? (
+                <Skeleton className="h-12 bg-zinc-800" />
+              ) : position ? (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-zinc-500">Deposit</span>
+                    <span className="font-medium">
+                      {formatTokenAmount(BigInt(position.depositAmount))} SOL
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-zinc-500">Status</span>
+                    <PositionStatusBadge status={position.status} />
+                  </div>
+                  {position.payoutAmount !== "0" && (
+                    <div className="flex justify-between text-[13px]">
+                      <span className="text-zinc-500">Payout</span>
+                      <span className="text-emerald-400 font-medium">
+                        {formatTokenAmount(BigInt(position.payoutAmount))} SOL
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-zinc-500">Status</span>
-                      <PositionStatusBadge status={position.status} />
-                    </div>
-                    {position.payoutAmount !== "0" && (
-                      <div className="flex justify-between">
-                        <span className="text-zinc-500">Payout</span>
-                        <span className="text-emerald-400 font-medium">
-                          {formatTokenAmount(BigInt(position.payoutAmount))} SOL
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Position Actions */}
-                    {isResolved && position.status === PositionStatus.Processed && (
-                      <Button
-                        onClick={handleComputePayout}
-                        className="w-full mt-2"
-                      >
-                        Compute Payout
-                      </Button>
-                    )}
-                    {position.status === PositionStatus.PayoutComputed && position.payoutAmount !== "0" && (
-                      <Button
-                        onClick={handleClaimPayout}
-                        className="w-full mt-2"
-                      >
-                        Claim Payout
-                      </Button>
-                    )}
-                    {position.status === PositionStatus.Pending && isResolved && (
-                      <p className="text-xs text-amber-400 mt-2">
-                        Waiting for MPC to process...
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-zinc-600 text-sm">No position yet</p>
-                )}
-              </div>
-            )}
+                  )}
+                  {isResolved && position.status === PositionStatus.Processed && (
+                    <Button onClick={handleComputePayout} className="w-full mt-2" size="sm">
+                      Compute Payout
+                    </Button>
+                  )}
+                  {position.status === PositionStatus.PayoutComputed && position.payoutAmount !== "0" && (
+                    <Button onClick={handleClaimPayout} className="w-full mt-2" size="sm">
+                      Claim Payout
+                    </Button>
+                  )}
+                  {position.status === PositionStatus.Pending && isResolved && (
+                    <p className="text-xs text-amber-400 mt-2">Waiting for MPC...</p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-zinc-600 text-[13px]">No position yet</p>
+              )}
+            </div>
 
             {/* Market Info */}
-            <div className="bg-zinc-900 p-5 border border-zinc-800">
-              <h3 className="font-medium mb-4">Market Info</h3>
-              <div className="space-y-3 text-sm">
+            <div className="bg-zinc-900 p-4 border border-zinc-800">
+              <h3 className="text-sm font-medium mb-3">Market Info</h3>
+              <div className="space-y-2 text-[13px]">
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Positions</span>
                   <span>{market.totalPositions}</span>
@@ -415,12 +398,12 @@ export default function MarketPage({ params }: PageProps) {
             </div>
 
             {/* Tech Stack */}
-            <div className="bg-zinc-900 p-5 border border-zinc-800">
-              <h3 className="font-medium mb-3">Powered By</h3>
-              <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 text-xs bg-zinc-800 text-zinc-400">Arcium MPC</span>
-                <span className="px-2 py-1 text-xs bg-zinc-800 text-zinc-400">Helius</span>
-                <span className="px-2 py-1 text-xs bg-zinc-800 text-zinc-400">Solana</span>
+            <div className="bg-zinc-900 p-4 border border-zinc-800">
+              <h3 className="text-sm font-medium mb-3">Powered By</h3>
+              <div className="flex flex-wrap gap-1.5">
+                <span className="px-2 py-0.5 text-xs bg-zinc-800 text-zinc-400">Arcium MPC</span>
+                <span className="px-2 py-0.5 text-xs bg-zinc-800 text-zinc-400">Helius</span>
+                <span className="px-2 py-0.5 text-xs bg-zinc-800 text-zinc-400">Solana</span>
               </div>
             </div>
           </div>
@@ -441,7 +424,7 @@ function StatusBadge({ status }: { status: MarketStatus }) {
   };
 
   return (
-    <span className={`px-3 py-1 text-sm font-medium ${styles[status].bg} ${styles[status].text}`}>
+    <span className={`px-2 py-0.5 text-xs font-medium shrink-0 ${styles[status].bg} ${styles[status].text}`}>
       {status}
     </span>
   );
@@ -456,5 +439,5 @@ function PositionStatusBadge({ status }: { status: PositionStatus }) {
     [PositionStatus.Refunded]: "text-zinc-400",
   };
 
-  return <span className={`font-medium ${styles[status]}`}>{status}</span>;
+  return <span className={`font-medium text-[13px] ${styles[status]}`}>{status}</span>;
 }
