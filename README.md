@@ -11,7 +11,7 @@ Epoch allows users to place encrypted bets on prediction markets. Your bet direc
 - **Private Betting**: Bets are encrypted using Arcium MPC - no one can see which side you bet on
 - **Solana Speed**: Fast, low-cost transactions on Solana devnet
 - **Real-time Updates**: Live market data via Helius WebSocket infrastructure
-- **Wallet Integration**: Supports Phantom and Solflare wallets
+- **Wallet Integration**: Privy-powered wallet authentication with external wallet support
 
 ## Architecture
 
@@ -35,7 +35,7 @@ epoch/
 - Next.js 16
 - React 19
 - Tailwind CSS
-- Solana Wallet Adapter
+- Privy Auth
 
 **Smart Contract**
 - Anchor Framework
@@ -61,7 +61,7 @@ epoch/
 cd app
 
 # Install dependencies
-npm install
+pnpm install
 
 # Copy environment file
 cp .env.example .env.local
@@ -70,7 +70,7 @@ cp .env.example .env.local
 # Get one free at https://dashboard.helius.dev
 
 # Run development server
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000)
@@ -96,6 +96,8 @@ anchor deploy --provider.cluster devnet
 
 ```bash
 NEXT_PUBLIC_HELIUS_API_KEY=your_helius_api_key
+NEXT_PUBLIC_PRIVY_APP_ID=your_privy_app_id
+NEXT_PUBLIC_PRIVY_CLIENT_ID=your_privy_client_id
 ```
 
 ## How It Works
@@ -129,7 +131,7 @@ NEXT_PUBLIC_HELIUS_API_KEY=your_helius_api_key
 
 | Network | Program ID |
 |---------|------------|
-| Devnet  | `6eUsJ9n3LM4FoRWx9MyN7SGyZzvs63Bu43xERvgGPWrd` |
+| Devnet  | `2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc` |
 
 ## Project Structure
 
@@ -140,6 +142,7 @@ NEXT_PUBLIC_HELIUS_API_KEY=your_helius_api_key
 - `usePosition` - User position and claim actions
 - `useBet` - Place encrypted bets (Arcium)
 - `useHeliusWebSocket` - Real-time market updates
+- `usePrivyWallet` - Privy wallet connection and adapter
 
 ### Smart Contract Instructions
 
@@ -159,16 +162,23 @@ NEXT_PUBLIC_HELIUS_API_KEY=your_helius_api_key
 
 ```bash
 # Frontend
-cd app && npm run lint
+cd app && pnpm lint
 
 # Contract
 cd contract && anchor test
 ```
 
+### Format Code
+
+```bash
+cd app && pnpm format        # auto-format all files
+cd app && pnpm format:check  # check formatting (CI)
+```
+
 ### Build for Production
 
 ```bash
-cd app && npm run build
+cd app && pnpm build
 ```
 
 ## Security
