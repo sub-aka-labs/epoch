@@ -24,9 +24,7 @@ function ScrambleNumber() {
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <span className="font-mono text-emerald-400/70">{display}</span>
-  );
+  return <span className="font-mono text-emerald-400/70">{display}</span>;
 }
 
 function MarketCardSkeleton() {
@@ -65,13 +63,17 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
   const [activeTab, setActiveTab] = useState<TabType>("active");
 
   const activeMarkets = markets.filter(
-    (m) => m.status === MarketStatus.Open || m.status === MarketStatus.Created || m.status === MarketStatus.BettingClosed
+    (m) =>
+      m.status === MarketStatus.Open ||
+      m.status === MarketStatus.Created ||
+      m.status === MarketStatus.BettingClosed,
   );
   const resolvedMarkets = markets.filter(
-    (m) => m.status === MarketStatus.Resolved || m.status === MarketStatus.Settled
+    (m) =>
+      m.status === MarketStatus.Resolved || m.status === MarketStatus.Settled,
   );
   const cancelledMarkets = markets.filter(
-    (m) => m.status === MarketStatus.Cancelled
+    (m) => m.status === MarketStatus.Cancelled,
   );
 
   const tabs: { id: TabType; label: string; count: number }[] = [
@@ -99,20 +101,22 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
   return (
     <div>
       {/* Tabs - Always visible */}
-      <div className="flex items-center gap-0 mb-6 border-b border-border">
+      <div className="flex items-center gap-0 mb-6 border-b border-border ">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             disabled={loading}
-            className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
+            className={`px-4 py-3 cursor-pointer text-sm font-medium transition-colors border-b-2 -mb-px ${
               activeTab === tab.id
                 ? "border-foreground text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             } ${loading ? "cursor-wait" : ""}`}
           >
             {tab.label}
-            <span className={`ml-2 ${activeTab === tab.id ? "text-muted-foreground" : "text-muted-foreground/60"}`}>
+            <span
+              className={`ml-2 ${activeTab === tab.id ? "text-muted-foreground" : "text-muted-foreground/60"}`}
+            >
               {loading ? <ScrambleNumber /> : tab.count}
             </span>
           </button>
@@ -131,7 +135,11 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {currentMarkets.map((market) => (
-            <MarketCard key={market.marketId} market={market} onBetPlaced={onBetPlaced} />
+            <MarketCard
+              key={market.marketId}
+              market={market}
+              onBetPlaced={onBetPlaced}
+            />
           ))}
         </div>
       )}
@@ -141,16 +149,32 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
 
 function EmptyState({ tab }: { tab: TabType }) {
   const messages: Record<TabType, { title: string; subtitle: string }> = {
-    active: { title: "No Active Markets", subtitle: "Create a market to get started" },
-    resolved: { title: "No Resolved Markets", subtitle: "Markets will appear here once resolved" },
-    cancelled: { title: "No Cancelled Markets", subtitle: "Cancelled markets will appear here" },
-    all: { title: "No Markets Found", subtitle: "Create a market to get started" },
+    active: {
+      title: "No Active Markets",
+      subtitle: "Create a market to get started",
+    },
+    resolved: {
+      title: "No Resolved Markets",
+      subtitle: "Markets will appear here once resolved",
+    },
+    cancelled: {
+      title: "No Cancelled Markets",
+      subtitle: "Cancelled markets will appear here",
+    },
+    all: {
+      title: "No Markets Found",
+      subtitle: "Create a market to get started",
+    },
   };
 
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
       <div className="w-14 h-14 mb-5 border border-border flex items-center justify-center">
-        <IconChartBar size={24} className="text-muted-foreground" stroke={1.5} />
+        <IconChartBar
+          size={24}
+          className="text-muted-foreground"
+          stroke={1.5}
+        />
       </div>
       <p className="text-foreground font-medium mb-1">{messages[tab].title}</p>
       <p className="text-muted-foreground text-sm">{messages[tab].subtitle}</p>

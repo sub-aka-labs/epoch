@@ -48,8 +48,8 @@ export function Header({ showLive }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md">
-        <div className="max-w-9xl mx-auto px-6">
+      <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md mt-4 md:mt-6 mb-4 md:mb-7">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-14 items-center justify-between">
             {/* Left side - Logo & Nav */}
             <div className="flex items-center gap-6">
@@ -84,20 +84,22 @@ export function Header({ showLive }: HeaderProps) {
               </nav>
             </div>
 
-            {/* Right side - Status, Wallet & Menu */}
-            <div className="flex items-center gap-3">
+            {/* Right side */}
+            <div className="flex items-center gap-3 mr-3">
               <ModeToggle />
+
               {showLive && (
-                <div className="hidden sm:flex items-center gap-2 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20">
+                <div className="hidden sm:flex items-center gap-2 px-2 py-1 bg-emerald-500/10">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex h-2 w-2 bg-emerald-400"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 bg-emerald-400" />
                   </span>
                   <span className="text-xs text-emerald-400 font-medium">
                     Live
                   </span>
                 </div>
               )}
+
               <div className="hidden md:block">
                 <WalletButton />
               </div>
@@ -118,29 +120,40 @@ export function Header({ showLive }: HeaderProps) {
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Mobile Menu Sheet */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-card border-r border-border transform transition-transform duration-300 ease-out md:hidden ${
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-card border-r border-border
+        transform transition-transform duration-300 ease-out md:hidden
+        ${
+          mobileMenuOpen
+            ? "translate-x-0"
+            : "-translate-x-full pointer-events-none"
         }`}
       >
         {/* Sheet Header */}
-        <div className="flex items-center justify-between h-14 px-4 border-b border-border">
+        <div className="flex items-center justify-between h-14 px-4">
           <Link
             href="/"
             className="flex items-center gap-0"
             onClick={() => setMobileMenuOpen(false)}
           >
-            <Image src="/logo.png" alt="Epoch" width={48} height={48} />
+            <Image
+              src="/logo.png"
+              alt="Epoch"
+              width={48}
+              height={48}
+              className="invert dark:invert-0"
+            />
             <span className="text-lg font-semibold tracking-tight text-foreground">
               Epoch
             </span>
           </Link>
+
           <button
             onClick={() => setMobileMenuOpen(false)}
             className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
