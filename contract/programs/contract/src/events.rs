@@ -64,20 +64,6 @@ pub struct PayoutClaimed {
 }
 
 #[event]
-pub struct MarketCancelled {
-    pub market: Pubkey,
-    pub cancelled_at: i64,
-}
-
-#[event]
-pub struct RefundClaimed {
-    pub market: Pubkey,
-    pub position: Pubkey,
-    pub user: Pubkey,
-    pub amount: u64,
-}
-
-#[event]
 pub struct PoolStateUpdated {
     pub market: Pubkey,
     pub state_version: u64,

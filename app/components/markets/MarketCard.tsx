@@ -26,8 +26,6 @@ function getStatusStyle(status: MarketStatus): { bg: string; text: string } {
       return { bg: "bg-sky-500/10", text: "text-sky-400" };
     case MarketStatus.Settled:
       return { bg: "bg-zinc-500/10", text: "text-zinc-400" };
-    case MarketStatus.Cancelled:
-      return { bg: "bg-rose-500/10", text: "text-rose-400" };
     default:
       return { bg: "bg-zinc-500/10", text: "text-zinc-400" };
   }
@@ -189,14 +187,6 @@ function BettingStatusBadge({ market }: { market: MarketDisplay }) {
     return (
       <div className="bg-sky-500/10 px-2 py-1 text-xs text-sky-400">
         Resolved
-      </div>
-    );
-  }
-
-  if (market.status === MarketStatus.Cancelled) {
-    return (
-      <div className="bg-rose-500/10 px-2 py-1 text-xs text-rose-400">
-        Cancelled
       </div>
     );
   }

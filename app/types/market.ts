@@ -7,7 +7,6 @@ export enum MarketStatus {
   BettingClosed = "BettingClosed",
   Resolved = "Resolved",
   Settled = "Settled",
-  Cancelled = "Cancelled",
 }
 
 export enum PositionStatus {
@@ -15,7 +14,6 @@ export enum PositionStatus {
   Processed = "Processed",
   PayoutComputed = "PayoutComputed",
   Claimed = "Claimed",
-  Refunded = "Refunded",
 }
 
 export type Outcome = "yes" | "no";
@@ -112,27 +110,26 @@ export const CONTRACT_ERRORS = {
   6006: "Betting period has not ended yet",
   6007: "Market has not been resolved",
   6008: "Market has already been resolved",
-  6009: "Market is not cancelled",
-  6010: "Invalid market status for this operation",
-  6011: "Bet amount must be greater than zero",
-  6012: "Encrypted bet data size is invalid",
-  6013: "Invalid outcome - must be 0 (NO) or 1 (YES)",
-  6014: "Position has already been claimed",
-  6015: "No payout available for this position",
-  6016: "Payout has not been computed yet",
-  6017: "Unauthorized - only market authority can perform this action",
-  6018: "Invalid token account owner",
-  6019: "Token mint does not match market",
-  6020: "Vault does not match market",
-  6021: "Pool state does not match market",
-  6022: "Position does not belong to this market",
-  6023: "Pool state has not been initialized",
-  6024: "Encrypted state exceeds maximum size",
-  6025: "Computation was aborted",
-  6026: "Cluster not set in MXE account",
-  6027: "Invalid computation result",
-  6028: "Arithmetic overflow",
-  6029: "Arithmetic underflow",
+  6009: "Invalid market status for this operation",
+  6010: "Bet amount must be greater than zero",
+  6011: "Encrypted bet data size is invalid",
+  6012: "Invalid outcome - must be 0 (NO) or 1 (YES)",
+  6013: "Position has already been claimed",
+  6014: "No payout available for this position",
+  6015: "Payout has not been computed yet",
+  6016: "Unauthorized - only market authority can perform this action",
+  6017: "Invalid token account owner",
+  6018: "Token mint does not match market",
+  6019: "Vault does not match market",
+  6020: "Pool state does not match market",
+  6021: "Position does not belong to this market",
+  6022: "Pool state has not been initialized",
+  6023: "Encrypted state exceeds maximum size",
+  6024: "Computation was aborted",
+  6025: "Cluster not set in MXE account",
+  6026: "Invalid computation result",
+  6027: "Arithmetic overflow",
+  6028: "Arithmetic underflow",
 } as const;
 
 export function toMarketDisplay(
@@ -180,7 +177,6 @@ function parseMarketStatus(status: unknown): MarketStatus {
     if ("bettingClosed" in status) return MarketStatus.BettingClosed;
     if ("resolved" in status) return MarketStatus.Resolved;
     if ("settled" in status) return MarketStatus.Settled;
-    if ("cancelled" in status) return MarketStatus.Cancelled;
   }
   return MarketStatus.Created;
 }

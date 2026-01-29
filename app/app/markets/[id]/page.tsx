@@ -341,7 +341,6 @@ export default function MarketPage({ params }: PageProps) {
           {/* Resolution Controls for Authority */}
           {isAuthority &&
             !isResolved &&
-            market.status !== MarketStatus.Cancelled &&
             new Date() >= market.bettingEndTime && (
               <div className="bg-card border-border border p-5">
                 <h2 className="mb-3 text-sm font-medium">Resolve Market</h2>
@@ -477,7 +476,6 @@ function StatusBadge({ status }: { status: MarketStatus }) {
     },
     [MarketStatus.Resolved]: { bg: "bg-sky-500/10", text: "text-sky-400" },
     [MarketStatus.Settled]: { bg: "bg-zinc-500/10", text: "text-zinc-400" },
-    [MarketStatus.Cancelled]: { bg: "bg-rose-500/10", text: "text-rose-400" },
   };
 
   return (
@@ -495,7 +493,6 @@ function PositionStatusBadge({ status }: { status: PositionStatus }) {
     [PositionStatus.Processed]: "text-violet-400",
     [PositionStatus.PayoutComputed]: "text-sky-400",
     [PositionStatus.Claimed]: "text-emerald-400",
-    [PositionStatus.Refunded]: "text-zinc-400",
   };
 
   return (

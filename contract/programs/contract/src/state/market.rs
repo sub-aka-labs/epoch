@@ -32,7 +32,6 @@ pub enum MarketStatus {
     BettingClosed,
     Resolved,
     Settled,
-    Cancelled,
 }
 
 impl Default for MarketStatus {

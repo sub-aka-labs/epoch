@@ -15,8 +15,6 @@ function getStatusStyle(status: PositionStatus): { bg: string; text: string } {
   switch (status) {
     case PositionStatus.Claimed:
       return { bg: "bg-emerald-500/10", text: "text-emerald-400" };
-    case PositionStatus.Refunded:
-      return { bg: "bg-zinc-500/10", text: "text-zinc-400" };
     case PositionStatus.PayoutComputed:
       return { bg: "bg-sky-500/10", text: "text-sky-400" };
     case PositionStatus.Processed:
@@ -38,7 +36,6 @@ export function PositionCard({
     BigInt(position.payoutAmount) > BigInt(0);
 
   const hasClaimed = position.status === PositionStatus.Claimed;
-  const hasRefunded = position.status === PositionStatus.Refunded;
   const statusStyle = getStatusStyle(position.status);
 
   return (
@@ -116,11 +113,6 @@ export function PositionCard({
         {hasClaimed && (
           <div className="bg-muted text-muted-foreground flex h-8 flex-1 items-center justify-center px-3 text-center text-[13px] font-medium">
             Claimed
-          </div>
-        )}
-        {hasRefunded && (
-          <div className="bg-muted text-muted-foreground flex h-8 flex-1 items-center justify-center px-3 text-center text-[13px] font-medium">
-            Refunded
           </div>
         )}
       </div>

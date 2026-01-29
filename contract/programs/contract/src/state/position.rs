@@ -26,7 +26,6 @@ pub enum PositionStatus {
     Processed,
     PayoutComputed,
     Claimed,
-    Refunded,
 }
 
 impl Default for PositionStatus {
@@ -38,9 +37,5 @@ impl Default for PositionStatus {
 impl UserPosition {
     pub fn can_claim_payout(&self) -> bool {
         self.status == PositionStatus::PayoutComputed && self.payout_amount > 0
-    }
-
-    pub fn can_claim_refund(&self) -> bool {
-        self.status == PositionStatus::Processed || self.status == PositionStatus::Pending
     }
 }
