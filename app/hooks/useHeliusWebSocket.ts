@@ -11,7 +11,7 @@ interface AccountUpdate {
 
 export function useHeliusWebSocket(
   accountPubkey: string | null,
-  onUpdate?: (update: AccountUpdate) => void
+  onUpdate?: (update: AccountUpdate) => void,
 ) {
   const wsRef = useRef<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
@@ -30,8 +30,11 @@ export function useHeliusWebSocket(
           jsonrpc: "2.0",
           id: 1,
           method: "accountSubscribe",
-          params: [accountPubkey, { encoding: "jsonParsed", commitment: "confirmed" }],
-        })
+          params: [
+            accountPubkey,
+            { encoding: "jsonParsed", commitment: "confirmed" },
+          ],
+        }),
       );
     };
 

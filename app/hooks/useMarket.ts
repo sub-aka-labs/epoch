@@ -45,7 +45,9 @@ export function useMarket(marketId?: string) {
         marketPda = new PublicKey(marketId);
       }
 
-      const account = await (program.account as any).darkMarket.fetch(marketPda);
+      const account = await (program.account as any).darkMarket.fetch(
+        marketPda,
+      );
       setMarket(toMarketDisplay(marketPda, account as DarkMarket));
     } catch (err) {
       setError(parseContractError(err));
@@ -90,7 +92,7 @@ export function useMarket(marketId?: string) {
             input.question,
             input.bettingStartTs,
             input.bettingEndTs,
-            input.resolutionEndTs
+            input.resolutionEndTs,
           )
           .accounts({
             authority: wallet.publicKey,
@@ -110,58 +112,64 @@ export function useMarket(marketId?: string) {
         setLoading(false);
       }
     },
-    [connection, wallet, fetchMarket]
+    [connection, wallet, fetchMarket],
   );
 
-  const openMarket = useCallback(async (marketIdOverride?: string | number): Promise<string | null> => {
-    if (!wallet.publicKey || !wallet.signTransaction) {
-      setError("Wallet not connected");
-      return null;
-    }
+  const openMarket = useCallback(
+    async (marketIdOverride?: string | number): Promise<string | null> => {
+      if (!wallet.publicKey || !wallet.signTransaction) {
+        setError("Wallet not connected");
+        return null;
+      }
 
-    const marketIdToUse = marketIdOverride ?? market?.marketId;
-    if (!marketIdToUse) {
-      setError("No market ID provided");
-      return null;
-    }
+      const marketIdToUse = marketIdOverride ?? market?.marketId;
+      if (!marketIdToUse) {
+        setError("No market ID provided");
+        return null;
+      }
 
-    try {
-      setLoading(true);
-      setError(null);
+      try {
+        setLoading(true);
+        setError(null);
 
-      const walletAdapter = {
-        publicKey: wallet.publicKey,
-        signTransaction: wallet.signTransaction,
-        signAllTransactions: wallet.signAllTransactions,
-      };
+        const walletAdapter = {
+          publicKey: wallet.publicKey,
+          signTransaction: wallet.signTransaction,
+          signAllTransactions: wallet.signAllTransactions,
+        };
 
-      const provider = new AnchorProvider(connection, walletAdapter as any, {
-        commitment: "confirmed",
-      });
-      const program = getProgram(provider);
+        const provider = new AnchorProvider(connection, walletAdapter as any, {
+          commitment: "confirmed",
+        });
+        const program = getProgram(provider);
 
-      const marketIdNum = typeof marketIdToUse === 'string' ? parseInt(marketIdToUse) : marketIdToUse;
-      const [marketPda] = getMarketPDA(marketIdNum);
-      const [poolStatePda] = getPoolStatePDA(marketIdNum);
+        const marketIdNum =
+          typeof marketIdToUse === "string"
+            ? parseInt(marketIdToUse)
+            : marketIdToUse;
+        const [marketPda] = getMarketPDA(marketIdNum);
+        const [poolStatePda] = getPoolStatePDA(marketIdNum);
 
-      const tx = await program.methods
-        .openMarket()
-        .accounts({
-          authority: wallet.publicKey,
-          market: marketPda,
-          poolState: poolStatePda,
-        })
-        .rpc();
+        const tx = await program.methods
+          .openMarket()
+          .accounts({
+            authority: wallet.publicKey,
+            market: marketPda,
+            poolState: poolStatePda,
+          })
+          .rpc();
 
-      await fetchMarket();
-      return tx;
-    } catch (err) {
-      setError(parseContractError(err));
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, [connection, wallet, market, fetchMarket]);
+        await fetchMarket();
+        return tx;
+      } catch (err) {
+        setError(parseContractError(err));
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [connection, wallet, market, fetchMarket],
+  );
 
   const closeBetting = useCallback(async (): Promise<string | null> => {
     if (!wallet.publicKey || !wallet.signTransaction || !market) {
@@ -247,7 +255,7 @@ export function useMarket(marketId?: string) {
         setLoading(false);
       }
     },
-    [connection, wallet, market, fetchMarket]
+    [connection, wallet, market, fetchMarket],
   );
 
   const cancelMarket = useCallback(async (): Promise<string | null> => {

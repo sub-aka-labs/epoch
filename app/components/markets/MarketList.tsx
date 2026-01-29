@@ -29,19 +29,19 @@ function ScrambleNumber() {
 
 function MarketCardSkeleton() {
   return (
-    <div className="bg-card p-5 border border-border space-y-4">
-      <div className="flex justify-between items-start">
-        <div className="h-6 w-3/4 bg-muted animate-pulse" />
-        <div className="h-5 w-16 bg-muted animate-pulse" />
+    <div className="bg-card border-border space-y-4 border p-5">
+      <div className="flex items-start justify-between">
+        <div className="bg-muted h-6 w-3/4 animate-pulse" />
+        <div className="bg-muted h-5 w-16 animate-pulse" />
       </div>
-      <div className="h-4 w-1/2 bg-muted animate-pulse" />
+      <div className="bg-muted h-4 w-1/2 animate-pulse" />
       <div className="grid grid-cols-2 gap-2">
-        <div className="h-10 bg-muted animate-pulse" />
-        <div className="h-10 bg-muted animate-pulse" />
+        <div className="bg-muted h-10 animate-pulse" />
+        <div className="bg-muted h-10 animate-pulse" />
       </div>
       <div className="flex justify-between">
-        <div className="h-4 w-24 bg-muted animate-pulse" />
-        <div className="h-4 w-16 bg-muted animate-pulse" />
+        <div className="bg-muted h-4 w-24 animate-pulse" />
+        <div className="bg-muted h-4 w-16 animate-pulse" />
       </div>
     </div>
   );
@@ -101,16 +101,16 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
   return (
     <div>
       {/* Tabs - Always visible */}
-      <div className="flex items-center gap-0 mb-6 border-b border-border ">
+      <div className="border-border mb-6 flex items-center gap-0 border-b">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             disabled={loading}
-            className={`px-4 py-3 cursor-pointer text-sm font-medium transition-colors border-b-2 -mb-px ${
+            className={`-mb-px cursor-pointer border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
               activeTab === tab.id
                 ? "border-foreground text-foreground"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground hover:text-foreground border-transparent"
             } ${loading ? "cursor-wait" : ""}`}
           >
             {tab.label}
@@ -169,14 +169,14 @@ function EmptyState({ tab }: { tab: TabType }) {
 
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="w-14 h-14 mb-5 border border-border flex items-center justify-center">
+      <div className="border-border mb-5 flex h-14 w-14 items-center justify-center border">
         <IconChartBar
           size={24}
           className="text-muted-foreground"
           stroke={1.5}
         />
       </div>
-      <p className="text-foreground font-medium mb-1">{messages[tab].title}</p>
+      <p className="text-foreground mb-1 font-medium">{messages[tab].title}</p>
       <p className="text-muted-foreground text-sm">{messages[tab].subtitle}</p>
     </div>
   );

@@ -28,7 +28,11 @@ function getStatusStyle(status: PositionStatus): { bg: string; text: string } {
   }
 }
 
-export function PositionCard({ position, onClaim, claimLoading }: PositionCardProps) {
+export function PositionCard({
+  position,
+  onClaim,
+  claimLoading,
+}: PositionCardProps) {
   const canClaim =
     position.status === PositionStatus.PayoutComputed &&
     BigInt(position.payoutAmount) > BigInt(0);
@@ -38,35 +42,39 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
   const statusStyle = getStatusStyle(position.status);
 
   return (
-    <div className="bg-card p-4 border border-border hover:border-ring transition-colors">
+    <div className="bg-card border-border hover:border-ring border p-4 transition-colors">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 mb-3">
+      <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <p className="text-[13px] text-muted-foreground">Position</p>
-          <p className="font-mono text-[13px] text-foreground">
+          <p className="text-muted-foreground text-[13px]">Position</p>
+          <p className="text-foreground font-mono text-[13px]">
             {position.publicKey.toBase58().slice(0, 8)}...
           </p>
         </div>
-        <span className={`px-2 py-0.5 text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
+        <span
+          className={`px-2 py-0.5 text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}
+        >
           {position.status}
         </span>
       </div>
 
       {/* Amounts */}
-      <div className="grid grid-cols-2 gap-2 mb-3">
+      <div className="mb-3 grid grid-cols-2 gap-2">
         <div className="bg-muted p-2.5">
-          <p className="text-xs text-muted-foreground mb-0.5">Deposit</p>
-          <p className="text-sm font-medium text-foreground">
-            {formatTokenAmount(BigInt(position.depositAmount))} <span className="text-muted-foreground text-xs">SOL</span>
+          <p className="text-muted-foreground mb-0.5 text-xs">Deposit</p>
+          <p className="text-foreground text-sm font-medium">
+            {formatTokenAmount(BigInt(position.depositAmount))}{" "}
+            <span className="text-muted-foreground text-xs">SOL</span>
           </p>
         </div>
         <div className="bg-muted p-2.5">
-          <p className="text-xs text-muted-foreground mb-0.5">Payout</p>
+          <p className="text-muted-foreground mb-0.5 text-xs">Payout</p>
           <p className="text-sm font-medium">
             {position.status === PositionStatus.PayoutComputed ||
             position.status === PositionStatus.Claimed ? (
               <span className="text-emerald-400">
-                {formatTokenAmount(BigInt(position.payoutAmount))} <span className="text-emerald-400/70 text-xs">SOL</span>
+                {formatTokenAmount(BigInt(position.payoutAmount))}{" "}
+                <span className="text-xs text-emerald-400/70">SOL</span>
               </span>
             ) : (
               <span className="text-muted-foreground">Pending...</span>
@@ -76,7 +84,7 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
       </div>
 
       {/* Timestamps */}
-      <div className="text-xs text-muted-foreground mb-3 space-y-0.5">
+      <div className="text-muted-foreground mb-3 space-y-0.5 text-xs">
         <p>Created {position.createdAt.toLocaleDateString()}</p>
         {position.processedAt && (
           <p>Processed {position.processedAt.toLocaleString()}</p>
@@ -88,8 +96,11 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
 
       {/* Actions */}
       <div className="flex gap-2">
-        <Link href={`/markets/${position.market.toBase58()}`} className="flex-1">
-          <button className="w-full h-8 px-3 bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors text-[13px] font-medium border border-border cursor-pointer">
+        <Link
+          href={`/markets/${position.market.toBase58()}`}
+          className="flex-1"
+        >
+          <button className="bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground border-border h-8 w-full cursor-pointer border px-3 text-[13px] font-medium transition-colors">
             View Market
           </button>
         </Link>
@@ -97,18 +108,18 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
           <button
             onClick={onClaim}
             disabled={claimLoading}
-            className="flex-1 h-8 px-3 bg-[#10b981] text-black hover:bg-[#059669] transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="h-8 flex-1 cursor-pointer bg-[#10b981] px-3 text-[13px] font-medium text-black transition-colors hover:bg-[#059669] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {claimLoading ? "Claiming..." : "Claim Payout"}
           </button>
         )}
         {hasClaimed && (
-          <div className="flex-1 h-8 px-3 bg-muted text-muted-foreground text-center text-[13px] font-medium flex items-center justify-center">
+          <div className="bg-muted text-muted-foreground flex h-8 flex-1 items-center justify-center px-3 text-center text-[13px] font-medium">
             Claimed
           </div>
         )}
         {hasRefunded && (
-          <div className="flex-1 h-8 px-3 bg-muted text-muted-foreground text-center text-[13px] font-medium flex items-center justify-center">
+          <div className="bg-muted text-muted-foreground flex h-8 flex-1 items-center justify-center px-3 text-center text-[13px] font-medium">
             Refunded
           </div>
         )}

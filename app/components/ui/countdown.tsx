@@ -35,8 +35,15 @@ function calculateTimeLeft(targetDate: Date): TimeLeft {
   };
 }
 
-export function Countdown({ targetDate, onComplete, className = "", size = "md" }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calculateTimeLeft(targetDate));
+export function Countdown({
+  targetDate,
+  onComplete,
+  className = "",
+  size = "md",
+}: CountdownProps) {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() =>
+    calculateTimeLeft(targetDate),
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -81,14 +88,24 @@ export function Countdown({ targetDate, onComplete, className = "", size = "md" 
 
   // Less than 1 hour - show with urgency
   return (
-    <span className={`font-mono ${sizeClasses[size]} text-amber-400 ${className}`}>
+    <span
+      className={`font-mono ${sizeClasses[size]} text-amber-400 ${className}`}
+    >
       {timeLeft.minutes}m {timeLeft.seconds}s
     </span>
   );
 }
 
-export function CountdownBadge({ targetDate, label }: { targetDate: Date; label?: string }) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calculateTimeLeft(targetDate));
+export function CountdownBadge({
+  targetDate,
+  label,
+}: {
+  targetDate: Date;
+  label?: string;
+}) {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() =>
+    calculateTimeLeft(targetDate),
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -100,8 +117,8 @@ export function CountdownBadge({ targetDate, label }: { targetDate: Date; label?
 
   if (timeLeft.total <= 0) {
     return (
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 border border-rose-500/20">
-        <div className="w-1.5 h-1.5 bg-rose-400" />
+      <div className="flex items-center gap-2 border border-rose-500/20 bg-rose-500/10 px-3 py-1.5">
+        <div className="h-1.5 w-1.5 bg-rose-400" />
         <span className="text-xs text-rose-400">Ended</span>
       </div>
     );
@@ -110,9 +127,15 @@ export function CountdownBadge({ targetDate, label }: { targetDate: Date; label?
   const isUrgent = timeLeft.days === 0 && timeLeft.hours < 1;
 
   return (
-    <div className={`flex items-center gap-2 px-3 py-1.5 ${isUrgent ? "bg-amber-500/10 border border-amber-500/20" : "bg-muted border border-border"}`}>
-      <div className={`w-1.5 h-1.5 ${isUrgent ? "bg-amber-400" : "bg-emerald-400"}`} />
-      <span className={`text-xs font-mono ${isUrgent ? "text-amber-400" : "text-muted-foreground"}`}>
+    <div
+      className={`flex items-center gap-2 px-3 py-1.5 ${isUrgent ? "border border-amber-500/20 bg-amber-500/10" : "bg-muted border-border border"}`}
+    >
+      <div
+        className={`h-1.5 w-1.5 ${isUrgent ? "bg-amber-400" : "bg-emerald-400"}`}
+      />
+      <span
+        className={`font-mono text-xs ${isUrgent ? "text-amber-400" : "text-muted-foreground"}`}
+      >
         {label && <span className="text-muted-foreground mr-1">{label}</span>}
         {timeLeft.days > 0 && `${timeLeft.days}d `}
         {timeLeft.hours > 0 && `${timeLeft.hours}h `}

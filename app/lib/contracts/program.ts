@@ -21,17 +21,19 @@ export function getMarketPDA(marketId: bigint | number): [PublicKey, number] {
 
   return PublicKey.findProgramAddressSync(
     [SEEDS.DARK_MARKET, marketIdBuffer],
-    PROGRAM_ID
+    PROGRAM_ID,
   );
 }
 
-export function getPoolStatePDA(marketId: bigint | number): [PublicKey, number] {
+export function getPoolStatePDA(
+  marketId: bigint | number,
+): [PublicKey, number] {
   const marketIdBuffer = Buffer.alloc(8);
   marketIdBuffer.writeBigUInt64LE(BigInt(marketId));
 
   return PublicKey.findProgramAddressSync(
     [SEEDS.POOL_STATE, marketIdBuffer],
-    PROGRAM_ID
+    PROGRAM_ID,
   );
 }
 
@@ -41,17 +43,17 @@ export function getVaultPDA(marketId: bigint | number): [PublicKey, number] {
 
   return PublicKey.findProgramAddressSync(
     [SEEDS.VAULT, marketIdBuffer],
-    PROGRAM_ID
+    PROGRAM_ID,
   );
 }
 
 export function getPositionPDA(
   marketPda: PublicKey,
-  userPubkey: PublicKey
+  userPubkey: PublicKey,
 ): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [SEEDS.POSITION, marketPda.toBuffer(), userPubkey.toBuffer()],
-    PROGRAM_ID
+    PROGRAM_ID,
   );
 }
 
@@ -63,7 +65,7 @@ export function createReadOnlyProvider(connection: Connection): AnchorProvider {
       signAllTransactions: async (txs) => txs,
       signTransaction: async (tx) => tx,
     },
-    { commitment: "confirmed" }
+    { commitment: "confirmed" },
   );
 }
 
@@ -77,7 +79,7 @@ export function solToLamports(sol: number): bigint {
 
 export function formatTokenAmount(
   amount: bigint | number,
-  decimals: number = 9
+  decimals: number = 9,
 ): string {
   const value = Number(amount) / Math.pow(10, decimals);
   return value.toLocaleString(undefined, {
@@ -90,7 +92,9 @@ export function parseContractError(error: unknown): string {
   if (error instanceof Error) {
     const message = error.message;
 
-    const customErrorMatch = message.match(/custom program error: 0x([0-9a-fA-F]+)/);
+    const customErrorMatch = message.match(
+      /custom program error: 0x([0-9a-fA-F]+)/,
+    );
     if (customErrorMatch) {
       const errorCode = parseInt(customErrorMatch[1], 16);
       const contractErrors: Record<number, string> = {

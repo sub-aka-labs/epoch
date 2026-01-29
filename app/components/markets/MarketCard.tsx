@@ -70,14 +70,16 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
   };
 
   return (
-    <div className="bg-card p-4 border border-border hover:border-ring transition-colors cursor-pointer">
+    <div className="bg-card border-border hover:border-ring cursor-pointer border p-4 transition-colors">
       {/* Header - Clickable to go to detail page */}
       <Link href={`/markets/${market.marketId}`}>
-        <div className="flex items-start justify-between gap-3 mb-3 group">
-          <h3 className="text-sm font-medium text-foreground leading-tight group-hover:text-muted-foreground transition-colors line-clamp-2">
+        <div className="group mb-3 flex items-start justify-between gap-3">
+          <h3 className="text-foreground group-hover:text-muted-foreground line-clamp-2 text-sm leading-tight font-medium transition-colors">
             {market.question}
           </h3>
-          <span className={`px-2 py-0.5 text-xs font-medium shrink-0 ${statusStyle.bg} ${statusStyle.text}`}>
+          <span
+            className={`shrink-0 px-2 py-0.5 text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}
+          >
             {market.status}
           </span>
         </div>
@@ -87,7 +89,9 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
       {market.isResolved && market.winningOutcome && (
         <div className="mb-3 flex items-center gap-2">
           <span className="text-muted-foreground text-[13px]">Outcome:</span>
-          <span className={`font-medium text-[13px] ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}>
+          <span
+            className={`text-[13px] font-medium ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}
+          >
             {market.winningOutcome.toUpperCase()}
           </span>
         </div>
@@ -95,7 +99,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
 
       {/* Quick Bet Section - Only when betting is open */}
       {market.canBet && (
-        <div className="space-y-2 mb-3">
+        <div className="mb-3 space-y-2">
           {/* Amount Input */}
           <div className="flex gap-1.5">
             <input
@@ -104,7 +108,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
               value={betAmount}
               onChange={(e) => setBetAmount(e.target.value)}
               onClick={(e) => e.stopPropagation()}
-              className="flex-1 h-8 px-3 bg-muted border border-border text-foreground text-[13px] placeholder-muted-foreground focus:outline-none focus:border-ring"
+              className="bg-muted border-border text-foreground placeholder-muted-foreground focus:border-ring h-8 flex-1 border px-3 text-[13px] focus:outline-none"
             />
             <div className="flex gap-1">
               {[0.1, 0.5, 1].map((amount) => (
@@ -115,7 +119,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
                     e.stopPropagation();
                     setBetAmount(amount.toString());
                   }}
-                  className="h-8 px-2 text-[13px] bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors border border-border cursor-pointer"
+                  className="bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground border-border h-8 cursor-pointer border px-2 text-[13px] transition-colors"
                 >
                   {amount}
                 </button>
@@ -128,14 +132,14 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
             <button
               onClick={(e) => handleQuickBet("yes", e)}
               disabled={betLoading || !betAmount}
-              className="h-8 font-medium text-[13px] transition-colors bg-muted text-emerald-400 hover:bg-emerald-500 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border hover:border-emerald-500"
+              className="bg-muted border-border h-8 cursor-pointer border text-[13px] font-medium text-emerald-400 transition-colors hover:border-emerald-500 hover:bg-emerald-500 hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
             >
               {betLoading ? "..." : "YES"}
             </button>
             <button
               onClick={(e) => handleQuickBet("no", e)}
               disabled={betLoading || !betAmount}
-              className="h-8 font-medium text-[13px] transition-colors bg-muted text-rose-400 hover:bg-rose-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border hover:border-rose-500"
+              className="bg-muted border-border h-8 cursor-pointer border text-[13px] font-medium text-rose-400 transition-colors hover:border-rose-500 hover:bg-rose-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {betLoading ? "..." : "NO"}
             </button>
@@ -147,7 +151,10 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
       <div className="flex items-center justify-between text-[13px]">
         <div className="flex items-center gap-4">
           <div className="text-muted-foreground">
-            <span className="text-foreground font-medium">{market.totalPositions}</span> positions
+            <span className="text-foreground font-medium">
+              {market.totalPositions}
+            </span>{" "}
+            positions
           </div>
         </div>
 
@@ -155,10 +162,14 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
         {market.canBet ? (
           <div className="flex items-center gap-2 text-xs">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.6)]"></span>
             </span>
-            <Countdown targetDate={market.bettingEndTime} size="sm" className="text-emerald-400" />
+            <Countdown
+              targetDate={market.bettingEndTime}
+              size="sm"
+              className="text-emerald-400"
+            />
           </div>
         ) : (
           <BettingStatusBadge market={market} />
@@ -171,9 +182,12 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
 function BettingStatusBadge({ market }: { market: MarketDisplay }) {
   const now = new Date();
 
-  if (market.status === MarketStatus.Resolved || market.status === MarketStatus.Settled) {
+  if (
+    market.status === MarketStatus.Resolved ||
+    market.status === MarketStatus.Settled
+  ) {
     return (
-      <div className="text-xs px-2 py-1 bg-sky-500/10 text-sky-400">
+      <div className="bg-sky-500/10 px-2 py-1 text-xs text-sky-400">
         Resolved
       </div>
     );
@@ -181,7 +195,7 @@ function BettingStatusBadge({ market }: { market: MarketDisplay }) {
 
   if (market.status === MarketStatus.Cancelled) {
     return (
-      <div className="text-xs px-2 py-1 bg-rose-500/10 text-rose-400">
+      <div className="bg-rose-500/10 px-2 py-1 text-xs text-rose-400">
         Cancelled
       </div>
     );
@@ -189,7 +203,7 @@ function BettingStatusBadge({ market }: { market: MarketDisplay }) {
 
   if (now < market.bettingStartTime) {
     return (
-      <div className="text-xs px-2 py-1 bg-amber-500/10 text-amber-400">
+      <div className="bg-amber-500/10 px-2 py-1 text-xs text-amber-400">
         Starts Soon
       </div>
     );
@@ -197,14 +211,14 @@ function BettingStatusBadge({ market }: { market: MarketDisplay }) {
 
   if (now >= market.bettingEndTime) {
     return (
-      <div className="text-xs px-2 py-1 bg-emerald-500/10 text-emerald-400">
+      <div className="bg-emerald-500/10 px-2 py-1 text-xs text-emerald-400">
         Awaiting Result
       </div>
     );
   }
 
   return (
-    <div className="text-xs px-2 py-1 bg-zinc-500/10 text-zinc-400">
+    <div className="bg-zinc-500/10 px-2 py-1 text-xs text-zinc-400">
       {market.status}
     </div>
   );

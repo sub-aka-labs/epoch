@@ -2,10 +2,7 @@
 
 import { usePrivyConnection } from "./usePrivyWallet";
 import { useCallback, useEffect, useState, useRef } from "react";
-import {
-  getProgram,
-  createReadOnlyProvider,
-} from "@/lib/contracts/program";
+import { getProgram, createReadOnlyProvider } from "@/lib/contracts/program";
 import {
   DarkMarket,
   MarketDisplay,
@@ -32,11 +29,12 @@ export function useMarkets() {
       const accounts = await (program.account as any).darkMarket.all();
 
       const marketDisplays = accounts.map((account: any) =>
-        toMarketDisplay(account.publicKey, account.account as DarkMarket)
+        toMarketDisplay(account.publicKey, account.account as DarkMarket),
       );
 
       marketDisplays.sort(
-        (a: MarketDisplay, b: MarketDisplay) => b.createdAt.getTime() - a.createdAt.getTime()
+        (a: MarketDisplay, b: MarketDisplay) =>
+          b.createdAt.getTime() - a.createdAt.getTime(),
       );
 
       setMarkets(marketDisplays);

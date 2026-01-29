@@ -137,7 +137,7 @@ export const CONTRACT_ERRORS = {
 
 export function toMarketDisplay(
   publicKey: PublicKey,
-  data: DarkMarket
+  data: DarkMarket,
 ): MarketDisplay {
   const now = new Date();
   const bettingStart = new Date(data.bettingStartTs.toNumber() * 1000);

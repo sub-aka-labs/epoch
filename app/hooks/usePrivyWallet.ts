@@ -7,15 +7,24 @@ import {
   useSignTransaction,
   useSignMessage,
 } from "@privy-io/react-auth/solana";
-import { Connection, PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js";
+import {
+  Connection,
+  PublicKey,
+  Transaction,
+  VersionedTransaction,
+} from "@solana/web3.js";
 import { HELIUS_RPC_URL } from "@/lib/helius";
 
 export interface PrivyWalletAdapter {
   publicKey: PublicKey | null;
   connected: boolean;
   connecting: boolean;
-  signTransaction: (<T extends Transaction | VersionedTransaction>(tx: T) => Promise<T>) | null;
-  signAllTransactions: (<T extends Transaction | VersionedTransaction>(txs: T[]) => Promise<T[]>) | null;
+  signTransaction:
+    | (<T extends Transaction | VersionedTransaction>(tx: T) => Promise<T>)
+    | null;
+  signAllTransactions:
+    | (<T extends Transaction | VersionedTransaction>(txs: T[]) => Promise<T[]>)
+    | null;
   signMessage: ((message: Uint8Array) => Promise<Uint8Array>) | null;
 }
 
@@ -61,11 +70,13 @@ export function usePrivyWallet(): PrivyWalletAdapter {
         return Transaction.from(signedTransaction) as T;
       }
     },
-    [activeWallet, privySignTransaction]
+    [activeWallet, privySignTransaction],
   );
 
   const signAllTransactions = useCallback(
-    async <T extends Transaction | VersionedTransaction>(txs: T[]): Promise<T[]> => {
+    async <T extends Transaction | VersionedTransaction>(
+      txs: T[],
+    ): Promise<T[]> => {
       if (!activeWallet) {
         throw new Error("No wallet connected");
       }
@@ -77,7 +88,7 @@ export function usePrivyWallet(): PrivyWalletAdapter {
       }
       return signedTxs;
     },
-    [activeWallet, signTransaction]
+    [activeWallet, signTransaction],
   );
 
   const signMessage = useCallback(
@@ -93,7 +104,7 @@ export function usePrivyWallet(): PrivyWalletAdapter {
 
       return signature;
     },
-    [activeWallet, privySignMessage]
+    [activeWallet, privySignMessage],
   );
 
   const connected = Boolean(ready && authenticated && activeWallet);
