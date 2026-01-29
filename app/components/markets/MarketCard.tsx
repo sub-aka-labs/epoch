@@ -70,11 +70,11 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
   };
 
   return (
-    <div className="bg-zinc-900 p-4 border border-zinc-800 hover:border-zinc-600 transition-colors cursor-pointer">
+    <div className="bg-card p-4 border border-border hover:border-ring transition-colors cursor-pointer">
       {/* Header - Clickable to go to detail page */}
       <Link href={`/markets/${market.marketId}`}>
         <div className="flex items-start justify-between gap-3 mb-3 group">
-          <h3 className="text-sm font-medium text-white leading-tight group-hover:text-zinc-300 transition-colors line-clamp-2">
+          <h3 className="text-sm font-medium text-foreground leading-tight group-hover:text-muted-foreground transition-colors line-clamp-2">
             {market.question}
           </h3>
           <span className={`px-2 py-0.5 text-xs font-medium shrink-0 ${statusStyle.bg} ${statusStyle.text}`}>
@@ -86,7 +86,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
       {/* Resolved Outcome */}
       {market.isResolved && market.winningOutcome && (
         <div className="mb-3 flex items-center gap-2">
-          <span className="text-zinc-500 text-[13px]">Outcome:</span>
+          <span className="text-muted-foreground text-[13px]">Outcome:</span>
           <span className={`font-medium text-[13px] ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}>
             {market.winningOutcome.toUpperCase()}
           </span>
@@ -104,7 +104,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
               value={betAmount}
               onChange={(e) => setBetAmount(e.target.value)}
               onClick={(e) => e.stopPropagation()}
-              className="flex-1 h-8 px-3 bg-zinc-800 border border-zinc-700 text-white text-[13px] placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+              className="flex-1 h-8 px-3 bg-muted border border-border text-foreground text-[13px] placeholder-muted-foreground focus:outline-none focus:border-ring"
             />
             <div className="flex gap-1">
               {[0.1, 0.5, 1].map((amount) => (
@@ -115,7 +115,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
                     e.stopPropagation();
                     setBetAmount(amount.toString());
                   }}
-                  className="h-8 px-2 text-[13px] bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white transition-colors border border-zinc-700 cursor-pointer"
+                  className="h-8 px-2 text-[13px] bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors border border-border cursor-pointer"
                 >
                   {amount}
                 </button>
@@ -128,14 +128,14 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
             <button
               onClick={(e) => handleQuickBet("yes", e)}
               disabled={betLoading || !betAmount}
-              className="h-8 font-medium text-[13px] transition-colors bg-zinc-800 text-emerald-400 hover:bg-emerald-500 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-zinc-700 hover:border-emerald-500"
+              className="h-8 font-medium text-[13px] transition-colors bg-muted text-emerald-400 hover:bg-emerald-500 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border hover:border-emerald-500"
             >
               {betLoading ? "..." : "YES"}
             </button>
             <button
               onClick={(e) => handleQuickBet("no", e)}
               disabled={betLoading || !betAmount}
-              className="h-8 font-medium text-[13px] transition-colors bg-zinc-800 text-rose-400 hover:bg-rose-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-zinc-700 hover:border-rose-500"
+              className="h-8 font-medium text-[13px] transition-colors bg-muted text-rose-400 hover:bg-rose-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border hover:border-rose-500"
             >
               {betLoading ? "..." : "NO"}
             </button>
@@ -146,8 +146,8 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
       {/* Footer Info */}
       <div className="flex items-center justify-between text-[13px]">
         <div className="flex items-center gap-4">
-          <div className="text-zinc-500">
-            <span className="text-white font-medium">{market.totalPositions}</span> positions
+          <div className="text-muted-foreground">
+            <span className="text-foreground font-medium">{market.totalPositions}</span> positions
           </div>
         </div>
 

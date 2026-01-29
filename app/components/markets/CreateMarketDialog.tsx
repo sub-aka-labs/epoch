@@ -26,7 +26,9 @@ interface CreateMarketDialogProps {
   onMarketCreated?: () => void;
 }
 
-export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps) {
+export function CreateMarketDialog({
+  onMarketCreated,
+}: CreateMarketDialogProps) {
   const router = useRouter();
   const wallet = usePrivyWallet();
   const { createMarket, openMarket, loading, error } = useMarket();
@@ -36,10 +38,10 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
 
   const formatDateTimeLocal = (date: Date) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
@@ -75,7 +77,13 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
       return;
     }
 
-    if (!question || !tokenMint || !bettingStart || !bettingEnd || !resolutionEnd) {
+    if (
+      !question ||
+      !tokenMint ||
+      !bettingStart ||
+      !bettingEnd ||
+      !resolutionEnd
+    ) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -87,9 +95,15 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
 
     try {
       const marketId = new BN(Date.now());
-      const bettingStartTs = new BN(Math.floor(new Date(bettingStart).getTime() / 1000));
-      const bettingEndTs = new BN(Math.floor(new Date(bettingEnd).getTime() / 1000));
-      const resolutionEndTs = new BN(Math.floor(new Date(resolutionEnd).getTime() / 1000));
+      const bettingStartTs = new BN(
+        Math.floor(new Date(bettingStart).getTime() / 1000),
+      );
+      const bettingEndTs = new BN(
+        Math.floor(new Date(bettingEnd).getTime() / 1000),
+      );
+      const resolutionEndTs = new BN(
+        Math.floor(new Date(resolutionEnd).getTime() / 1000),
+      );
 
       let mintPubkey: PublicKey;
       try {
@@ -115,7 +129,9 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
         if (openTx) {
           toast.success("Market is now open for betting!");
         } else {
-          toast.warning("Market created but failed to auto-open. You can open it manually.");
+          toast.warning(
+            "Market created but failed to auto-open. You can open it manually.",
+          );
         }
 
         setOpen(false);
@@ -150,14 +166,14 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
       <DialogSlideOver>
         <DialogHeader>
           <DialogTitle className="text-xl">Create Market</DialogTitle>
-          <DialogDescription className="text-zinc-500">
+          <DialogDescription className="text-muted-foreground">
             Create a new private prediction market with encrypted bets.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto py-6 space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="question" className="text-zinc-400 text-sm">
+            <Label htmlFor="question" className="text-muted-foreground text-sm">
               Question
             </Label>
             <Input
@@ -166,15 +182,18 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               maxLength={200}
-              className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600"
+              className="bg-muted/50 border-border focus:border-ring"
             />
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-muted-foreground">
               {question.length}/200 characters
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tokenMint" className="text-zinc-400 text-sm">
+            <Label
+              htmlFor="tokenMint"
+              className="text-muted-foreground text-sm"
+            >
               Token Mint Address
             </Label>
             <Input
@@ -182,18 +201,21 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
               placeholder="Enter SPL token mint address"
               value={tokenMint}
               onChange={(e) => setTokenMint(e.target.value)}
-              className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 font-mono text-sm"
+              className="bg-muted/50 border-border focus:border-ring font-mono text-sm"
             />
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-muted-foreground">
               The SPL token used for betting (e.g., USDC, SOL)
             </p>
           </div>
 
           <div className="space-y-3">
-            <p className="text-zinc-400 text-sm">Betting Period</p>
+            <p className="text-muted-foreground text-sm">Betting Period</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label htmlFor="bettingStart" className="text-zinc-500 text-xs">
+                <Label
+                  htmlFor="bettingStart"
+                  className="text-muted-foreground text-xs"
+                >
                   Starts
                 </Label>
                 <Input
@@ -201,11 +223,14 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
                   type="datetime-local"
                   value={bettingStart}
                   onChange={(e) => setBettingStart(e.target.value)}
-                  className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 text-sm "
+                  className="bg-muted/50 border-border focus:border-ring text-sm "
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bettingEnd" className="text-zinc-500 text-xs">
+                <Label
+                  htmlFor="bettingEnd"
+                  className="text-muted-foreground text-xs"
+                >
                   Ends
                 </Label>
                 <Input
@@ -213,14 +238,17 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
                   type="datetime-local"
                   value={bettingEnd}
                   onChange={(e) => setBettingEnd(e.target.value)}
-                  className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 text-sm "
+                  className="bg-muted/50 border-border focus:border-ring text-sm "
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="resolutionEnd" className="text-zinc-400 text-sm">
+            <Label
+              htmlFor="resolutionEnd"
+              className="text-muted-foreground text-sm"
+            >
               Resolution Deadline
             </Label>
             <Input
@@ -228,19 +256,22 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
               type="datetime-local"
               value={resolutionEnd}
               onChange={(e) => setResolutionEnd(e.target.value)}
-              className="bg-zinc-800/50 border-zinc-700 focus:border-zinc-600 text-sm "
+              className="bg-muted/50 border-border focus:border-ring text-sm "
             />
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-muted-foreground">
               Deadline for the market to be resolved
             </p>
           </div>
         </div>
 
-        <DialogFooter className="border-t border-zinc-800 pt-4 mt-auto">
+        <DialogFooter className="border-t border-border pt-4 mt-auto">
           <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={handleCreate} disabled={loading || !wallet.publicKey}>
+          <Button
+            onClick={handleCreate}
+            disabled={loading || !wallet.publicKey}
+          >
             <IconPlus size={16} stroke={2} />
             {loading ? "Creating..." : "Create Market"}
           </Button>

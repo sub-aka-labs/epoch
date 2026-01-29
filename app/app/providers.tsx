@@ -14,7 +14,9 @@ export function Providers({ children }: { children: ReactNode }) {
           theme: "dark",
           accentColor: "#7c3aed",
           walletChainType: "solana-only",
+          showWalletLoginFirst: true,
         },
+        loginMethods: ["wallet"],
         externalWallets: {
           solana: {
             connectors: toSolanaWalletConnectors(),

@@ -39,11 +39,11 @@ function StatsDisplay({
 }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
-      <div className="bg-zinc-900 p-5 border border-zinc-800">
-        <p className="text-zinc-500 text-sm mb-1">Total Markets</p>
-        <p className="text-2xl font-bold">
+      <div className="bg-muted p-5 border border-border">
+        <p className="text-muted-foreground text-sm mb-1">Total Markets</p>
+        <p className="text-2xl font-bold text-foreground">
           {loading ? (
-            <span className="text-zinc-500">
+            <span className="text-muted-foreground">
               <ScrambleNumber digits={2} />
             </span>
           ) : (
@@ -51,11 +51,11 @@ function StatsDisplay({
           )}
         </p>
       </div>
-      <div className="bg-zinc-900 p-5 border border-zinc-800">
-        <p className="text-zinc-500 text-sm mb-1">Open for Betting</p>
-        <p className="text-2xl font-bold text-emerald-400">
+      <div className="bg-muted p-5 border border-border">
+        <p className="text-muted-foreground text-sm mb-1">Open for Betting</p>
+        <p className="text-2xl font-bold text-emerald-500">
           {loading ? (
-            <span className="text-emerald-400/50">
+            <span className="text-emerald-500/50">
               <ScrambleNumber digits={2} />
             </span>
           ) : (
@@ -63,11 +63,11 @@ function StatsDisplay({
           )}
         </p>
       </div>
-      <div className="bg-zinc-900 p-5 border border-zinc-800">
-        <p className="text-zinc-500 text-sm mb-1">Total Positions</p>
-        <p className="text-2xl font-bold">
+      <div className="bg-muted p-5 border border-border">
+        <p className="text-muted-foreground text-sm mb-1">Total Positions</p>
+        <p className="text-2xl font-bold text-foreground">
           {loading ? (
-            <span className="text-zinc-500">
+            <span className="text-muted-foreground">
               <ScrambleNumber digits={3} />
             </span>
           ) : (
@@ -88,8 +88,8 @@ export default function MarketsPage() {
   const totalPositions = markets.reduce((sum, m) => sum + m.totalPositions, 0);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <Toaster theme="dark" />
+    <div className="min-h-screen bg-background text-foreground">
+      <Toaster />
       <Header />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
@@ -98,7 +98,7 @@ export default function MarketsPage() {
             <h1 className="text-2xl sm:text-3xl font-bold mb-2 tracking-tight">
               Prediction Markets
             </h1>
-            <p className="text-zinc-500 text-sm sm:text-base">
+            <p className="text-muted-foreground text-sm sm:text-base">
               Private betting powered by Arcium MPC encryption
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function MarketsPage() {
             <button
               onClick={refetch}
               disabled={loading}
-              className="h-8 px-3 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-zinc-700"
+              className="h-8 px-3 bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border"
             >
               {loading ? (
                 <span className="flex items-center gap-1.5">
@@ -132,7 +132,9 @@ export default function MarketsPage() {
                 "Refresh"
               )}
             </button>
-            {wallet.publicKey && <CreateMarketDialog onMarketCreated={refetch} />}
+            {wallet.publicKey && (
+              <CreateMarketDialog onMarketCreated={refetch} />
+            )}
           </div>
         </div>
 
