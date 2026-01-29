@@ -39,10 +39,14 @@ export function useMarket(marketId?: string) {
       let marketPda: PublicKey;
 
       try {
-        const numericId = BigInt(marketId);
-        [marketPda] = getMarketPDA(numericId);
-      } catch {
         marketPda = new PublicKey(marketId);
+      } catch {
+        try {
+          const numericId = BigInt(marketId);
+          [marketPda] = getMarketPDA(numericId);
+        } catch {
+          throw new Error("Invalid market ID format");
+        }
       }
 
       const account = await (program.account as any).darkMarket.fetch(
@@ -106,8 +110,9 @@ export function useMarket(marketId?: string) {
         await fetchMarket();
         return tx;
       } catch (err) {
-        setError(parseContractError(err));
-        return null;
+        const errorMsg = parseContractError(err);
+        setError(errorMsg);
+        throw new Error(errorMsg);
       } finally {
         setLoading(false);
       }
