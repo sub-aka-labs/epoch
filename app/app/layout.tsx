@@ -15,8 +15,60 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Epoch",
-  description: "Private prediction market on solana",
+  metadataBase: new URL("https://epoch.akatsuki.buzz"),
+  title: {
+    default: "Epoch | Private prediction market on Solana",
+    template: "%s | Epoch",
+  },
+  description: "Private prediction market on Solana. Trade on outcomes of real-world events with privacy and speed.",
+  keywords: [
+    "prediction market",
+    "solana",
+    "crypto",
+    "blockchain",
+    "finance",
+    "trading",
+    "epoch",
+  ],
+  authors: [{ name: "Epoch Team" }],
+  creator: "Epoch",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://epoch.akatsuki.buzz",
+    title: "Epoch | Private prediction market on Solana",
+    description: "Private prediction market on Solana. Trade on outcomes of real-world events.",
+    siteName: "Epoch",
+    images: [
+      {
+        url: "/opengraph.png",
+        width: 1200,
+        height: 630,
+        alt: "Epoch Prediction Market",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Epoch | Private prediction market on Solana",
+    description: "Private prediction market on Solana. Trade on outcomes of real-world events.",
+    images: ["/opengraph.png"],
+    creator: "@epoch_market",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
