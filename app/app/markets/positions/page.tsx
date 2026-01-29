@@ -1,6 +1,6 @@
 "use client";
 
-import { useWallet } from "@solana/wallet-adapter-react";
+import { usePrivyWallet } from "@/hooks/usePrivyWallet";
 import { IconWallet, IconArrowRight } from "@tabler/icons-react";
 import { Header } from "@/components/Header";
 import { WalletButton } from "@/components/WalletButton";
@@ -12,7 +12,7 @@ import { formatTokenAmount } from "@/lib/contracts/program";
 import Link from "next/link";
 
 export default function PositionsPage() {
-  const wallet = useWallet();
+  const wallet = usePrivyWallet();
   const { allPositions, loading, error, refetchAll, claimPayout } = usePosition();
 
   // Calculate stats

@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useCallback, useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { usePrivyWallet } from "@/hooks/usePrivyWallet";
 import { PublicKey } from "@solana/web3.js";
 import { Header } from "@/components/Header";
 import { WalletButton } from "@/components/WalletButton";
@@ -24,7 +24,7 @@ interface PageProps {
 
 export default function MarketPage({ params }: PageProps) {
   const { id } = use(params);
-  const wallet = useWallet();
+  const wallet = usePrivyWallet();
   const { market, loading, error, refetch, openMarket, resolveMarket } = useMarket(id);
   const { position, loading: positionLoading, refetch: refetchPosition, computePayout, claimPayout } = usePosition(id);
   const { placeBet, loading: betLoading } = useBet();

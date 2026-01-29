@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { usePrivyWallet } from "@/hooks/usePrivyWallet";
 import { MarketDisplay, MarketStatus } from "@/types/market";
 import { useBet } from "@/hooks/useBet";
 import { Countdown } from "@/components/ui/countdown";
@@ -34,7 +34,7 @@ function getStatusStyle(status: MarketStatus): { bg: string; text: string } {
 }
 
 export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
-  const wallet = useWallet();
+  const wallet = usePrivyWallet();
   const { placeBet, loading: betLoading } = useBet();
   const [betAmount, setBetAmount] = useState("");
   const statusStyle = getStatusStyle(market.status);

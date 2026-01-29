@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { AnchorProvider, BN } from "@coral-xyz/anchor";
+import { AnchorProvider } from "@coral-xyz/anchor";
 import {
   getProgram,
   createReadOnlyProvider,
@@ -18,10 +17,11 @@ import {
   CreateMarketInput,
   toMarketDisplay,
 } from "@/types/market";
+import { usePrivyWallet, usePrivyConnection } from "./usePrivyWallet";
 
 export function useMarket(marketId?: string) {
-  const { connection } = useConnection();
-  const wallet = useWallet();
+  const { connection } = usePrivyConnection();
+  const wallet = usePrivyWallet();
   const [market, setMarket] = useState<MarketDisplay | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +69,13 @@ export function useMarket(marketId?: string) {
         setLoading(true);
         setError(null);
 
-        const provider = new AnchorProvider(connection, wallet as any, {
+        const walletAdapter = {
+          publicKey: wallet.publicKey,
+          signTransaction: wallet.signTransaction,
+          signAllTransactions: wallet.signAllTransactions,
+        };
+
+        const provider = new AnchorProvider(connection, walletAdapter as any, {
           commitment: "confirmed",
         });
         const program = getProgram(provider);
@@ -123,7 +129,13 @@ export function useMarket(marketId?: string) {
       setLoading(true);
       setError(null);
 
-      const provider = new AnchorProvider(connection, wallet as any, {
+      const walletAdapter = {
+        publicKey: wallet.publicKey,
+        signTransaction: wallet.signTransaction,
+        signAllTransactions: wallet.signAllTransactions,
+      };
+
+      const provider = new AnchorProvider(connection, walletAdapter as any, {
         commitment: "confirmed",
       });
       const program = getProgram(provider);
@@ -161,7 +173,13 @@ export function useMarket(marketId?: string) {
       setLoading(true);
       setError(null);
 
-      const provider = new AnchorProvider(connection, wallet as any, {
+      const walletAdapter = {
+        publicKey: wallet.publicKey,
+        signTransaction: wallet.signTransaction,
+        signAllTransactions: wallet.signAllTransactions,
+      };
+
+      const provider = new AnchorProvider(connection, walletAdapter as any, {
         commitment: "confirmed",
       });
       const program = getProgram(provider);
@@ -198,7 +216,13 @@ export function useMarket(marketId?: string) {
         setLoading(true);
         setError(null);
 
-        const provider = new AnchorProvider(connection, wallet as any, {
+        const walletAdapter = {
+          publicKey: wallet.publicKey,
+          signTransaction: wallet.signTransaction,
+          signAllTransactions: wallet.signAllTransactions,
+        };
+
+        const provider = new AnchorProvider(connection, walletAdapter as any, {
           commitment: "confirmed",
         });
         const program = getProgram(provider);
@@ -236,7 +260,13 @@ export function useMarket(marketId?: string) {
       setLoading(true);
       setError(null);
 
-      const provider = new AnchorProvider(connection, wallet as any, {
+      const walletAdapter = {
+        publicKey: wallet.publicKey,
+        signTransaction: wallet.signTransaction,
+        signAllTransactions: wallet.signAllTransactions,
+      };
+
+      const provider = new AnchorProvider(connection, walletAdapter as any, {
         commitment: "confirmed",
       });
       const program = getProgram(provider);

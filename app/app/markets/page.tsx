@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { usePrivyWallet } from "@/hooks/usePrivyWallet";
 import { Header } from "@/components/Header";
 import { useMarkets } from "@/hooks/useMarkets";
 import { MarketList, CreateMarketDialog } from "@/components/markets";
@@ -30,7 +30,7 @@ function ScrambleNumber({ digits = 1 }: { digits?: number }) {
 }
 
 export default function MarketsPage() {
-  const wallet = useWallet();
+  const wallet = usePrivyWallet();
   const { markets, loading, error, refetch } = useMarkets();
 
   return (

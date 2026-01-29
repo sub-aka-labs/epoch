@@ -1,24 +1,33 @@
 "use client";
 
-import { useMemo, ReactNode } from "react";
-import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
-import { HELIUS_RPC_URL } from "@/lib/helius";
-
-import "@solana/wallet-adapter-react-ui/styles.css";
+import { ReactNode } from "react";
+import { PrivyProvider } from "@privy-io/react-auth";
+import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
 
 export function Providers({ children }: { children: ReactNode }) {
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    []
-  );
-
   return (
-    <ConnectionProvider endpoint={HELIUS_RPC_URL}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
+    <PrivyProvider
+      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
+      clientId={process.env.NEXT_PUBLIC_PRIVY_CLIENT_ID!}
+      config={{
+        appearance: {
+          theme: "dark",
+          accentColor: "#7c3aed",
+          walletChainType: "solana-only",
+        },
+        externalWallets: {
+          solana: {
+            connectors: toSolanaWalletConnectors(),
+          },
+        },
+        embeddedWallets: {
+          solana: {
+            createOnLogin: "users-without-wallets",
+          },
+        },
+      }}
+    >
+      {children}
+    </PrivyProvider>
   );
 }

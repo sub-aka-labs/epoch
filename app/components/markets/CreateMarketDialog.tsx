@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { usePrivyWallet } from "@/hooks/usePrivyWallet";
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { IconPlus } from "@tabler/icons-react";
@@ -25,7 +25,7 @@ interface CreateMarketDialogProps {
 }
 
 export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps) {
-  const wallet = useWallet();
+  const wallet = usePrivyWallet();
   const { createMarket, openMarket, loading, error } = useMarket();
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { AnchorProvider, BN } from "@coral-xyz/anchor";
 import {
@@ -33,6 +32,7 @@ import {
   TOKEN_PROGRAM_ID,
   NATIVE_MINT,
 } from "@solana/spl-token";
+import { usePrivyWallet, usePrivyConnection } from "./usePrivyWallet";
 
 const CLUSTER_OFFSET = 456;
 const POOL_ACCOUNT = new PublicKey("G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC");
@@ -53,8 +53,8 @@ export interface BetResult {
 }
 
 export function useBet() {
-  const { connection } = useConnection();
-  const wallet = useWallet();
+  const { connection } = usePrivyConnection();
+  const wallet = usePrivyWallet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +70,14 @@ export function useBet() {
         setLoading(true);
         setError(null);
 
-        const provider = new AnchorProvider(connection, wallet as any, {
+        // Create a wallet adapter compatible object for AnchorProvider
+        const walletAdapter = {
+          publicKey: wallet.publicKey,
+          signTransaction: wallet.signTransaction,
+          signAllTransactions: wallet.signAllTransactions,
+        };
+
+        const provider = new AnchorProvider(connection, walletAdapter as any, {
           commitment: "confirmed",
         });
         const program = getProgram(provider);

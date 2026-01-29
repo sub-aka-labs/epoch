@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { usePrivyConnection } from "./usePrivyWallet";
 import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
 import {
   getProgram,
@@ -17,7 +17,7 @@ import {
 } from "@/types/market";
 
 export function useMarkets() {
-  const { connection } = useConnection();
+  const { connection } = usePrivyConnection();
   const [markets, setMarkets] = useState<MarketDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
