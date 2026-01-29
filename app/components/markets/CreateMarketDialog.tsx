@@ -14,7 +14,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -157,12 +156,13 @@ export function CreateMarketDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button>
-          <IconPlus size={18} stroke={2} />
-          Create Market
-        </Button>
-      </DialogTrigger>
+      <Button
+        onClick={() => wallet.connected && setOpen(true)}
+        className={!wallet.connected ? "pointer-events-auto cursor-not-allowed opacity-50" : ""}
+      >
+        <IconPlus size={18} stroke={2} />
+        Create Market
+      </Button>
       <DialogSlideOver>
         <DialogHeader>
           <DialogTitle className="text-xl">Create Market</DialogTitle>
