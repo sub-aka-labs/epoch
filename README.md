@@ -1,4 +1,4 @@
-# Epoch
+# Epoch 
 
 A privacy-preserving prediction market on Solana powered by Arcium MPC (Multi-Party Computation).
 
