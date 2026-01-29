@@ -30,14 +30,12 @@ export function useMarkets() {
       const provider = createReadOnlyProvider(connection);
       const program = getProgram(provider);
 
-      // Fetch all DarkMarket accounts
       const accounts = await (program.account as any).darkMarket.all();
 
       const marketDisplays = accounts.map((account: any) =>
         toMarketDisplay(account.publicKey, account.account as DarkMarket)
       );
 
-      // Sort by creation date, newest first
       marketDisplays.sort(
         (a: MarketDisplay, b: MarketDisplay) => b.createdAt.getTime() - a.createdAt.getTime()
       );

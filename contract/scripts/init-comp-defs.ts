@@ -11,53 +11,43 @@ import {
 import * as fs from "fs";
 import * as path from "path";
 
-// Contract types
 import { Contract } from "../target/types/contract";
 
-// Configuration
-const CLUSTER_OFFSET = 456; // v0.6.3 on devnet
+const CLUSTER_OFFSET = 456;
 const RPC_URL = "https://devnet.helius-rpc.com/?api-key=ddb0234e-0765-42fa-88e8-41825d43dbdd";
 const KEYPAIR_PATH = process.env.HOME + "/.config/solana/id.json";
 
-// Computation definition names (must match what's defined in the contract)
 const PROCESS_BET_COMP_DEF = "process_bet";
 const COMPUTE_PAYOUT_COMP_DEF = "compute_payout";
 
 async function main() {
   console.log("Initializing computation definitions on devnet...\n");
 
-  // Load keypair
   const keypairData = JSON.parse(fs.readFileSync(KEYPAIR_PATH, "utf-8"));
   const owner = Keypair.fromSecretKey(Uint8Array.from(keypairData));
   console.log("Using wallet:", owner.publicKey.toBase58());
 
-  // Setup connection and provider
   const connection = new Connection(RPC_URL, "confirmed");
   const wallet = new Wallet(owner);
   const provider = new AnchorProvider(connection, wallet, {
     commitment: "confirmed",
   });
 
-  // Load IDL and create program
   const idlPath = path.join(__dirname, "../target/idl/contract.json");
   const idl = JSON.parse(fs.readFileSync(idlPath, "utf-8"));
   const program = new Program<Contract>(idl, provider);
 
   console.log("Program ID:", program.programId.toBase58());
 
-  // Get MXE account address
   const mxeAccount = getMXEAccAddress(program.programId);
   console.log("MXE Account:", mxeAccount.toBase58());
 
-  // Check wallet balance
   const balance = await connection.getBalance(owner.publicKey);
   console.log("Wallet balance:", balance / 1e9, "SOL\n");
 
-  // Get base seed for computation definition accounts
   const baseSeedCompDefAcc = getArciumAccountBaseSeed("ComputationDefinitionAccount");
   const arciumProgramId = getArciumProgramId();
 
-  // Initialize process_bet computation definition
   console.log("1. Initializing process_bet computation definition...");
   try {
     const processBetOffset = getCompDefAccOffset(PROCESS_BET_COMP_DEF);
@@ -67,7 +57,6 @@ async function main() {
     )[0];
     console.log("   Comp Def Account:", processBetCompDefPDA.toBase58());
 
-    // Check if account already exists
     const accountInfo = await connection.getAccountInfo(processBetCompDefPDA);
     if (accountInfo !== null) {
       console.log("   process_bet comp def already exists, skipping initialization.\n");
@@ -85,7 +74,6 @@ async function main() {
       console.log("   Transaction:", tx1);
       console.log("   process_bet comp def initialized successfully!\n");
 
-      // Try to finalize (may fail on devnet if circuits not uploaded)
       try {
         const offsetNumber = Buffer.from(processBetOffset).readUInt32LE();
         const finalizeTx = await buildFinalizeCompDefTx(
@@ -108,7 +96,6 @@ async function main() {
     console.log("   Continuing...\n");
   }
 
-  // Initialize compute_payout computation definition
   console.log("2. Initializing compute_payout computation definition...");
   try {
     const computePayoutOffset = getCompDefAccOffset(COMPUTE_PAYOUT_COMP_DEF);
@@ -118,7 +105,6 @@ async function main() {
     )[0];
     console.log("   Comp Def Account:", computePayoutCompDefPDA.toBase58());
 
-    // Check if account already exists
     const accountInfo = await connection.getAccountInfo(computePayoutCompDefPDA);
     if (accountInfo !== null) {
       console.log("   compute_payout comp def already exists, skipping initialization.\n");
@@ -136,7 +122,6 @@ async function main() {
       console.log("   Transaction:", tx2);
       console.log("   compute_payout comp def initialized successfully!\n");
 
-      // Try to finalize (may fail on devnet if circuits not uploaded)
       try {
         const offsetNumber = Buffer.from(computePayoutOffset).readUInt32LE();
         const finalizeTx = await buildFinalizeCompDefTx(
