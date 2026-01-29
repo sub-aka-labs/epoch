@@ -38,12 +38,12 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
   const statusStyle = getStatusStyle(position.status);
 
   return (
-    <div className="bg-zinc-900 p-4 border border-zinc-800 hover:border-zinc-600 transition-colors">
+    <div className="bg-card p-4 border border-border hover:border-ring transition-colors">
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
-          <p className="text-[13px] text-zinc-500">Position</p>
-          <p className="font-mono text-[13px] text-white">
+          <p className="text-[13px] text-muted-foreground">Position</p>
+          <p className="font-mono text-[13px] text-foreground">
             {position.publicKey.toBase58().slice(0, 8)}...
           </p>
         </div>
@@ -54,14 +54,14 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
 
       {/* Amounts */}
       <div className="grid grid-cols-2 gap-2 mb-3">
-        <div className="bg-zinc-800 p-2.5">
-          <p className="text-xs text-zinc-500 mb-0.5">Deposit</p>
-          <p className="text-sm font-medium text-white">
-            {formatTokenAmount(BigInt(position.depositAmount))} <span className="text-zinc-500 text-xs">SOL</span>
+        <div className="bg-muted p-2.5">
+          <p className="text-xs text-muted-foreground mb-0.5">Deposit</p>
+          <p className="text-sm font-medium text-foreground">
+            {formatTokenAmount(BigInt(position.depositAmount))} <span className="text-muted-foreground text-xs">SOL</span>
           </p>
         </div>
-        <div className="bg-zinc-800 p-2.5">
-          <p className="text-xs text-zinc-500 mb-0.5">Payout</p>
+        <div className="bg-muted p-2.5">
+          <p className="text-xs text-muted-foreground mb-0.5">Payout</p>
           <p className="text-sm font-medium">
             {position.status === PositionStatus.PayoutComputed ||
             position.status === PositionStatus.Claimed ? (
@@ -69,14 +69,14 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
                 {formatTokenAmount(BigInt(position.payoutAmount))} <span className="text-emerald-400/70 text-xs">SOL</span>
               </span>
             ) : (
-              <span className="text-zinc-600">Pending...</span>
+              <span className="text-muted-foreground">Pending...</span>
             )}
           </p>
         </div>
       </div>
 
       {/* Timestamps */}
-      <div className="text-xs text-zinc-600 mb-3 space-y-0.5">
+      <div className="text-xs text-muted-foreground mb-3 space-y-0.5">
         <p>Created {position.createdAt.toLocaleDateString()}</p>
         {position.processedAt && (
           <p>Processed {position.processedAt.toLocaleString()}</p>
@@ -89,7 +89,7 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
       {/* Actions */}
       <div className="flex gap-2">
         <Link href={`/markets/${position.market.toBase58()}`} className="flex-1">
-          <button className="w-full h-8 px-3 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors text-[13px] font-medium border border-zinc-700 cursor-pointer">
+          <button className="w-full h-8 px-3 bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors text-[13px] font-medium border border-border cursor-pointer">
             View Market
           </button>
         </Link>
@@ -103,12 +103,12 @@ export function PositionCard({ position, onClaim, claimLoading }: PositionCardPr
           </button>
         )}
         {hasClaimed && (
-          <div className="flex-1 h-8 px-3 bg-zinc-800 text-zinc-500 text-center text-[13px] font-medium flex items-center justify-center">
+          <div className="flex-1 h-8 px-3 bg-muted text-muted-foreground text-center text-[13px] font-medium flex items-center justify-center">
             Claimed
           </div>
         )}
         {hasRefunded && (
-          <div className="flex-1 h-8 px-3 bg-zinc-800 text-zinc-500 text-center text-[13px] font-medium flex items-center justify-center">
+          <div className="flex-1 h-8 px-3 bg-muted text-muted-foreground text-center text-[13px] font-medium flex items-center justify-center">
             Refunded
           </div>
         )}

@@ -88,8 +88,8 @@ export default function MarketsPage() {
   const totalPositions = markets.reduce((sum, m) => sum + m.totalPositions, 0);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <Toaster theme="dark" />
+    <div className="min-h-screen bg-background text-foreground">
+      <Toaster />
       <Header />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
@@ -106,7 +106,7 @@ export default function MarketsPage() {
             <button
               onClick={refetch}
               disabled={loading}
-              className="h-8 px-3 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-zinc-700"
+              className="h-8 px-3 bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border"
             >
               {loading ? (
                 <span className="flex items-center gap-1.5">

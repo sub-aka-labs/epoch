@@ -31,19 +31,19 @@ function ScrambleNumber() {
 
 function MarketCardSkeleton() {
   return (
-    <div className="bg-zinc-900 p-5 border border-zinc-800 space-y-4">
+    <div className="bg-card p-5 border border-border space-y-4">
       <div className="flex justify-between items-start">
-        <div className="h-6 w-3/4 bg-zinc-800 animate-pulse" />
-        <div className="h-5 w-16 bg-zinc-800 animate-pulse" />
+        <div className="h-6 w-3/4 bg-muted animate-pulse" />
+        <div className="h-5 w-16 bg-muted animate-pulse" />
       </div>
-      <div className="h-4 w-1/2 bg-zinc-800 animate-pulse" />
+      <div className="h-4 w-1/2 bg-muted animate-pulse" />
       <div className="grid grid-cols-2 gap-2">
-        <div className="h-10 bg-zinc-800 animate-pulse" />
-        <div className="h-10 bg-zinc-800 animate-pulse" />
+        <div className="h-10 bg-muted animate-pulse" />
+        <div className="h-10 bg-muted animate-pulse" />
       </div>
       <div className="flex justify-between">
-        <div className="h-4 w-24 bg-zinc-800 animate-pulse" />
-        <div className="h-4 w-16 bg-zinc-800 animate-pulse" />
+        <div className="h-4 w-24 bg-muted animate-pulse" />
+        <div className="h-4 w-16 bg-muted animate-pulse" />
       </div>
     </div>
   );
@@ -99,7 +99,7 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
   return (
     <div>
       {/* Tabs - Always visible */}
-      <div className="flex items-center gap-0 mb-6 border-b border-zinc-800">
+      <div className="flex items-center gap-0 mb-6 border-b border-border">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -107,12 +107,12 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
             disabled={loading}
             className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
               activeTab === tab.id
-                ? "border-white text-white"
-                : "border-transparent text-zinc-500 hover:text-white"
+                ? "border-foreground text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             } ${loading ? "cursor-wait" : ""}`}
           >
             {tab.label}
-            <span className={`ml-2 ${activeTab === tab.id ? "text-zinc-400" : "text-zinc-600"}`}>
+            <span className={`ml-2 ${activeTab === tab.id ? "text-muted-foreground" : "text-muted-foreground/60"}`}>
               {loading ? <ScrambleNumber /> : tab.count}
             </span>
           </button>
@@ -149,11 +149,11 @@ function EmptyState({ tab }: { tab: TabType }) {
 
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="w-14 h-14 mb-5 border border-zinc-800 flex items-center justify-center">
-        <IconChartBar size={24} className="text-zinc-600" stroke={1.5} />
+      <div className="w-14 h-14 mb-5 border border-border flex items-center justify-center">
+        <IconChartBar size={24} className="text-muted-foreground" stroke={1.5} />
       </div>
-      <p className="text-zinc-300 font-medium mb-1">{messages[tab].title}</p>
-      <p className="text-zinc-600 text-sm">{messages[tab].subtitle}</p>
+      <p className="text-foreground font-medium mb-1">{messages[tab].title}</p>
+      <p className="text-muted-foreground text-sm">{messages[tab].subtitle}</p>
     </div>
   );
 }

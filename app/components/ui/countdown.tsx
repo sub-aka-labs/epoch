@@ -110,10 +110,10 @@ export function CountdownBadge({ targetDate, label }: { targetDate: Date; label?
   const isUrgent = timeLeft.days === 0 && timeLeft.hours < 1;
 
   return (
-    <div className={`flex items-center gap-2 px-3 py-1.5 ${isUrgent ? "bg-amber-500/10 border border-amber-500/20" : "bg-zinc-800 border border-zinc-700"}`}>
+    <div className={`flex items-center gap-2 px-3 py-1.5 ${isUrgent ? "bg-amber-500/10 border border-amber-500/20" : "bg-muted border border-border"}`}>
       <div className={`w-1.5 h-1.5 ${isUrgent ? "bg-amber-400" : "bg-emerald-400"}`} />
-      <span className={`text-xs font-mono ${isUrgent ? "text-amber-400" : "text-zinc-300"}`}>
-        {label && <span className="text-zinc-500 mr-1">{label}</span>}
+      <span className={`text-xs font-mono ${isUrgent ? "text-amber-400" : "text-muted-foreground"}`}>
+        {label && <span className="text-muted-foreground mr-1">{label}</span>}
         {timeLeft.days > 0 && `${timeLeft.days}d `}
         {timeLeft.hours > 0 && `${timeLeft.hours}h `}
         {timeLeft.minutes}m {timeLeft.seconds}s

@@ -32,8 +32,8 @@ export default function PositionsPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <Toaster theme="dark" />
+    <div className="min-h-screen bg-background text-foreground">
+      <Toaster />
       <Header />
 
       {/* Main Content */}
@@ -42,13 +42,13 @@ export default function PositionsPage() {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2 tracking-tight">Portfolio</h1>
-            <p className="text-zinc-500 text-sm sm:text-base">View and manage your betting positions</p>
+            <p className="text-muted-foreground text-sm sm:text-base">View and manage your betting positions</p>
           </div>
           {wallet.publicKey && (
             <button
               onClick={refetchAll}
               disabled={loading}
-              className="h-8 px-3 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-zinc-700"
+              className="h-8 px-3 bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border"
             >
               {loading ? (
                 <span className="flex items-center gap-1.5">
@@ -67,11 +67,11 @@ export default function PositionsPage() {
 
         {!wallet.publicKey ? (
           <div className="flex flex-col items-center justify-center py-24">
-            <div className="w-16 h-16 mb-6 border border-zinc-800 flex items-center justify-center">
-              <IconWallet size={28} className="text-zinc-600" stroke={1.5} />
+            <div className="w-16 h-16 mb-6 border border-border flex items-center justify-center">
+              <IconWallet size={28} className="text-muted-foreground" stroke={1.5} />
             </div>
-            <p className="text-zinc-300 text-lg font-medium mb-2">Connect Wallet</p>
-            <p className="text-zinc-600 text-sm mb-6">Connect your wallet to view your positions</p>
+            <p className="text-foreground text-lg font-medium mb-2">Connect Wallet</p>
+            <p className="text-muted-foreground text-sm mb-6">Connect your wallet to view your positions</p>
             <WalletButton />
           </div>
         ) : loading ? (
@@ -82,8 +82,8 @@ export default function PositionsPage() {
           </div>
         ) : allPositions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
-            <p className="text-zinc-300 text-lg font-medium mb-2">No Positions Yet</p>
-            <p className="text-zinc-600 text-sm mb-6">Start betting on markets to build your portfolio</p>
+            <p className="text-foreground text-lg font-medium mb-2">No Positions Yet</p>
+            <p className="text-muted-foreground text-sm mb-6">Start betting on markets to build your portfolio</p>
             <Link href="/markets">
               <button className="inline-flex items-center gap-1.5 h-8 px-3 bg-[#10b981] text-black hover:bg-[#059669] transition-colors text-[13px] font-medium cursor-pointer">
                 Browse Markets
@@ -95,24 +95,24 @@ export default function PositionsPage() {
           <>
             {/* Stats Banner */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
-              <div className="bg-zinc-900 p-5 border border-zinc-800">
-                <p className="text-zinc-500 text-sm mb-1">Total Positions</p>
+              <div className="bg-card p-5 border border-border">
+                <p className="text-muted-foreground text-sm mb-1">Total Positions</p>
                 <p className="text-2xl font-bold">{allPositions.length}</p>
               </div>
-              <div className="bg-zinc-900 p-5 border border-zinc-800">
-                <p className="text-zinc-500 text-sm mb-1">Total Deposited</p>
+              <div className="bg-card p-5 border border-border">
+                <p className="text-muted-foreground text-sm mb-1">Total Deposited</p>
                 <p className="text-2xl font-bold">
-                  {formatTokenAmount(totalDeposited)} <span className="text-zinc-500 text-base">SOL</span>
+                  {formatTokenAmount(totalDeposited)} <span className="text-muted-foreground text-base">SOL</span>
                 </p>
               </div>
-              <div className="bg-zinc-900 p-5 border border-zinc-800">
-                <p className="text-zinc-500 text-sm mb-1">Total Payout</p>
+              <div className="bg-card p-5 border border-border">
+                <p className="text-muted-foreground text-sm mb-1">Total Payout</p>
                 <p className="text-2xl font-bold text-emerald-400">
                   {formatTokenAmount(totalPayout)} <span className="text-emerald-400/70 text-base">SOL</span>
                 </p>
               </div>
-              <div className="bg-zinc-900 p-5 border border-zinc-800">
-                <p className="text-zinc-500 text-sm mb-1">Status</p>
+              <div className="bg-card p-5 border border-border">
+                <p className="text-muted-foreground text-sm mb-1">Status</p>
                 <div className="flex items-center gap-3">
                   {pendingCount > 0 && (
                     <span className="text-amber-400 text-sm">{pendingCount} pending</span>
@@ -121,7 +121,7 @@ export default function PositionsPage() {
                     <span className="text-emerald-400 text-sm">{claimableCount} claimable</span>
                   )}
                   {pendingCount === 0 && claimableCount === 0 && (
-                    <span className="text-zinc-500 text-sm">All settled</span>
+                    <span className="text-muted-foreground text-sm">All settled</span>
                   )}
                 </div>
               </div>
@@ -153,9 +153,9 @@ function PositionsLoading() {
       {/* Stats Skeleton */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-zinc-900 p-5 border border-zinc-800">
-            <div className="h-4 w-24 bg-zinc-800 animate-pulse mb-2" />
-            <div className="h-8 w-16 bg-zinc-800 animate-pulse" />
+          <div key={i} className="bg-card p-5 border border-border">
+            <div className="h-4 w-24 bg-muted animate-pulse mb-2" />
+            <div className="h-8 w-16 bg-muted animate-pulse" />
           </div>
         ))}
       </div>
@@ -163,16 +163,16 @@ function PositionsLoading() {
       {/* Cards Skeleton */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-zinc-900 p-5 border border-zinc-800 space-y-4">
+          <div key={i} className="bg-card p-5 border border-border space-y-4">
             <div className="flex justify-between">
-              <div className="h-10 w-24 bg-zinc-800 animate-pulse" />
-              <div className="h-6 w-16 bg-zinc-800 animate-pulse" />
+              <div className="h-10 w-24 bg-muted animate-pulse" />
+              <div className="h-6 w-16 bg-muted animate-pulse" />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="h-16 bg-zinc-800 animate-pulse" />
-              <div className="h-16 bg-zinc-800 animate-pulse" />
+              <div className="h-16 bg-muted animate-pulse" />
+              <div className="h-16 bg-muted animate-pulse" />
             </div>
-            <div className="h-10 bg-zinc-800 animate-pulse" />
+            <div className="h-10 bg-muted animate-pulse" />
           </div>
         ))}
       </div>
