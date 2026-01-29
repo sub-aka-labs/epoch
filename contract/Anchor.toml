@@ -6,10 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-contract = "2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc"
+contract = "8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn"
 
 [programs.devnet]
-contract = "2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc"
+contract = "8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn"
 
 [registry]
 url = "https://api.apr.dev"

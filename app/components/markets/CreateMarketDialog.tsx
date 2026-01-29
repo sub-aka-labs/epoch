@@ -184,7 +184,7 @@ export function CreateMarketDialog({
       let mintPubkey: PublicKey;
       try {
         mintPubkey = new PublicKey(tokenMint);
-      } catch (e) {
+      } catch (e:any) {
         toast.error("Invalid token mint address");
         return;
       }
