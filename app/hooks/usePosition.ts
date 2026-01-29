@@ -25,9 +25,15 @@ import { PositionStatus } from "@/types/market";
 import { usePrivyWallet, usePrivyConnection } from "./usePrivyWallet";
 
 const CLUSTER_OFFSET = 456;
-const POOL_ACCOUNT = new PublicKey("G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC");
-const CLOCK_ACCOUNT = new PublicKey("7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot");
-const ARCIUM_PROGRAM = new PublicKey("Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ");
+const POOL_ACCOUNT = new PublicKey(
+  "G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC",
+);
+const CLOCK_ACCOUNT = new PublicKey(
+  "7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot",
+);
+const ARCIUM_PROGRAM = new PublicKey(
+  "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ",
+);
 
 export { PositionStatus };
 
@@ -59,7 +65,10 @@ function parsePositionStatus(status: unknown): PositionStatus {
   return PositionStatus.Pending;
 }
 
-function toPositionDisplay(publicKey: PublicKey, data: unknown): PositionDisplay {
+function toPositionDisplay(
+  publicKey: PublicKey,
+  data: unknown,
+): PositionDisplay {
   const d = data as any;
   return {
     publicKey,
@@ -68,7 +77,9 @@ function toPositionDisplay(publicKey: PublicKey, data: unknown): PositionDisplay
     payoutAmount: d.payoutAmount.toString(),
     status: parsePositionStatus(d.status),
     createdAt: new Date(d.createdAt.toNumber() * 1000),
-    processedAt: d.processedAt ? new Date(d.processedAt.toNumber() * 1000) : null,
+    processedAt: d.processedAt
+      ? new Date(d.processedAt.toNumber() * 1000)
+      : null,
     claimedAt: d.claimedAt ? new Date(d.claimedAt.toNumber() * 1000) : null,
   };
 }
@@ -103,7 +114,9 @@ export function usePosition(marketId?: string) {
       const [positionPda] = getPositionPDA(marketPda, wallet.publicKey);
 
       try {
-        const account = await (program.account as any).userPosition.fetch(positionPda);
+        const account = await (program.account as any).userPosition.fetch(
+          positionPda,
+        );
         setPosition(toPositionDisplay(positionPda, account));
       } catch {
         setPosition(null);
@@ -135,7 +148,7 @@ export function usePosition(marketId?: string) {
       ]);
 
       const positions = accounts.map((account: any) =>
-        toPositionDisplay(account.publicKey, account.account)
+        toPositionDisplay(account.publicKey, account.account),
       );
 
       setAllPositions(positions);
@@ -178,7 +191,9 @@ export function usePosition(marketId?: string) {
         const program = getProgram(provider);
 
         const [positionPda] = getPositionPDA(marketPda, wallet.publicKey);
-        const market = await (program.account as any).darkMarket.fetch(marketPda);
+        const market = await (program.account as any).darkMarket.fetch(
+          marketPda,
+        );
 
         const tx = await program.methods
           .claimPayout()
@@ -186,7 +201,10 @@ export function usePosition(marketId?: string) {
             claimer: wallet.publicKey,
             market: marketPda,
             userPosition: positionPda,
-            claimerTokenAccount: await getAssociatedTokenAddress(market.tokenMint, wallet.publicKey),
+            claimerTokenAccount: await getAssociatedTokenAddress(
+              market.tokenMint,
+              wallet.publicKey,
+            ),
             vault: market.vault,
           })
           .rpc();
@@ -201,7 +219,7 @@ export function usePosition(marketId?: string) {
         setLoading(false);
       }
     },
-    [connection, wallet, fetchPosition]
+    [connection, wallet, fetchPosition],
   );
 
   const claimRefund = useCallback(
@@ -228,7 +246,9 @@ export function usePosition(marketId?: string) {
         const program = getProgram(provider);
 
         const [positionPda] = getPositionPDA(marketPda, wallet.publicKey);
-        const market = await (program.account as any).darkMarket.fetch(marketPda);
+        const market = await (program.account as any).darkMarket.fetch(
+          marketPda,
+        );
 
         const tx = await program.methods
           .claimRefund()
@@ -236,7 +256,10 @@ export function usePosition(marketId?: string) {
             claimer: wallet.publicKey,
             market: marketPda,
             userPosition: positionPda,
-            claimerTokenAccount: await getAssociatedTokenAddress(market.tokenMint, wallet.publicKey),
+            claimerTokenAccount: await getAssociatedTokenAddress(
+              market.tokenMint,
+              wallet.publicKey,
+            ),
             vault: market.vault,
           })
           .rpc();
@@ -251,11 +274,14 @@ export function usePosition(marketId?: string) {
         setLoading(false);
       }
     },
-    [connection, wallet, fetchPosition]
+    [connection, wallet, fetchPosition],
   );
 
   const computePayout = useCallback(
-    async (marketPda: PublicKey, positionPda: PublicKey): Promise<PositionResult> => {
+    async (
+      marketPda: PublicKey,
+      positionPda: PublicKey,
+    ): Promise<PositionResult> => {
       if (!wallet.publicKey || !wallet.signTransaction) {
         const err = "Wallet not connected";
         setError(err);
@@ -277,11 +303,15 @@ export function usePosition(marketId?: string) {
         });
         const program = getProgram(provider);
 
-        const market = await (program.account as any).darkMarket.fetch(marketPda);
+        const market = await (program.account as any).darkMarket.fetch(
+          marketPda,
+        );
         const marketIdNum = market.marketId.toNumber();
         const [poolStatePda] = getPoolStatePDA(marketIdNum);
 
-        const computationOffsetBytes = crypto.getRandomValues(new Uint8Array(8));
+        const computationOffsetBytes = crypto.getRandomValues(
+          new Uint8Array(8),
+        );
         const computationOffset = new BN(computationOffsetBytes);
 
         const mxeAccount = getMXEAccAddress(PROGRAM_ID);
@@ -291,13 +321,19 @@ export function usePosition(marketId?: string) {
 
         const compDefOffset = getCompDefAccOffset("compute_payout");
         const compDefOffsetNumber = Buffer.from(compDefOffset).readUInt32LE();
-        const compDefAccount = getCompDefAccAddress(PROGRAM_ID, compDefOffsetNumber);
+        const compDefAccount = getCompDefAccAddress(
+          PROGRAM_ID,
+          compDefOffsetNumber,
+        );
 
-        const computationAccount = getComputationAccAddress(CLUSTER_OFFSET, computationOffset);
+        const computationAccount = getComputationAccAddress(
+          CLUSTER_OFFSET,
+          computationOffset,
+        );
 
         const [signPdaAccount] = PublicKey.findProgramAddressSync(
           [Buffer.from("ArciumSignerAccount")],
-          PROGRAM_ID
+          PROGRAM_ID,
         );
 
         const accounts = {
@@ -327,14 +363,18 @@ export function usePosition(marketId?: string) {
         const transaction = new Transaction();
         transaction.add(instruction);
 
-        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+        const { blockhash, lastValidBlockHeight } =
+          await connection.getLatestBlockhash();
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = wallet.publicKey;
 
         const signedTx = await wallet.signTransaction!(transaction);
-        const txSignature = await connection.sendRawTransaction(signedTx.serialize(), {
-          skipPreflight: true,
-        });
+        const txSignature = await connection.sendRawTransaction(
+          signedTx.serialize(),
+          {
+            skipPreflight: true,
+          },
+        );
 
         const confirmation = await connection.confirmTransaction({
           signature: txSignature,
@@ -358,7 +398,7 @@ export function usePosition(marketId?: string) {
         setLoading(false);
       }
     },
-    [connection, wallet, fetchPosition]
+    [connection, wallet, fetchPosition],
   );
 
   return {
@@ -374,7 +414,10 @@ export function usePosition(marketId?: string) {
   };
 }
 
-async function getAssociatedTokenAddress(mint: PublicKey, owner: PublicKey): Promise<PublicKey> {
+async function getAssociatedTokenAddress(
+  mint: PublicKey,
+  owner: PublicKey,
+): Promise<PublicKey> {
   const { getAssociatedTokenAddress } = await import("@solana/spl-token");
   return getAssociatedTokenAddress(mint, owner);
 }

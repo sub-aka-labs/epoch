@@ -38,10 +38,10 @@ function StatsDisplay({
   loading: boolean;
 }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
-      <div className="bg-muted p-5 border border-border">
-        <p className="text-muted-foreground text-sm mb-1">Total Markets</p>
-        <p className="text-2xl font-bold text-foreground">
+    <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-4">
+      <div className="bg-muted border-border border p-5">
+        <p className="text-muted-foreground mb-1 text-sm">Total Markets</p>
+        <p className="text-foreground text-2xl font-bold">
           {loading ? (
             <span className="text-muted-foreground">
               <ScrambleNumber digits={2} />
@@ -51,8 +51,8 @@ function StatsDisplay({
           )}
         </p>
       </div>
-      <div className="bg-muted p-5 border border-border">
-        <p className="text-muted-foreground text-sm mb-1">Open for Betting</p>
+      <div className="bg-muted border-border border p-5">
+        <p className="text-muted-foreground mb-1 text-sm">Open for Betting</p>
         <p className="text-2xl font-bold text-emerald-500">
           {loading ? (
             <span className="text-emerald-500/50">
@@ -63,9 +63,9 @@ function StatsDisplay({
           )}
         </p>
       </div>
-      <div className="bg-muted p-5 border border-border">
-        <p className="text-muted-foreground text-sm mb-1">Total Positions</p>
-        <p className="text-2xl font-bold text-foreground">
+      <div className="bg-muted border-border border p-5">
+        <p className="text-muted-foreground mb-1 text-sm">Total Positions</p>
+        <p className="text-foreground text-2xl font-bold">
           {loading ? (
             <span className="text-muted-foreground">
               <ScrambleNumber digits={3} />
@@ -88,29 +88,29 @@ export default function MarketsPage() {
   const totalPositions = markets.reduce((sum, m) => sum + m.totalPositions, 0);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="bg-background text-foreground min-h-screen">
       <Toaster />
       <Header />
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
+      <main className="mx-auto max-w-6xl px-4 py-8">
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 tracking-tight">
+            <h1 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
               Prediction Markets
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
               Private betting powered by Arcium MPC encryption
             </p>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex shrink-0 items-center gap-3">
             <button
               onClick={refetch}
               disabled={loading}
-              className="h-8 px-3 bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors text-[13px] font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-border"
+              className="bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground border-border h-8 cursor-pointer border px-3 text-[13px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? (
                 <span className="flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24">
+                  <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24">
                     <circle
                       className="opacity-25"
                       cx="12"
@@ -139,7 +139,7 @@ export default function MarketsPage() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400">
+          <div className="mb-6 border border-rose-500/20 bg-rose-500/10 p-4 text-rose-400">
             {error}
           </div>
         )}
@@ -151,7 +151,11 @@ export default function MarketsPage() {
           loading={initialLoading}
         />
 
-        <MarketList markets={markets} loading={initialLoading} onBetPlaced={refetch} />
+        <MarketList
+          markets={markets}
+          loading={initialLoading}
+          onBetPlaced={refetch}
+        />
       </main>
     </div>
   );

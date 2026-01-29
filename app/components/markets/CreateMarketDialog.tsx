@@ -171,7 +171,7 @@ export function CreateMarketDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto py-6 space-y-6">
+        <div className="flex-1 space-y-6 overflow-y-auto py-6">
           <div className="space-y-2">
             <Label htmlFor="question" className="text-muted-foreground text-sm">
               Question
@@ -184,7 +184,7 @@ export function CreateMarketDialog({
               maxLength={200}
               className="bg-muted/50 border-border focus:border-ring"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {question.length}/200 characters
             </p>
           </div>
@@ -203,7 +203,7 @@ export function CreateMarketDialog({
               onChange={(e) => setTokenMint(e.target.value)}
               className="bg-muted/50 border-border focus:border-ring font-mono text-sm"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               The SPL token used for betting (e.g., USDC, SOL)
             </p>
           </div>
@@ -223,7 +223,7 @@ export function CreateMarketDialog({
                   type="datetime-local"
                   value={bettingStart}
                   onChange={(e) => setBettingStart(e.target.value)}
-                  className="bg-muted/50 border-border focus:border-ring text-sm "
+                  className="bg-muted/50 border-border focus:border-ring text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -238,7 +238,7 @@ export function CreateMarketDialog({
                   type="datetime-local"
                   value={bettingEnd}
                   onChange={(e) => setBettingEnd(e.target.value)}
-                  className="bg-muted/50 border-border focus:border-ring text-sm "
+                  className="bg-muted/50 border-border focus:border-ring text-sm"
                 />
               </div>
             </div>
@@ -256,15 +256,15 @@ export function CreateMarketDialog({
               type="datetime-local"
               value={resolutionEnd}
               onChange={(e) => setResolutionEnd(e.target.value)}
-              className="bg-muted/50 border-border focus:border-ring text-sm "
+              className="bg-muted/50 border-border focus:border-ring text-sm"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Deadline for the market to be resolved
             </p>
           </div>
         </div>
 
-        <DialogFooter className="border-t border-border pt-4 mt-auto">
+        <DialogFooter className="border-border mt-auto border-t pt-4">
           <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
           </Button>

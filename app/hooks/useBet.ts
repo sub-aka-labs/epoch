@@ -35,9 +35,15 @@ import {
 import { usePrivyWallet, usePrivyConnection } from "./usePrivyWallet";
 
 const CLUSTER_OFFSET = 456;
-const POOL_ACCOUNT = new PublicKey("G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC");
-const CLOCK_ACCOUNT = new PublicKey("7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot");
-const ARCIUM_PROGRAM = new PublicKey("Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ");
+const POOL_ACCOUNT = new PublicKey(
+  "G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC",
+);
+const CLOCK_ACCOUNT = new PublicKey(
+  "7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot",
+);
+const ARCIUM_PROGRAM = new PublicKey(
+  "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ",
+);
 
 export interface PlaceBetInput {
   marketId: string;
@@ -106,7 +112,9 @@ export function useBet() {
         encryptedBet.set(new Uint8Array(ciphertext[0]), 0);
         encryptedBet.set(new Uint8Array(ciphertext[1]), 32);
 
-        const computationOffsetBytes = crypto.getRandomValues(new Uint8Array(8));
+        const computationOffsetBytes = crypto.getRandomValues(
+          new Uint8Array(8),
+        );
         const computationOffset = new BN(computationOffsetBytes);
         const depositAmount = new BN(Math.floor(input.amount * 1e9));
 
@@ -119,7 +127,7 @@ export function useBet() {
 
         const bettorTokenAccount = await getAssociatedTokenAddress(
           input.tokenMint,
-          wallet.publicKey
+          wallet.publicKey,
         );
 
         // wrap SOL if needed
@@ -127,7 +135,8 @@ export function useBet() {
         const wrapInstructions: any[] = [];
 
         if (isNativeSol) {
-          const accountInfo = await connection.getAccountInfo(bettorTokenAccount);
+          const accountInfo =
+            await connection.getAccountInfo(bettorTokenAccount);
 
           if (!accountInfo) {
             wrapInstructions.push(
@@ -135,8 +144,8 @@ export function useBet() {
                 wallet.publicKey,
                 bettorTokenAccount,
                 wallet.publicKey,
-                NATIVE_MINT
-              )
+                NATIVE_MINT,
+              ),
             );
           }
 
@@ -145,10 +154,12 @@ export function useBet() {
               fromPubkey: wallet.publicKey,
               toPubkey: bettorTokenAccount,
               lamports: depositAmount.toNumber(),
-            })
+            }),
           );
 
-          wrapInstructions.push(createSyncNativeInstruction(bettorTokenAccount));
+          wrapInstructions.push(
+            createSyncNativeInstruction(bettorTokenAccount),
+          );
         }
 
         // arcium accounts
@@ -159,13 +170,19 @@ export function useBet() {
 
         const compDefOffset = getCompDefAccOffset("process_bet");
         const compDefOffsetNumber = Buffer.from(compDefOffset).readUInt32LE();
-        const compDefAccount = getCompDefAccAddress(PROGRAM_ID, compDefOffsetNumber);
+        const compDefAccount = getCompDefAccAddress(
+          PROGRAM_ID,
+          compDefOffsetNumber,
+        );
 
-        const computationAccount = getComputationAccAddress(CLUSTER_OFFSET, computationOffset);
+        const computationAccount = getComputationAccAddress(
+          CLUSTER_OFFSET,
+          computationOffset,
+        );
 
         const [signPdaAccount] = PublicKey.findProgramAddressSync(
           [Buffer.from("ArciumSignerAccount")],
-          PROGRAM_ID
+          PROGRAM_ID,
         );
 
         const accounts = {
@@ -198,7 +215,7 @@ export function useBet() {
             encryptedBetBuffer,
             Array.from(publicKey) as number[],
             new BN(nonce.toString()),
-            depositAmount
+            depositAmount,
           )
           .accountsPartial(accounts)
           .instruction();
@@ -211,14 +228,18 @@ export function useBet() {
         }
         transaction.add(instruction);
 
-        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+        const { blockhash, lastValidBlockHeight } =
+          await connection.getLatestBlockhash();
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = wallet.publicKey;
 
         const signedTx = await wallet.signTransaction!(transaction);
-        const txSignature = await connection.sendRawTransaction(signedTx.serialize(), {
-          skipPreflight: true,
-        });
+        const txSignature = await connection.sendRawTransaction(
+          signedTx.serialize(),
+          {
+            skipPreflight: true,
+          },
+        );
 
         const confirmation = await connection.confirmTransaction({
           signature: txSignature,
@@ -241,7 +262,7 @@ export function useBet() {
         setLoading(false);
       }
     },
-    [connection, wallet]
+    [connection, wallet],
   );
 
   return { placeBet, loading, error };

@@ -39,11 +39,11 @@ const nextConfig: NextConfig = {
       ...config.resolve.alias,
       "light_wasm_hasher_bg.wasm": path.resolve(
         __dirname,
-        "node_modules/@lightprotocol/hasher.rs/dist/light_wasm_hasher_bg.wasm"
+        "node_modules/@lightprotocol/hasher.rs/dist/light_wasm_hasher_bg.wasm",
       ),
       "hasher_wasm_simd_bg.wasm": path.resolve(
         __dirname,
-        "node_modules/@lightprotocol/hasher.rs/dist/hasher_wasm_simd_bg.wasm"
+        "node_modules/@lightprotocol/hasher.rs/dist/hasher_wasm_simd_bg.wasm",
       ),
     };
 
