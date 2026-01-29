@@ -26,8 +26,14 @@ interface CreateMarketDialogProps {
   onMarketCreated?: () => void;
 }
 
+<<<<<<< HEAD
 export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps) {
   const router = useRouter();
+=======
+export function CreateMarketDialog({
+  onMarketCreated,
+}: CreateMarketDialogProps) {
+>>>>>>> bcc8b6e (chore text-black)
   const wallet = usePrivyWallet();
   const { createMarket, openMarket, loading, error } = useMarket();
   const [open, setOpen] = useState(false);
@@ -36,10 +42,10 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
 
   const formatDateTimeLocal = (date: Date) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
@@ -75,7 +81,13 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
       return;
     }
 
-    if (!question || !tokenMint || !bettingStart || !bettingEnd || !resolutionEnd) {
+    if (
+      !question ||
+      !tokenMint ||
+      !bettingStart ||
+      !bettingEnd ||
+      !resolutionEnd
+    ) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -87,9 +99,22 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
 
     try {
       const marketId = new BN(Date.now());
+<<<<<<< HEAD
       const bettingStartTs = new BN(Math.floor(new Date(bettingStart).getTime() / 1000));
       const bettingEndTs = new BN(Math.floor(new Date(bettingEnd).getTime() / 1000));
       const resolutionEndTs = new BN(Math.floor(new Date(resolutionEnd).getTime() / 1000));
+=======
+      const nowTs = Math.floor(Date.now() / 1000);
+      const bettingStartTs = new BN(
+        Math.floor(new Date(bettingStart).getTime() / 1000),
+      );
+      const bettingEndTs = new BN(
+        Math.floor(new Date(bettingEnd).getTime() / 1000),
+      );
+      const resolutionEndTs = new BN(
+        Math.floor(new Date(resolutionEnd).getTime() / 1000),
+      );
+>>>>>>> bcc8b6e (chore text-black)
 
       let mintPubkey: PublicKey;
       try {
@@ -115,7 +140,9 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
         if (openTx) {
           toast.success("Market is now open for betting!");
         } else {
-          toast.warning("Market created but failed to auto-open. You can open it manually.");
+          toast.warning(
+            "Market created but failed to auto-open. You can open it manually.",
+          );
         }
 
         setOpen(false);
@@ -174,7 +201,10 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tokenMint" className="text-muted-foreground text-sm">
+            <Label
+              htmlFor="tokenMint"
+              className="text-muted-foreground text-sm"
+            >
               Token Mint Address
             </Label>
             <Input
@@ -193,7 +223,10 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
             <p className="text-muted-foreground text-sm">Betting Period</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label htmlFor="bettingStart" className="text-muted-foreground text-xs">
+                <Label
+                  htmlFor="bettingStart"
+                  className="text-muted-foreground text-xs"
+                >
                   Starts
                 </Label>
                 <Input
@@ -205,7 +238,10 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bettingEnd" className="text-muted-foreground text-xs">
+                <Label
+                  htmlFor="bettingEnd"
+                  className="text-muted-foreground text-xs"
+                >
                   Ends
                 </Label>
                 <Input
@@ -220,7 +256,10 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="resolutionEnd" className="text-muted-foreground text-sm">
+            <Label
+              htmlFor="resolutionEnd"
+              className="text-muted-foreground text-sm"
+            >
               Resolution Deadline
             </Label>
             <Input
@@ -240,7 +279,10 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
           <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={handleCreate} disabled={loading || !wallet.publicKey}>
+          <Button
+            onClick={handleCreate}
+            disabled={loading || !wallet.publicKey}
+          >
             <IconPlus size={16} stroke={2} />
             {loading ? "Creating..." : "Create Market"}
           </Button>

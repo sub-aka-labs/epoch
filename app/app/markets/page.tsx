@@ -132,7 +132,9 @@ export default function MarketsPage() {
                 "Refresh"
               )}
             </button>
-            {wallet.publicKey && <CreateMarketDialog onMarketCreated={refetch} />}
+            {wallet.publicKey && (
+              <CreateMarketDialog onMarketCreated={refetch} />
+            )}
           </div>
         </div>
 
