@@ -110,4 +110,4 @@ Mainnet deployment planned following audits and MPC scaling.
 
 ## License
 
-MIT
+[EPOCH LICENSE](https://github.com/epochdotm/epoch/blob/main/LICENSE)
