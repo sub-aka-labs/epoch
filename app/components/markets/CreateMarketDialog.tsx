@@ -26,14 +26,10 @@ interface CreateMarketDialogProps {
   onMarketCreated?: () => void;
 }
 
-<<<<<<< HEAD
-export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps) {
-  const router = useRouter();
-=======
 export function CreateMarketDialog({
   onMarketCreated,
 }: CreateMarketDialogProps) {
->>>>>>> bcc8b6e (chore text-black)
+  const router = useRouter();
   const wallet = usePrivyWallet();
   const { createMarket, openMarket, loading, error } = useMarket();
   const [open, setOpen] = useState(false);
@@ -99,12 +95,6 @@ export function CreateMarketDialog({
 
     try {
       const marketId = new BN(Date.now());
-<<<<<<< HEAD
-      const bettingStartTs = new BN(Math.floor(new Date(bettingStart).getTime() / 1000));
-      const bettingEndTs = new BN(Math.floor(new Date(bettingEnd).getTime() / 1000));
-      const resolutionEndTs = new BN(Math.floor(new Date(resolutionEnd).getTime() / 1000));
-=======
-      const nowTs = Math.floor(Date.now() / 1000);
       const bettingStartTs = new BN(
         Math.floor(new Date(bettingStart).getTime() / 1000),
       );
@@ -114,7 +104,6 @@ export function CreateMarketDialog({
       const resolutionEndTs = new BN(
         Math.floor(new Date(resolutionEnd).getTime() / 1000),
       );
->>>>>>> bcc8b6e (chore text-black)
 
       let mintPubkey: PublicKey;
       try {

@@ -39,11 +39,11 @@ function StatsDisplay({
 }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
-      <div className="bg-zinc-900 p-5 border border-zinc-800">
-        <p className="text-zinc-500 text-sm mb-1">Total Markets</p>
-        <p className="text-2xl font-bold">
+      <div className="bg-muted p-5 border border-border">
+        <p className="text-muted-foreground text-sm mb-1">Total Markets</p>
+        <p className="text-2xl font-bold text-foreground">
           {loading ? (
-            <span className="text-zinc-500">
+            <span className="text-muted-foreground">
               <ScrambleNumber digits={2} />
             </span>
           ) : (
@@ -51,11 +51,11 @@ function StatsDisplay({
           )}
         </p>
       </div>
-      <div className="bg-zinc-900 p-5 border border-zinc-800">
-        <p className="text-zinc-500 text-sm mb-1">Open for Betting</p>
-        <p className="text-2xl font-bold text-emerald-400">
+      <div className="bg-muted p-5 border border-border">
+        <p className="text-muted-foreground text-sm mb-1">Open for Betting</p>
+        <p className="text-2xl font-bold text-emerald-500">
           {loading ? (
-            <span className="text-emerald-400/50">
+            <span className="text-emerald-500/50">
               <ScrambleNumber digits={2} />
             </span>
           ) : (
@@ -63,11 +63,11 @@ function StatsDisplay({
           )}
         </p>
       </div>
-      <div className="bg-zinc-900 p-5 border border-zinc-800">
-        <p className="text-zinc-500 text-sm mb-1">Total Positions</p>
-        <p className="text-2xl font-bold">
+      <div className="bg-muted p-5 border border-border">
+        <p className="text-muted-foreground text-sm mb-1">Total Positions</p>
+        <p className="text-2xl font-bold text-foreground">
           {loading ? (
-            <span className="text-zinc-500">
+            <span className="text-muted-foreground">
               <ScrambleNumber digits={3} />
             </span>
           ) : (
@@ -98,7 +98,7 @@ export default function MarketsPage() {
             <h1 className="text-2xl sm:text-3xl font-bold mb-2 tracking-tight">
               Prediction Markets
             </h1>
-            <p className="text-zinc-500 text-sm sm:text-base">
+            <p className="text-muted-foreground text-sm sm:text-base">
               Private betting powered by Arcium MPC encryption
             </p>
           </div>
