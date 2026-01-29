@@ -171,8 +171,10 @@ export default function MarketPage({ params }: PageProps) {
       <div className="bg-background min-h-screen">
         <Header showLive={wsConnected} />
         <main className="mx-auto max-w-6xl px-4 py-8">
-          <Card className="py-12 text-center border-rose-200 dark:border-rose-500/20 bg-rose-50 dark:bg-rose-500/10">
-            <p className="text-rose-700 dark:text-rose-400">{error || "Market not found"}</p>
+          <Card className="border-rose-200 bg-rose-50 py-12 text-center dark:border-rose-500/20 dark:bg-rose-500/10">
+            <p className="text-rose-700 dark:text-rose-400">
+              {error || "Market not found"}
+            </p>
           </Card>
         </main>
       </div>
@@ -194,15 +196,24 @@ export default function MarketPage({ params }: PageProps) {
             <h1 className="text-lg leading-tight font-bold tracking-tight sm:text-xl">
               {market.question}
             </h1>
-            <Badge variant={getStatusVariant(market.status)} className="shrink-0">
+            <Badge
+              variant={getStatusVariant(market.status)}
+              className="shrink-0"
+            >
               {market.status}
             </Badge>
           </div>
 
           {isResolved && market.winningOutcome && (
             <div className="inline-flex items-center gap-2">
-              <span className="text-muted-foreground text-[13px]">Outcome:</span>
-              <Badge variant={market.winningOutcome === "yes" ? "success" : "destructive"}>
+              <span className="text-muted-foreground text-[13px]">
+                Outcome:
+              </span>
+              <Badge
+                variant={
+                  market.winningOutcome === "yes" ? "success" : "destructive"
+                }
+              >
                 {market.winningOutcome.toUpperCase()}
               </Badge>
             </div>
@@ -212,7 +223,7 @@ export default function MarketPage({ params }: PageProps) {
         <div className="space-y-4">
           {/* Open Market for Authority */}
           {isAuthority && market.status === MarketStatus.Created && (
-            <Card className="p-5 hover:border-border">
+            <Card className="hover:border-border p-5">
               <div className="mb-3 flex items-center gap-2">
                 <div className="h-1.5 w-1.5 bg-amber-500 dark:bg-amber-400" />
                 <h2 className="text-sm font-medium">Market Not Open</h2>
@@ -229,7 +240,7 @@ export default function MarketPage({ params }: PageProps) {
 
           {/* Waiting for Market to Open - for non-authority users */}
           {!isAuthority && market.status === MarketStatus.Created && (
-            <Card className="p-5 hover:border-border">
+            <Card className="hover:border-border p-5">
               <div className="mb-2 flex items-center gap-2">
                 <div className="h-1.5 w-1.5 bg-amber-500 dark:bg-amber-400" />
                 <h2 className="text-sm font-medium">Market Not Active</h2>
@@ -245,7 +256,7 @@ export default function MarketPage({ params }: PageProps) {
           {market.status === MarketStatus.Open &&
             !canBet &&
             new Date() >= market.bettingEndTime && (
-              <Card className="p-5 hover:border-border">
+              <Card className="hover:border-border p-5">
                 <div className="mb-2 flex items-center gap-2">
                   <div className="h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
                   <h2 className="text-sm font-medium">Betting Closed</h2>
@@ -265,7 +276,7 @@ export default function MarketPage({ params }: PageProps) {
           {market.status === MarketStatus.Open &&
             !canBet &&
             new Date() < market.bettingStartTime && (
-              <Card className="p-5 hover:border-border">
+              <Card className="hover:border-border p-5">
                 <div className="mb-2 flex items-center gap-2">
                   <div className="h-1.5 w-1.5 bg-sky-500 dark:bg-sky-400" />
                   <h2 className="text-sm font-medium">Betting Opens Soon</h2>
@@ -278,12 +289,12 @@ export default function MarketPage({ params }: PageProps) {
 
           {/* Betting Card */}
           {canBet && (
-            <Card className="p-6 hover:border-border">
+            <Card className="hover:border-border p-6">
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_10px_3px_rgba(16,185,129,0.5)]"></span>
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75 dark:bg-emerald-400"></span>
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_3px_rgba(16,185,129,0.5)] dark:bg-emerald-400"></span>
                   </span>
                   <h2 className="text-lg font-medium">Place Your Bet</h2>
                 </div>
@@ -299,7 +310,7 @@ export default function MarketPage({ params }: PageProps) {
                   className={`h-14 text-base font-semibold ${
                     selectedOutcome === "yes"
                       ? "bg-emerald-500 text-white hover:bg-emerald-600"
-                      : "bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 shadow-none"
+                      : "border border-emerald-200 bg-emerald-50 text-emerald-600 shadow-none hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20"
                   }`}
                 >
                   YES
@@ -309,7 +320,7 @@ export default function MarketPage({ params }: PageProps) {
                   className={`h-14 text-base font-semibold ${
                     selectedOutcome === "no"
                       ? "bg-rose-500 text-white hover:bg-rose-600"
-                      : "bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 shadow-none"
+                      : "border border-rose-200 bg-rose-50 text-rose-600 shadow-none hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20"
                   }`}
                 >
                   NO
@@ -361,14 +372,16 @@ export default function MarketPage({ params }: PageProps) {
 
           {/* Resolved State */}
           {isResolved && (
-            <Card className="p-5 hover:border-border">
+            <Card className="hover:border-border p-5">
               <div className="py-3 text-center">
                 <p className="text-muted-foreground mb-2 text-[13px]">
                   Market Resolved
                 </p>
                 <Badge
-                  variant={market.winningOutcome === "yes" ? "success" : "destructive"}
-                  className="text-lg px-4 py-1"
+                  variant={
+                    market.winningOutcome === "yes" ? "success" : "destructive"
+                  }
+                  className="px-4 py-1 text-lg"
                 >
                   {market.winningOutcome?.toUpperCase()}
                 </Badge>
@@ -381,7 +394,7 @@ export default function MarketPage({ params }: PageProps) {
             !isResolved &&
             market.status !== MarketStatus.Cancelled &&
             new Date() >= market.bettingEndTime && (
-              <Card className="p-5 hover:border-border">
+              <Card className="hover:border-border p-5">
                 <h2 className="mb-3 text-sm font-medium">Resolve Market</h2>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
@@ -403,7 +416,7 @@ export default function MarketPage({ params }: PageProps) {
           {/* Info Cards Row - Equal Height */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {/* Position Card */}
-            <Card className="p-4 hover:border-border">
+            <Card className="hover:border-border p-4">
               <h3 className="mb-3 text-sm font-medium">Your Position</h3>
               {!wallet.publicKey ? (
                 <p className="text-muted-foreground text-[13px]">
@@ -421,7 +434,10 @@ export default function MarketPage({ params }: PageProps) {
                   </div>
                   <div className="flex justify-between text-[13px]">
                     <span className="text-muted-foreground">Status</span>
-                    <Badge variant={getPositionStatusVariant(position.status)} className="text-xs">
+                    <Badge
+                      variant={getPositionStatusVariant(position.status)}
+                      className="text-xs"
+                    >
                       {position.status}
                     </Badge>
                   </div>
@@ -454,7 +470,10 @@ export default function MarketPage({ params }: PageProps) {
                       </Button>
                     )}
                   {position.status === PositionStatus.Pending && isResolved && (
-                    <Badge variant="warning" className="mt-2 w-full justify-center">
+                    <Badge
+                      variant="warning"
+                      className="mt-2 w-full justify-center"
+                    >
                       Waiting for MPC...
                     </Badge>
                   )}
@@ -467,7 +486,7 @@ export default function MarketPage({ params }: PageProps) {
             </Card>
 
             {/* Market Info */}
-            <Card className="p-4 hover:border-border">
+            <Card className="hover:border-border p-4">
               <h3 className="mb-3 text-sm font-medium">Market Info</h3>
               <div className="space-y-2 text-[13px]">
                 <div className="flex justify-between">
@@ -486,7 +505,7 @@ export default function MarketPage({ params }: PageProps) {
             </Card>
 
             {/* Tech Stack */}
-            <Card className="p-4 hover:border-border">
+            <Card className="hover:border-border p-4">
               <h3 className="mb-3 text-sm font-medium">Powered By</h3>
               <div className="flex flex-wrap gap-1.5">
                 <Badge variant="secondary">Arcium MPC</Badge>

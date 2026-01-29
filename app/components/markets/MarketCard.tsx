@@ -72,7 +72,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
   };
 
   return (
-    <Card className="p-4 cursor-pointer">
+    <Card className="cursor-pointer p-4">
       {/* Header - Clickable to go to detail page */}
       <Link href={`/markets/${market.marketId}`}>
         <div className="group mb-3 flex items-start justify-between gap-3">
@@ -89,7 +89,11 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
       {market.isResolved && market.winningOutcome && (
         <div className="mb-3 flex items-center gap-2">
           <span className="text-muted-foreground text-[13px]">Outcome:</span>
-          <Badge variant={market.winningOutcome === "yes" ? "success" : "destructive"}>
+          <Badge
+            variant={
+              market.winningOutcome === "yes" ? "success" : "destructive"
+            }
+          >
             {market.winningOutcome.toUpperCase()}
           </Badge>
         </div>
@@ -131,14 +135,14 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
             <Button
               onClick={(e) => handleQuickBet("yes", e)}
               disabled={betLoading || !betAmount}
-              className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:border-emerald-500 hover:text-white shadow-none"
+              className="border border-emerald-200 bg-emerald-50 text-emerald-600 shadow-none hover:border-emerald-500 hover:bg-emerald-500 hover:text-white dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400"
             >
               {betLoading ? "..." : "YES"}
             </Button>
             <Button
               onClick={(e) => handleQuickBet("no", e)}
               disabled={betLoading || !betAmount}
-              className="bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:border-rose-500 hover:text-white shadow-none"
+              className="border border-rose-200 bg-rose-50 text-rose-600 shadow-none hover:border-rose-500 hover:bg-rose-500 hover:text-white dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400"
             >
               {betLoading ? "..." : "NO"}
             </Button>
@@ -161,13 +165,13 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
         {market.canBet ? (
           <div className="flex items-center gap-2 text-xs">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_2px_rgba(16,185,129,0.5)]"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75 dark:bg-emerald-400"></span>
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_2px_rgba(16,185,129,0.5)] dark:bg-emerald-400"></span>
             </span>
             <Countdown
               targetDate={market.bettingEndTime}
               size="sm"
-              className="text-emerald-600 dark:text-emerald-400 font-medium"
+              className="font-medium text-emerald-600 dark:text-emerald-400"
             />
           </div>
         ) : (

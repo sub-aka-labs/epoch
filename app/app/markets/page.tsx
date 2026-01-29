@@ -42,7 +42,7 @@ function StatsDisplay({
 }) {
   return (
     <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-4">
-      <Card className="p-5 hover:border-border">
+      <Card className="hover:border-border p-5">
         <p className="text-muted-foreground mb-1 text-sm">Total Markets</p>
         <p className="text-foreground text-2xl font-bold">
           {loading ? (
@@ -54,8 +54,10 @@ function StatsDisplay({
           )}
         </p>
       </Card>
-      <Card className="bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 p-5 hover:border-emerald-300 dark:hover:border-emerald-500/30">
-        <p className="text-emerald-700 dark:text-emerald-400/80 mb-1 text-sm">Open for Betting</p>
+      <Card className="border-emerald-200 bg-emerald-50 p-5 hover:border-emerald-300 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:hover:border-emerald-500/30">
+        <p className="mb-1 text-sm text-emerald-700 dark:text-emerald-400/80">
+          Open for Betting
+        </p>
         <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
           {loading ? (
             <span className="text-emerald-400/50">
@@ -66,7 +68,7 @@ function StatsDisplay({
           )}
         </p>
       </Card>
-      <Card className="p-5 hover:border-border">
+      <Card className="hover:border-border p-5">
         <p className="text-muted-foreground mb-1 text-sm">Total Positions</p>
         <p className="text-foreground text-2xl font-bold">
           {loading ? (
@@ -106,12 +108,11 @@ export default function MarketsPage() {
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
-            <Button
-              variant="secondary"
-              onClick={refetch}
-              disabled={loading}
-            >
-              <IconRefresh size={14} className={loading ? "animate-spin" : ""} />
+            <Button variant="secondary" onClick={refetch} disabled={loading}>
+              <IconRefresh
+                size={14}
+                className={loading ? "animate-spin" : ""}
+              />
               {loading ? "Loading" : "Refresh"}
             </Button>
             {wallet.publicKey && (
@@ -121,7 +122,7 @@ export default function MarketsPage() {
         </div>
 
         {error && (
-          <Card className="mb-6 border-rose-300 dark:border-rose-500/20 bg-rose-100 dark:bg-rose-500/10 p-4 text-rose-700 dark:text-rose-400 hover:border-rose-300">
+          <Card className="mb-6 border-rose-300 bg-rose-100 p-4 text-rose-700 hover:border-rose-300 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
             {error}
           </Card>
         )}

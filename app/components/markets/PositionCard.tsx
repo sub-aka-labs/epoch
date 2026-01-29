@@ -74,7 +74,9 @@ export function PositionCard({
             position.status === PositionStatus.Claimed ? (
               <span className="text-emerald-600 dark:text-emerald-400">
                 {formatTokenAmount(BigInt(position.payoutAmount))}{" "}
-                <span className="text-xs text-emerald-600/70 dark:text-emerald-400/70">SOL</span>
+                <span className="text-xs text-emerald-600/70 dark:text-emerald-400/70">
+                  SOL
+                </span>
               </span>
             ) : (
               <span className="text-muted-foreground">Pending...</span>
@@ -105,21 +107,23 @@ export function PositionCard({
           </Button>
         </Link>
         {canClaim && (
-          <Button
-            onClick={onClaim}
-            disabled={claimLoading}
-            className="flex-1"
-          >
+          <Button onClick={onClaim} disabled={claimLoading} className="flex-1">
             {claimLoading ? "Claiming..." : "Claim Payout"}
           </Button>
         )}
         {hasClaimed && (
-          <Badge variant="success" className="flex h-8 flex-1 items-center justify-center">
+          <Badge
+            variant="success"
+            className="flex h-8 flex-1 items-center justify-center"
+          >
             Claimed
           </Badge>
         )}
         {hasRefunded && (
-          <Badge variant="muted" className="flex h-8 flex-1 items-center justify-center">
+          <Badge
+            variant="muted"
+            className="flex h-8 flex-1 items-center justify-center"
+          >
             Refunded
           </Badge>
         )}

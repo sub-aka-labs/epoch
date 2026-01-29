@@ -158,7 +158,11 @@ export function CreateMarketDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <Button
         onClick={() => wallet.connected && setOpen(true)}
-        className={!wallet.connected ? "pointer-events-auto cursor-not-allowed opacity-50" : ""}
+        className={
+          !wallet.connected
+            ? "pointer-events-auto cursor-not-allowed opacity-50"
+            : ""
+        }
       >
         <IconPlus size={18} stroke={2} />
         Create Market
