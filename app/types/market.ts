@@ -1,7 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 
-// Market status enum matching the contract
 export enum MarketStatus {
   Created = "Created",
   Open = "Open",
@@ -11,7 +10,6 @@ export enum MarketStatus {
   Cancelled = "Cancelled",
 }
 
-// Position status enum matching the contract
 export enum PositionStatus {
   Pending = "Pending",
   Processed = "Processed",
@@ -20,10 +18,8 @@ export enum PositionStatus {
   Refunded = "Refunded",
 }
 
-// Outcome types
 export type Outcome = "yes" | "no";
 
-// DarkMarket account structure
 export interface DarkMarket {
   authority: PublicKey;
   marketId: BN;
@@ -45,7 +41,6 @@ export interface DarkMarket {
   resolvedAt: BN | null;
 }
 
-// User position account structure
 export interface UserPosition {
   market: PublicKey;
   owner: PublicKey;
@@ -62,7 +57,6 @@ export interface UserPosition {
   claimedAt: BN | null;
 }
 
-// Encrypted pool state account structure
 export interface EncryptedPoolState {
   market: PublicKey;
   encryptedState: Uint8Array;
@@ -74,7 +68,6 @@ export interface EncryptedPoolState {
   isInitialized: boolean;
 }
 
-// Frontend-friendly market display type
 export interface MarketDisplay {
   publicKey: PublicKey;
   marketId: string;
@@ -94,14 +87,12 @@ export interface MarketDisplay {
   isResolved: boolean;
 }
 
-// Bet input for placing bets
 export interface BetInput {
   marketPda: PublicKey;
   outcome: Outcome;
   amount: BN;
 }
 
-// Create market input
 export interface CreateMarketInput {
   marketId: BN;
   question: string;
@@ -111,7 +102,6 @@ export interface CreateMarketInput {
   tokenMint: PublicKey;
 }
 
-// Error codes from the contract
 export const CONTRACT_ERRORS = {
   6000: "Question exceeds maximum length of 200 characters",
   6001: "Betting end time must be before resolution end time",
@@ -145,7 +135,6 @@ export const CONTRACT_ERRORS = {
   6029: "Arithmetic underflow",
 } as const;
 
-// Helper to convert raw account data to MarketDisplay
 export function toMarketDisplay(
   publicKey: PublicKey,
   data: DarkMarket
@@ -184,7 +173,6 @@ export function toMarketDisplay(
   };
 }
 
-// Helper to parse status from raw account data
 function parseMarketStatus(status: unknown): MarketStatus {
   if (typeof status === "object" && status !== null) {
     if ("created" in status) return MarketStatus.Created;

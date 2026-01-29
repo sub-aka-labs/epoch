@@ -2,7 +2,6 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum DarkPoolError {
-    // Market errors
     #[msg("Question exceeds maximum length of 200 characters")]
     QuestionTooLong,
 
@@ -36,7 +35,6 @@ pub enum DarkPoolError {
     #[msg("Invalid market status for this operation")]
     InvalidMarketStatus,
 
-    // Bet errors
     #[msg("Bet amount must be greater than zero")]
     InvalidBetAmount,
 
@@ -46,7 +44,6 @@ pub enum DarkPoolError {
     #[msg("Invalid outcome - must be 0 (NO) or 1 (YES)")]
     InvalidOutcome,
 
-    // Position errors
     #[msg("Position has already been claimed")]
     AlreadyClaimed,
 
@@ -56,7 +53,6 @@ pub enum DarkPoolError {
     #[msg("Payout has not been computed yet")]
     PayoutNotComputed,
 
-    // Authorization errors
     #[msg("Unauthorized - only market authority can perform this action")]
     Unauthorized,
 
@@ -75,7 +71,6 @@ pub enum DarkPoolError {
     #[msg("Position does not belong to this market")]
     InvalidPosition,
 
-    // Computation errors
     #[msg("Pool state has not been initialized")]
     PoolStateNotInitialized,
 
@@ -91,7 +86,6 @@ pub enum DarkPoolError {
     #[msg("Invalid computation result")]
     InvalidComputationResult,
 
-    // Arithmetic errors
     #[msg("Arithmetic overflow")]
     Overflow,
 

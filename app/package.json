@@ -23,7 +23,7 @@
     "@solana/kit": "5.5.1",
     "@solana/spl-token": "^0.4.9",
     "@solana/web3.js": "^1.98.4",
-    "@tabler/icons-react": "3.36.1",
+    "@tabler/icons-react": "^3.36.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",

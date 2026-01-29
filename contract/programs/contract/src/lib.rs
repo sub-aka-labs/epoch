@@ -14,7 +14,6 @@ use state::*;
 
 declare_id!("6eUsJ9n3LM4FoRWx9MyN7SGyZzvs63Bu43xERvgGPWrd");
 
-// ErrorCode enum required by arcium callback_accounts macro
 #[error_code]
 pub enum ErrorCode {
     #[msg("Cluster not set in MXE account")]
@@ -25,10 +24,6 @@ pub enum ErrorCode {
 pub mod contract {
     use super::*;
 
-    // =========================================================================
-    // Computation Definition Initialization
-    // =========================================================================
-
     pub fn init_process_bet_comp_def(ctx: Context<InitProcessBetCompDef>) -> Result<()> {
         init_comp_def(ctx.accounts, None, None)?;
         Ok(())
@@ -38,10 +33,6 @@ pub mod contract {
         init_comp_def(ctx.accounts, None, None)?;
         Ok(())
     }
-
-    // =========================================================================
-    // Market Lifecycle
-    // =========================================================================
 
     pub fn create_market(
         ctx: Context<CreateMarket>,
@@ -118,10 +109,6 @@ pub mod contract {
         Ok(())
     }
 
-    // =========================================================================
-    // Encrypted Betting
-    // =========================================================================
-
     pub fn place_bet(
         ctx: Context<PlaceBet>,
         computation_offset: u64,
@@ -136,10 +123,8 @@ pub mod contract {
         require!(clock.unix_timestamp >= ctx.accounts.market.betting_start_ts, DarkPoolError::BettingNotStarted);
         require!(clock.unix_timestamp < ctx.accounts.market.betting_end_ts, DarkPoolError::BettingEnded);
         require!(deposit_amount > 0, DarkPoolError::InvalidBetAmount);
-        // Encrypted bet should be 64 bytes: 32 for outcome + 32 for amount
         require!(encrypted_bet.len() == 64, DarkPoolError::InvalidEncryptedBetSize);
 
-        // Transfer tokens to vault
         let transfer_ctx = CpiContext::new(
             ctx.accounts.token_program.to_account_info(),
             Transfer {
@@ -152,13 +137,9 @@ pub mod contract {
 
         ctx.accounts.sign_pda_account.bump = ctx.bumps.sign_pda_account;
 
-        // Parse encrypted bet into ciphertext components
-        // Each field element is 32 bytes from Rescue cipher
         let encrypted_outcome: [u8; 32] = encrypted_bet[0..32].try_into().unwrap();
         let encrypted_amount: [u8; 32] = encrypted_bet[32..64].try_into().unwrap();
 
-        // Build encrypted computation args
-        // For Enc<Shared, T>, we need: x25519_pubkey, nonce, then ciphertexts
         let args = ArgBuilder::new()
             .x25519_pubkey(user_pubkey)
             .plaintext_u128(nonce)
@@ -166,7 +147,6 @@ pub mod contract {
             .encrypted_u64(encrypted_amount)
             .build();
 
-        // Queue the bet processing computation
         queue_computation(
             ctx.accounts,
             computation_offset,
@@ -181,7 +161,6 @@ pub mod contract {
             0,
         )?;
 
-        // Initialize user position
         let position = &mut ctx.accounts.user_position;
         let market_key = ctx.accounts.market.key();
         position.market = market_key;
@@ -223,7 +202,6 @@ pub mod contract {
             .verify_output(&ctx.accounts.cluster_account, &ctx.accounts.computation_account)
             .map_err(|_| DarkPoolError::ComputationAborted)?;
 
-        // Store the encrypted result for verification purposes
         ctx.accounts.pool_state.encrypted_state = result
             .field_0
             .ciphertexts
@@ -234,12 +212,10 @@ pub mod contract {
         ctx.accounts.pool_state.last_updated = clock.unix_timestamp;
         ctx.accounts.pool_state.last_computation_id = ctx.accounts.user_position.computation_id;
 
-        // Update commitment with nonce
         let mut commitment = [0u8; 32];
         commitment[..16].copy_from_slice(&result.field_0.nonce.to_le_bytes());
         ctx.accounts.market.state_commitment = commitment;
 
-        // Mark bet as processed
         ctx.accounts.user_position.status = PositionStatus::Processed;
         ctx.accounts.user_position.processed_at = Some(clock.unix_timestamp);
 
@@ -254,10 +230,6 @@ pub mod contract {
 
         Ok(())
     }
-
-    // =========================================================================
-    // Resolution & Settlement
-    // =========================================================================
 
     pub fn close_betting(ctx: Context<CloseBetting>) -> Result<()> {
         let market = &mut ctx.accounts.market;
@@ -392,10 +364,6 @@ pub mod contract {
         Ok(())
     }
 
-    // =========================================================================
-    // Cancellation & Refunds
-    // =========================================================================
-
     pub fn cancel_market(ctx: Context<CancelMarket>) -> Result<()> {
         let market = &mut ctx.accounts.market;
         let clock = Clock::get()?;
@@ -455,10 +423,6 @@ pub mod contract {
     }
 }
 
-// =============================================================================
-// Account Contexts
-// =============================================================================
-
 #[init_computation_definition_accounts("process_bet", payer)]
 #[derive(Accounts)]
 pub struct InitProcessBetCompDef<'info> {
@@ -469,7 +433,7 @@ pub struct InitProcessBetCompDef<'info> {
     pub mxe_account: Box<Account<'info, MXEAccount>>,
 
     #[account(mut)]
-    /// CHECK: comp_def_account
+    /// CHECK: Validated by Arcium
     pub comp_def_account: UncheckedAccount<'info>,
 
     pub arcium_program: Program<'info, Arcium>,
@@ -486,7 +450,7 @@ pub struct InitComputePayoutCompDef<'info> {
     pub mxe_account: Box<Account<'info, MXEAccount>>,
 
     #[account(mut)]
-    /// CHECK: comp_def_account
+    /// CHECK: Validated by Arcium
     pub comp_def_account: UncheckedAccount<'info>,
 
     pub arcium_program: Program<'info, Arcium>,
@@ -603,15 +567,15 @@ pub struct PlaceBet<'info> {
     pub mxe_account: Box<Account<'info, MXEAccount>>,
 
     #[account(mut, address = derive_mempool_pda!(mxe_account, DarkPoolError::ClusterNotSet))]
-    /// CHECK: mempool_account
+    /// CHECK: Validated by address constraint
     pub mempool_account: UncheckedAccount<'info>,
 
     #[account(mut, address = derive_execpool_pda!(mxe_account, DarkPoolError::ClusterNotSet))]
-    /// CHECK: executing_pool
+    /// CHECK: Validated by address constraint
     pub executing_pool: UncheckedAccount<'info>,
 
     #[account(mut, address = derive_comp_pda!(computation_offset, mxe_account, DarkPoolError::ClusterNotSet))]
-    /// CHECK: computation_account
+    /// CHECK: Validated by address constraint
     pub computation_account: UncheckedAccount<'info>,
 
     #[account(address = derive_comp_def_pda!(comp_def_offset("process_bet")))]
@@ -651,13 +615,13 @@ pub struct ProcessBetCallback<'info> {
     #[account(address = derive_mxe_pda!())]
     pub mxe_account: Account<'info, MXEAccount>,
 
-    /// CHECK: computation_account
+    /// CHECK: Validated by Arcium callback
     pub computation_account: UncheckedAccount<'info>,
 
     pub cluster_account: Account<'info, Cluster>,
 
     #[account(address = ::anchor_lang::solana_program::sysvar::instructions::ID)]
-    /// CHECK: instructions_sysvar
+    /// CHECK: Validated by address constraint
     pub instructions_sysvar: AccountInfo<'info>,
 }
 
@@ -706,15 +670,15 @@ pub struct ComputePayout<'info> {
     pub mxe_account: Box<Account<'info, MXEAccount>>,
 
     #[account(mut, address = derive_mempool_pda!(mxe_account, DarkPoolError::ClusterNotSet))]
-    /// CHECK: mempool_account
+    /// CHECK: Validated by address constraint
     pub mempool_account: UncheckedAccount<'info>,
 
     #[account(mut, address = derive_execpool_pda!(mxe_account, DarkPoolError::ClusterNotSet))]
-    /// CHECK: executing_pool
+    /// CHECK: Validated by address constraint
     pub executing_pool: UncheckedAccount<'info>,
 
     #[account(mut, address = derive_comp_pda!(computation_offset, mxe_account, DarkPoolError::ClusterNotSet))]
-    /// CHECK: computation_account
+    /// CHECK: Validated by address constraint
     pub computation_account: UncheckedAccount<'info>,
 
     #[account(address = derive_comp_def_pda!(comp_def_offset("compute_payout")))]
@@ -750,13 +714,13 @@ pub struct ComputePayoutCallback<'info> {
     #[account(address = derive_mxe_pda!())]
     pub mxe_account: Account<'info, MXEAccount>,
 
-    /// CHECK: computation_account
+    /// CHECK: Validated by Arcium callback
     pub computation_account: UncheckedAccount<'info>,
 
     pub cluster_account: Account<'info, Cluster>,
 
     #[account(address = ::anchor_lang::solana_program::sysvar::instructions::ID)]
-    /// CHECK: instructions_sysvar
+    /// CHECK: Validated by address constraint
     pub instructions_sysvar: AccountInfo<'info>,
 }
 

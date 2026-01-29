@@ -1706,72 +1706,42 @@
         "fields": [
           {
             "name": "authority",
-            "docs": [
-              "Market authority - can resolve and manage market"
-            ],
             "type": "pubkey"
           },
           {
             "name": "market_id",
-            "docs": [
-              "Unique market identifier"
-            ],
             "type": "u64"
           },
           {
             "name": "question",
-            "docs": [
-              "The prediction question (publicly visible)"
-            ],
             "type": "string"
           },
           {
             "name": "token_mint",
-            "docs": [
-              "Token mint for betting"
-            ],
             "type": "pubkey"
           },
           {
             "name": "vault",
-            "docs": [
-              "Vault PDA holding all deposits"
-            ],
             "type": "pubkey"
           },
           {
             "name": "pool_state",
-            "docs": [
-              "Pool state account reference"
-            ],
             "type": "pubkey"
           },
           {
             "name": "betting_start_ts",
-            "docs": [
-              "Betting start timestamp"
-            ],
             "type": "i64"
           },
           {
             "name": "betting_end_ts",
-            "docs": [
-              "Betting end timestamp"
-            ],
             "type": "i64"
           },
           {
             "name": "resolution_end_ts",
-            "docs": [
-              "Resolution deadline timestamp"
-            ],
             "type": "i64"
           },
           {
             "name": "status",
-            "docs": [
-              "Current market status"
-            ],
             "type": {
               "defined": {
                 "name": "MarketStatus"
@@ -1780,25 +1750,16 @@
           },
           {
             "name": "winning_outcome",
-            "docs": [
-              "Winning outcome after resolution (0=NO, 1=YES)"
-            ],
             "type": {
               "option": "u8"
             }
           },
           {
             "name": "total_positions",
-            "docs": [
-              "Total number of positions (bet count visible, not per-side)"
-            ],
             "type": "u32"
           },
           {
             "name": "state_commitment",
-            "docs": [
-              "Commitment hash of current encrypted state"
-            ],
             "type": {
               "array": [
                 "u8",
@@ -1808,9 +1769,6 @@
           },
           {
             "name": "bump",
-            "docs": [
-              "PDA bumps"
-            ],
             "type": "u8"
           },
           {
@@ -1823,9 +1781,6 @@
           },
           {
             "name": "created_at",
-            "docs": [
-              "Timestamps"
-            ],
             "type": "i64"
           },
           {
@@ -1844,60 +1799,34 @@
         "fields": [
           {
             "name": "market",
-            "docs": [
-              "Market this pool belongs to"
-            ],
             "type": "pubkey"
           },
           {
             "name": "encrypted_state",
-            "docs": [
-              "Encrypted state blob (MXE-encrypted)",
-              "Contains: total_yes, total_no, total_deposits, bet_count, salt",
-              "Only MXE can decrypt and update"
-            ],
             "type": "bytes"
           },
           {
             "name": "state_version",
-            "docs": [
-              "State version - increments on each update"
-            ],
             "type": "u64"
           },
           {
             "name": "last_computation_id",
-            "docs": [
-              "Last computation ID processed"
-            ],
             "type": "u64"
           },
           {
             "name": "pending_computations",
-            "docs": [
-              "Number of pending computations"
-            ],
             "type": "u32"
           },
           {
             "name": "last_updated",
-            "docs": [
-              "Last update timestamp"
-            ],
             "type": "i64"
           },
           {
             "name": "bump",
-            "docs": [
-              "PDA bump"
-            ],
             "type": "u8"
           },
           {
             "name": "is_initialized",
-            "docs": [
-              "Whether pool is initialized"
-            ],
             "type": "bool"
           }
         ]
@@ -2661,31 +2590,18 @@
         "fields": [
           {
             "name": "market",
-            "docs": [
-              "Market this position belongs to"
-            ],
             "type": "pubkey"
           },
           {
             "name": "owner",
-            "docs": [
-              "Position owner"
-            ],
             "type": "pubkey"
           },
           {
             "name": "encrypted_bet",
-            "docs": [
-              "Encrypted bet data: [outcome_cipher, amount_cipher, salt_cipher]",
-              "Encrypted with shared secret between user and MXE"
-            ],
             "type": "bytes"
           },
           {
             "name": "user_pubkey",
-            "docs": [
-              "User's x25519 public key for shared secret derivation"
-            ],
             "type": {
               "array": [
                 "u8",
@@ -2695,30 +2611,18 @@
           },
           {
             "name": "nonce",
-            "docs": [
-              "Encryption nonce"
-            ],
             "type": "u128"
           },
           {
             "name": "deposit_amount",
-            "docs": [
-              "Deposit amount (visible on-chain, but NOT which side)"
-            ],
             "type": "u64"
           },
           {
             "name": "payout_amount",
-            "docs": [
-              "Computed payout amount (set after settlement)"
-            ],
             "type": "u64"
           },
           {
             "name": "status",
-            "docs": [
-              "Position status"
-            ],
             "type": {
               "defined": {
                 "name": "PositionStatus"
@@ -2727,23 +2631,14 @@
           },
           {
             "name": "computation_id",
-            "docs": [
-              "Computation ID for tracking"
-            ],
             "type": "u64"
           },
           {
             "name": "bump",
-            "docs": [
-              "PDA bump"
-            ],
             "type": "u8"
           },
           {
             "name": "created_at",
-            "docs": [
-              "Timestamps"
-            ],
             "type": "i64"
           },
           {

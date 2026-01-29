@@ -2,10 +2,8 @@ import { AnchorProvider, Program, Idl } from "@coral-xyz/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
 import idl from "./contract.json";
 
-// Program ID from the IDL
 export const PROGRAM_ID = new PublicKey(idl.address);
 
-// Seeds for PDAs
 export const SEEDS = {
   DARK_MARKET: Buffer.from("dark_market"),
   POOL_STATE: Buffer.from("pool_state"),
@@ -13,12 +11,10 @@ export const SEEDS = {
   POSITION: Buffer.from("position"),
 } as const;
 
-// Get the program instance
 export function getProgram(provider: AnchorProvider): Program {
   return new Program(idl as Idl, provider);
 }
 
-// Derive market PDA
 export function getMarketPDA(marketId: bigint | number): [PublicKey, number] {
   const marketIdBuffer = Buffer.alloc(8);
   marketIdBuffer.writeBigUInt64LE(BigInt(marketId));
@@ -29,7 +25,6 @@ export function getMarketPDA(marketId: bigint | number): [PublicKey, number] {
   );
 }
 
-// Derive pool state PDA
 export function getPoolStatePDA(marketId: bigint | number): [PublicKey, number] {
   const marketIdBuffer = Buffer.alloc(8);
   marketIdBuffer.writeBigUInt64LE(BigInt(marketId));
@@ -40,7 +35,6 @@ export function getPoolStatePDA(marketId: bigint | number): [PublicKey, number] 
   );
 }
 
-// Derive vault PDA
 export function getVaultPDA(marketId: bigint | number): [PublicKey, number] {
   const marketIdBuffer = Buffer.alloc(8);
   marketIdBuffer.writeBigUInt64LE(BigInt(marketId));
@@ -51,7 +45,6 @@ export function getVaultPDA(marketId: bigint | number): [PublicKey, number] {
   );
 }
 
-// Derive user position PDA
 export function getPositionPDA(
   marketPda: PublicKey,
   userPubkey: PublicKey
@@ -62,7 +55,6 @@ export function getPositionPDA(
   );
 }
 
-// Create a read-only provider for fetching data
 export function createReadOnlyProvider(connection: Connection): AnchorProvider {
   return new AnchorProvider(
     connection,
@@ -75,17 +67,14 @@ export function createReadOnlyProvider(connection: Connection): AnchorProvider {
   );
 }
 
-// Format lamports to SOL
 export function lamportsToSol(lamports: bigint | number): number {
   return Number(lamports) / 1e9;
 }
 
-// Format SOL to lamports
 export function solToLamports(sol: number): bigint {
   return BigInt(Math.floor(sol * 1e9));
 }
 
-// Format token amount with decimals
 export function formatTokenAmount(
   amount: bigint | number,
   decimals: number = 9
@@ -97,12 +86,10 @@ export function formatTokenAmount(
   });
 }
 
-// Parse error from transaction
 export function parseContractError(error: unknown): string {
   if (error instanceof Error) {
     const message = error.message;
 
-    // Check for custom program error
     const customErrorMatch = message.match(/custom program error: 0x([0-9a-fA-F]+)/);
     if (customErrorMatch) {
       const errorCode = parseInt(customErrorMatch[1], 16);
