@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePrivyWallet } from "@/hooks/usePrivyWallet";
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
@@ -19,19 +20,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useMarket } from "@/hooks/useMarket";
+import { getMarketPDA } from "@/lib/contracts/program";
 
 interface CreateMarketDialogProps {
   onMarketCreated?: () => void;
 }
 
 export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps) {
+  const router = useRouter();
   const wallet = usePrivyWallet();
   const { createMarket, openMarket, loading, error } = useMarket();
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [tokenMint, setTokenMint] = useState("");
 
-  // Helper to format date for datetime-local input (local time, not UTC)
   const formatDateTimeLocal = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -41,12 +43,11 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
-  // Default times: start in 5 min, end in 1 hour, resolution in 2 hours
   const getDefaultTimes = () => {
     const now = new Date();
-    const start = new Date(now.getTime() + 5 * 60 * 1000); // +5 minutes
-    const end = new Date(now.getTime() + 60 * 60 * 1000); // +1 hour
-    const resolution = new Date(now.getTime() + 2 * 60 * 60 * 1000); // +2 hours
+    const start = new Date(now.getTime() + 5 * 60 * 1000);
+    const end = new Date(now.getTime() + 60 * 60 * 1000);
+    const resolution = new Date(now.getTime() + 2 * 60 * 60 * 1000);
     return {
       start: formatDateTimeLocal(start),
       end: formatDateTimeLocal(end),
@@ -58,7 +59,6 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
   const [bettingEnd, setBettingEnd] = useState("");
   const [resolutionEnd, setResolutionEnd] = useState("");
 
-  // Update defaults when dialog opens
   const handleOpenChange = (newOpen: boolean) => {
     if (newOpen && !bettingStart) {
       const defaults = getDefaultTimes();
@@ -87,7 +87,6 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
 
     try {
       const marketId = new BN(Date.now());
-      const nowTs = Math.floor(Date.now() / 1000);
       const bettingStartTs = new BN(Math.floor(new Date(bettingStart).getTime() / 1000));
       const bettingEndTs = new BN(Math.floor(new Date(bettingEnd).getTime() / 1000));
       const resolutionEndTs = new BN(Math.floor(new Date(resolutionEnd).getTime() / 1000));
@@ -112,7 +111,6 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
       if (tx) {
         toast.success("Market created! Opening for betting...");
 
-        // Auto-open the market so users can bet immediately when betting starts
         const openTx = await openMarket(marketId.toNumber());
         if (openTx) {
           toast.success("Market is now open for betting!");
@@ -123,6 +121,9 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
         setOpen(false);
         resetForm();
         onMarketCreated?.();
+
+        const [marketPda] = getMarketPDA(marketId.toNumber());
+        router.push(`/markets/${marketPda.toBase58()}`);
       }
     } catch {
       toast.error(error || "Failed to create market");
@@ -155,7 +156,6 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto py-6 space-y-6">
-          {/* Question */}
           <div className="space-y-2">
             <Label htmlFor="question" className="text-zinc-400 text-sm">
               Question
@@ -173,7 +173,6 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
             </p>
           </div>
 
-          {/* Token Mint */}
           <div className="space-y-2">
             <Label htmlFor="tokenMint" className="text-zinc-400 text-sm">
               Token Mint Address
@@ -190,7 +189,6 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
             </p>
           </div>
 
-          {/* Betting Period */}
           <div className="space-y-3">
             <p className="text-zinc-400 text-sm">Betting Period</p>
             <div className="grid grid-cols-2 gap-3">
@@ -221,7 +219,6 @@ export function CreateMarketDialog({ onMarketCreated }: CreateMarketDialogProps)
             </div>
           </div>
 
-          {/* Resolution Deadline */}
           <div className="space-y-2">
             <Label htmlFor="resolutionEnd" className="text-zinc-400 text-sm">
               Resolution Deadline

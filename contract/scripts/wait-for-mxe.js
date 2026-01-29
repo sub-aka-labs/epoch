@@ -2,7 +2,7 @@ const { getMXEPublicKey } = require('@arcium-hq/client');
 const { PublicKey, Connection } = require('@solana/web3.js');
 const anchor = require('@coral-xyz/anchor');
 
-const PROGRAM_ID = '6eUsJ9n3LM4FoRWx9MyN7SGyZzvs63Bu43xERvgGPWrd';
+const PROGRAM_ID = '2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc';
 const CHECK_INTERVAL_MS = 30000; // Check every 30 seconds
 const MAX_ATTEMPTS = 60; // Max 30 minutes
 

@@ -1,13 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { PublicKey } from "@solana/web3.js";
 import { usePrivyConnection } from "./usePrivyWallet";
-import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
+import { useCallback, useEffect, useState, useRef } from "react";
 import {
   getProgram,
   createReadOnlyProvider,
-  PROGRAM_ID,
 } from "@/lib/contracts/program";
 import {
   DarkMarket,
@@ -19,8 +16,10 @@ import {
 export function useMarkets() {
   const { connection } = usePrivyConnection();
   const [markets, setMarkets] = useState<MarketDisplay[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasFetched = useRef(false);
 
   const fetchMarkets = useCallback(async () => {
     try {
@@ -41,16 +40,20 @@ export function useMarkets() {
       );
 
       setMarkets(marketDisplays);
+      hasFetched.current = true;
     } catch (err) {
       console.error("Failed to fetch markets:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch markets");
     } finally {
       setLoading(false);
+      setInitialLoading(false);
     }
   }, [connection]);
 
   useEffect(() => {
-    fetchMarkets();
+    if (!hasFetched.current) {
+      fetchMarkets();
+    }
   }, [fetchMarkets]);
 
   const getActiveMarkets = useCallback(() => {
@@ -68,6 +71,7 @@ export function useMarkets() {
   return {
     markets,
     loading,
+    initialLoading,
     error,
     refetch: fetchMarkets,
     getActiveMarkets,

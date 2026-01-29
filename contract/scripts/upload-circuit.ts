@@ -10,7 +10,7 @@ const RPC_URL = HELIUS_API_KEY
   : "https://api.devnet.solana.com";
 
 const KEYPAIR_PATH = process.env.HOME + "/.config/solana/id.json";
-const PROGRAM_ID = "6eUsJ9n3LM4FoRWx9MyN7SGyZzvs63Bu43xERvgGPWrd";
+const PROGRAM_ID = "2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc";
 
 async function main() {
   console.log("Uploading circuits to Arcium devnet...\n");
