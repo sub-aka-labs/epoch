@@ -5,6 +5,10 @@ import { PublicKey } from "@solana/web3.js";
 import { usePrivyWallet } from "@/hooks/usePrivyWallet";
 import { MarketDisplay, MarketStatus } from "@/types/market";
 import { useBet } from "@/hooks/useBet";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Countdown } from "@/components/ui/countdown";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -14,22 +18,21 @@ interface MarketCardProps {
   onBetPlaced?: () => void;
 }
 
-function getStatusStyle(status: MarketStatus): { bg: string; text: string } {
+function getStatusVariant(status: MarketStatus) {
   switch (status) {
     case MarketStatus.Open:
-      return { bg: "bg-emerald-500/10", text: "text-emerald-400" };
-    case MarketStatus.Created:
-      return { bg: "bg-amber-500/10", text: "text-amber-400" };
     case MarketStatus.BettingClosed:
-      return { bg: "bg-emerald-500/10", text: "text-emerald-400" };
+      return "success";
+    case MarketStatus.Created:
+      return "warning";
     case MarketStatus.Resolved:
-      return { bg: "bg-sky-500/10", text: "text-sky-400" };
+      return "info";
     case MarketStatus.Settled:
-      return { bg: "bg-zinc-500/10", text: "text-zinc-400" };
+      return "muted";
     case MarketStatus.Cancelled:
-      return { bg: "bg-rose-500/10", text: "text-rose-400" };
+      return "destructive";
     default:
-      return { bg: "bg-zinc-500/10", text: "text-zinc-400" };
+      return "muted";
   }
 }
 
@@ -37,7 +40,6 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
   const wallet = usePrivyWallet();
   const { placeBet, loading: betLoading } = useBet();
   const [betAmount, setBetAmount] = useState("");
-  const statusStyle = getStatusStyle(market.status);
 
   const handleQuickBet = async (outcome: "yes" | "no", e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,18 +72,16 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
   };
 
   return (
-    <div className="bg-card border-border hover:border-ring cursor-pointer border p-4 transition-colors">
+    <Card className="p-4 cursor-pointer">
       {/* Header - Clickable to go to detail page */}
       <Link href={`/markets/${market.marketId}`}>
         <div className="group mb-3 flex items-start justify-between gap-3">
           <h3 className="text-foreground group-hover:text-muted-foreground line-clamp-2 text-sm leading-tight font-medium transition-colors">
             {market.question}
           </h3>
-          <span
-            className={`shrink-0 px-2 py-0.5 text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}
-          >
+          <Badge variant={getStatusVariant(market.status)} className="shrink-0">
             {market.status}
-          </span>
+          </Badge>
         </div>
       </Link>
 
@@ -89,11 +89,9 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
       {market.isResolved && market.winningOutcome && (
         <div className="mb-3 flex items-center gap-2">
           <span className="text-muted-foreground text-[13px]">Outcome:</span>
-          <span
-            className={`text-[13px] font-medium ${market.winningOutcome === "yes" ? "text-emerald-400" : "text-rose-400"}`}
-          >
+          <Badge variant={market.winningOutcome === "yes" ? "success" : "destructive"}>
             {market.winningOutcome.toUpperCase()}
-          </span>
+          </Badge>
         </div>
       )}
 
@@ -102,47 +100,48 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
         <div className="mb-3 space-y-2">
           {/* Amount Input */}
           <div className="flex gap-1.5">
-            <input
+            <Input
               type="number"
               placeholder="SOL"
               value={betAmount}
               onChange={(e) => setBetAmount(e.target.value)}
               onClick={(e) => e.stopPropagation()}
-              className="bg-muted border-border text-foreground placeholder-muted-foreground focus:border-ring h-8 flex-1 border px-3 text-[13px] focus:outline-none"
+              className="flex-1"
             />
             <div className="flex gap-1">
               {[0.1, 0.5, 1].map((amount) => (
-                <button
+                <Button
                   key={amount}
+                  variant="secondary"
+                  size="default"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setBetAmount(amount.toString());
                   }}
-                  className="bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground border-border h-8 cursor-pointer border px-2 text-[13px] transition-colors"
                 >
                   {amount}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
           {/* YES/NO Buttons */}
           <div className="grid grid-cols-2 gap-1.5">
-            <button
+            <Button
               onClick={(e) => handleQuickBet("yes", e)}
               disabled={betLoading || !betAmount}
-              className="bg-muted border-border h-8 cursor-pointer border text-[13px] font-medium text-emerald-400 transition-colors hover:border-emerald-500 hover:bg-emerald-500 hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:border-emerald-500 hover:text-white shadow-none"
             >
               {betLoading ? "..." : "YES"}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={(e) => handleQuickBet("no", e)}
               disabled={betLoading || !betAmount}
-              className="bg-muted border-border h-8 cursor-pointer border text-[13px] font-medium text-rose-400 transition-colors hover:border-rose-500 hover:bg-rose-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:border-rose-500 hover:text-white shadow-none"
             >
               {betLoading ? "..." : "NO"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -162,20 +161,20 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
         {market.canBet ? (
           <div className="flex items-center gap-2 text-xs">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.6)]"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_2px_rgba(16,185,129,0.5)]"></span>
             </span>
             <Countdown
               targetDate={market.bettingEndTime}
               size="sm"
-              className="text-emerald-400"
+              className="text-emerald-600 dark:text-emerald-400 font-medium"
             />
           </div>
         ) : (
           <BettingStatusBadge market={market} />
         )}
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -186,40 +185,20 @@ function BettingStatusBadge({ market }: { market: MarketDisplay }) {
     market.status === MarketStatus.Resolved ||
     market.status === MarketStatus.Settled
   ) {
-    return (
-      <div className="bg-sky-500/10 px-2 py-1 text-xs text-sky-400">
-        Resolved
-      </div>
-    );
+    return <Badge variant="info">Resolved</Badge>;
   }
 
   if (market.status === MarketStatus.Cancelled) {
-    return (
-      <div className="bg-rose-500/10 px-2 py-1 text-xs text-rose-400">
-        Cancelled
-      </div>
-    );
+    return <Badge variant="destructive">Cancelled</Badge>;
   }
 
   if (now < market.bettingStartTime) {
-    return (
-      <div className="bg-amber-500/10 px-2 py-1 text-xs text-amber-400">
-        Starts Soon
-      </div>
-    );
+    return <Badge variant="warning">Starts Soon</Badge>;
   }
 
   if (now >= market.bettingEndTime) {
-    return (
-      <div className="bg-emerald-500/10 px-2 py-1 text-xs text-emerald-400">
-        Awaiting Result
-      </div>
-    );
+    return <Badge variant="success">Awaiting Result</Badge>;
   }
 
-  return (
-    <div className="bg-zinc-500/10 px-2 py-1 text-xs text-zinc-400">
-      {market.status}
-    </div>
-  );
+  return <Badge variant="muted">{market.status}</Badge>;
 }

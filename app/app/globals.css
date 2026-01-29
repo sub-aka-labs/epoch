@@ -27,24 +27,24 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --card: #f4f4f5;
-  --card-foreground: #0a0a0a;
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #0a0a0a;
-  --primary-foreground: #fafafa;
-  --secondary: #e4e4e7;
-  --secondary-foreground: #0a0a0a;
-  --muted: #e4e4e7;
-  --muted-foreground: #71717a;
-  --accent: #f4f4f5;
-  --accent-foreground: #0a0a0a;
-  --destructive: #dc2626;
-  --border: #d4d4d8;
-  --input: #d4d4d8;
-  --ring: #a1a1aa;
+  --popover-foreground: #18181b;
+  --primary: #1c1917;
+  --primary-foreground: #fafaf9;
+  --secondary: #f5f5f4;
+  --secondary-foreground: #1c1917;
+  --muted: #f5f5f4;
+  --muted-foreground: #78716c;
+  --accent: #e7e5e4;
+  --accent-foreground: #1c1917;
+  --destructive: #ef4444;
+  --border: #e7e5e4;
+  --input: #e7e5e4;
+  --ring: #1c1917;
 }
 
 .dark {
@@ -54,18 +54,18 @@
   --card-foreground: #fafafa;
   --popover: #111111;
   --popover-foreground: #fafafa;
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
+  --primary: #10b981;
+  --primary-foreground: #000000;
   --secondary: #1a1a1a;
   --secondary-foreground: #fafafa;
   --muted: #1a1a1a;
   --muted-foreground: #71717a;
   --accent: #1a1a1a;
   --accent-foreground: #fafafa;
-  --destructive: #dc2626;
+  --destructive: #ef4444;
   --border: #27272a;
   --input: #27272a;
-  --ring: #52525b;
+  --ring: #10b981;
 }
 
 @layer base {
@@ -80,10 +80,11 @@
   }
 }
 
+
 /* Wallet Adapter Overrides */
 .wallet-adapter-button-trigger {
-  background-color: #10b981 !important;
-  color: #000000 !important;
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
   border-radius: 0px !important;
   font-family: var(--font-sans) !important;
   font-weight: 500 !important;
@@ -94,8 +95,7 @@
 }
 
 .wallet-adapter-button-trigger:hover {
-  background-color: #059669 !important;
-  transform: translateY(-1px);
+  opacity: 0.9 !important;
 }
 
 .wallet-adapter-modal {
@@ -359,7 +359,7 @@ input[type="checkbox"] {
   width: 16px;
   height: 16px;
   border: 1px solid var(--border);
-  background-color: var(--secondary);
+  background-color: var(--card);
   cursor: pointer;
   position: relative;
   transition:
@@ -368,8 +368,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background-color: #10b981;
-  border-color: #10b981;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 input[type="checkbox"]:checked::after {
@@ -379,7 +379,7 @@ input[type="checkbox"]:checked::after {
   top: 1px;
   width: 5px;
   height: 9px;
-  border: solid #000;
+  border: solid var(--primary-foreground);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
@@ -390,7 +390,7 @@ input[type="checkbox"]:hover {
 
 input[type="checkbox"]:focus {
   outline: none;
-  border-color: #10b981;
+  border-color: var(--primary);
 }
 
 /* Radio button styling */
@@ -400,7 +400,7 @@ input[type="radio"] {
   height: 16px;
   border: 1px solid var(--border);
   border-radius: 50%;
-  background-color: var(--secondary);
+  background-color: var(--card);
   cursor: pointer;
   position: relative;
   transition:
@@ -409,7 +409,7 @@ input[type="radio"] {
 }
 
 input[type="radio"]:checked {
-  border-color: #10b981;
+  border-color: var(--primary);
 }
 
 input[type="radio"]:checked::after {
@@ -420,7 +420,7 @@ input[type="radio"]:checked::after {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #10b981;
+  background-color: var(--primary);
 }
 
 input[type="radio"]:hover {
@@ -429,5 +429,5 @@ input[type="radio"]:hover {
 
 input[type="radio"]:focus {
   outline: none;
-  border-color: #10b981;
+  border-color: var(--primary);
 }

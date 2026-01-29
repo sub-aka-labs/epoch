@@ -89,12 +89,12 @@ export function Header({ showLive }: HeaderProps) {
               <ModeToggle />
 
               {showLive && (
-                <div className="hidden items-center gap-2 bg-emerald-500/10 px-2 py-1 sm:flex">
+                <div className="hidden items-center gap-2 bg-emerald-100 dark:bg-emerald-500/10 px-2 py-1 sm:flex">
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 bg-emerald-400" />
+                    <span className="absolute inline-flex h-full w-full animate-ping bg-emerald-500 dark:bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 bg-emerald-500 dark:bg-emerald-400" />
                   </span>
-                  <span className="text-xs font-medium text-emerald-400">
+                  <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                     Live
                   </span>
                 </div>

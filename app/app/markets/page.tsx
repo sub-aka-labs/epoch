@@ -6,6 +6,9 @@ import { Header } from "@/components/Header";
 import { useMarkets } from "@/hooks/useMarkets";
 import { MarketList, CreateMarketDialog } from "@/components/markets";
 import { Toaster } from "@/components/ui/sonner";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { IconRefresh } from "@tabler/icons-react";
 
 function ScrambleNumber({ digits = 1 }: { digits?: number }) {
   const [display, setDisplay] = useState("0".repeat(digits));
@@ -39,7 +42,7 @@ function StatsDisplay({
 }) {
   return (
     <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-4">
-      <div className="bg-muted border-border border p-5">
+      <Card className="p-5 hover:border-border">
         <p className="text-muted-foreground mb-1 text-sm">Total Markets</p>
         <p className="text-foreground text-2xl font-bold">
           {loading ? (
@@ -50,20 +53,20 @@ function StatsDisplay({
             totalMarkets
           )}
         </p>
-      </div>
-      <div className="bg-muted border-border border p-5">
-        <p className="text-muted-foreground mb-1 text-sm">Open for Betting</p>
-        <p className="text-2xl font-bold text-emerald-500">
+      </Card>
+      <Card className="bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 p-5 hover:border-emerald-300 dark:hover:border-emerald-500/30">
+        <p className="text-emerald-700 dark:text-emerald-400/80 mb-1 text-sm">Open for Betting</p>
+        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
           {loading ? (
-            <span className="text-emerald-500/50">
+            <span className="text-emerald-400/50">
               <ScrambleNumber digits={2} />
             </span>
           ) : (
             openForBetting
           )}
         </p>
-      </div>
-      <div className="bg-muted border-border border p-5">
+      </Card>
+      <Card className="p-5 hover:border-border">
         <p className="text-muted-foreground mb-1 text-sm">Total Positions</p>
         <p className="text-foreground text-2xl font-bold">
           {loading ? (
@@ -74,7 +77,7 @@ function StatsDisplay({
             totalPositions
           )}
         </p>
-      </div>
+      </Card>
     </div>
   );
 }
@@ -103,35 +106,14 @@ export default function MarketsPage() {
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
-            <button
+            <Button
+              variant="secondary"
               onClick={refetch}
               disabled={loading}
-              className="bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground border-border h-8 cursor-pointer border px-3 text-[13px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? (
-                <span className="flex items-center gap-1.5">
-                  <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Loading
-                </span>
-              ) : (
-                "Refresh"
-              )}
-            </button>
+              <IconRefresh size={14} className={loading ? "animate-spin" : ""} />
+              {loading ? "Loading" : "Refresh"}
+            </Button>
             {wallet.publicKey && (
               <CreateMarketDialog onMarketCreated={refetch} />
             )}
@@ -139,9 +121,9 @@ export default function MarketsPage() {
         </div>
 
         {error && (
-          <div className="mb-6 border border-rose-500/20 bg-rose-500/10 p-4 text-rose-400">
+          <Card className="mb-6 border-rose-300 dark:border-rose-500/20 bg-rose-100 dark:bg-rose-500/10 p-4 text-rose-700 dark:text-rose-400 hover:border-rose-300">
             {error}
-          </div>
+          </Card>
         )}
 
         <StatsDisplay
