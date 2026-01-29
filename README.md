@@ -1,4 +1,4 @@
-# Epoch
+# Epoch 
 
 **Epoch** is a privacy-preserving prediction market built on Solana, powered by **Arcium MPC**.
 
