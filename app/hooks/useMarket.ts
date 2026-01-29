@@ -258,48 +258,6 @@ export function useMarket(marketId?: string) {
     [connection, wallet, market, fetchMarket],
   );
 
-  const cancelMarket = useCallback(async (): Promise<string | null> => {
-    if (!wallet.publicKey || !wallet.signTransaction || !market) {
-      setError("Wallet not connected or market not loaded");
-      return null;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const walletAdapter = {
-        publicKey: wallet.publicKey,
-        signTransaction: wallet.signTransaction,
-        signAllTransactions: wallet.signAllTransactions,
-      };
-
-      const provider = new AnchorProvider(connection, walletAdapter as any, {
-        commitment: "confirmed",
-      });
-      const program = getProgram(provider);
-
-      const marketIdNum = parseInt(market.marketId);
-      const [marketPda] = getMarketPDA(marketIdNum);
-
-      const tx = await program.methods
-        .cancelMarket()
-        .accounts({
-          authority: wallet.publicKey,
-          market: marketPda,
-        })
-        .rpc();
-
-      await fetchMarket();
-      return tx;
-    } catch (err) {
-      setError(parseContractError(err));
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, [connection, wallet, market, fetchMarket]);
-
   return {
     market,
     loading,
@@ -309,6 +267,5 @@ export function useMarket(marketId?: string) {
     openMarket,
     closeBetting,
     resolveMarket,
-    cancelMarket,
   };
 }

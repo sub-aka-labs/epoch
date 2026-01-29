@@ -57,7 +57,7 @@ export function MarketListSkeleton() {
   );
 }
 
-type TabType = "active" | "resolved" | "cancelled" | "all";
+type TabType = "active" | "resolved" | "all";
 
 export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
   const [activeTab, setActiveTab] = useState<TabType>("active");
@@ -72,14 +72,9 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
     (m) =>
       m.status === MarketStatus.Resolved || m.status === MarketStatus.Settled,
   );
-  const cancelledMarkets = markets.filter(
-    (m) => m.status === MarketStatus.Cancelled,
-  );
-
   const tabs: { id: TabType; label: string; count: number }[] = [
     { id: "active", label: "Active", count: activeMarkets.length },
     { id: "resolved", label: "Resolved", count: resolvedMarkets.length },
-    { id: "cancelled", label: "Cancelled", count: cancelledMarkets.length },
     { id: "all", label: "All", count: markets.length },
   ];
 
@@ -89,8 +84,6 @@ export function MarketList({ markets, loading, onBetPlaced }: MarketListProps) {
         return activeMarkets;
       case "resolved":
         return resolvedMarkets;
-      case "cancelled":
-        return cancelledMarkets;
       case "all":
         return markets;
     }
@@ -156,10 +149,6 @@ function EmptyState({ tab }: { tab: TabType }) {
     resolved: {
       title: "No Resolved Markets",
       subtitle: "Markets will appear here once resolved",
-    },
-    cancelled: {
-      title: "No Cancelled Markets",
-      subtitle: "Cancelled markets will appear here",
     },
     all: {
       title: "No Markets Found",

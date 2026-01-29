@@ -236,7 +236,6 @@ pub mod contract {
         let clock = Clock::get()?;
 
         require!(market.status == MarketStatus::Open, DarkPoolError::InvalidMarketStatus);
-        require!(clock.unix_timestamp >= market.betting_end_ts, DarkPoolError::BettingNotEnded);
 
         market.status = MarketStatus::BettingClosed;
 
@@ -364,63 +363,6 @@ pub mod contract {
         Ok(())
     }
 
-    pub fn cancel_market(ctx: Context<CancelMarket>) -> Result<()> {
-        let market = &mut ctx.accounts.market;
-        let clock = Clock::get()?;
-
-        require!(
-            market.status == MarketStatus::Created
-                || market.status == MarketStatus::Open
-                || market.status == MarketStatus::BettingClosed,
-            DarkPoolError::InvalidMarketStatus
-        );
-
-        market.status = MarketStatus::Cancelled;
-
-        emit!(MarketCancelled {
-            market: market.key(),
-            cancelled_at: clock.unix_timestamp,
-        });
-
-        Ok(())
-    }
-
-    pub fn claim_refund(ctx: Context<ClaimRefund>) -> Result<()> {
-        let market = &ctx.accounts.market;
-        let position = &mut ctx.accounts.user_position;
-        let clock = Clock::get()?;
-
-        require!(position.can_claim_refund(), DarkPoolError::AlreadyClaimed);
-
-        let refund_amount = position.deposit_amount;
-
-        let market_id_bytes = market.market_id.to_le_bytes();
-        let seeds = &[VAULT_SEED, market_id_bytes.as_ref(), &[market.vault_bump]];
-        let signer_seeds = &[&seeds[..]];
-
-        let transfer_ctx = CpiContext::new_with_signer(
-            ctx.accounts.token_program.to_account_info(),
-            Transfer {
-                from: ctx.accounts.vault.to_account_info(),
-                to: ctx.accounts.claimer_token_account.to_account_info(),
-                authority: ctx.accounts.vault.to_account_info(),
-            },
-            signer_seeds,
-        );
-        token::transfer(transfer_ctx, refund_amount)?;
-
-        position.status = PositionStatus::Refunded;
-        position.claimed_at = Some(clock.unix_timestamp);
-
-        emit!(RefundClaimed {
-            market: market.key(),
-            position: position.key(),
-            user: position.owner,
-            amount: refund_amount,
-        });
-
-        Ok(())
-    }
 }
 
 #[init_computation_definition_accounts("process_bet", payer)]
@@ -756,40 +698,3 @@ pub struct ClaimPayout<'info> {
     pub token_program: Program<'info, Token>,
 }
 
-#[derive(Accounts)]
-pub struct CancelMarket<'info> {
-    #[account(constraint = authority.key() == market.authority @ DarkPoolError::Unauthorized)]
-    pub authority: Signer<'info>,
-
-    #[account(mut)]
-    pub market: Account<'info, DarkMarket>,
-}
-
-#[derive(Accounts)]
-pub struct ClaimRefund<'info> {
-    #[account(mut)]
-    pub claimer: Signer<'info>,
-
-    #[account(constraint = market.status == MarketStatus::Cancelled @ DarkPoolError::MarketNotCancelled)]
-    pub market: Account<'info, DarkMarket>,
-
-    #[account(
-        mut,
-        seeds = [USER_POSITION_SEED, market.key().as_ref(), claimer.key().as_ref()],
-        bump = user_position.bump,
-        constraint = user_position.owner == claimer.key() @ DarkPoolError::Unauthorized
-    )]
-    pub user_position: Account<'info, UserPosition>,
-
-    #[account(
-        mut,
-        constraint = claimer_token_account.owner == claimer.key() @ DarkPoolError::InvalidTokenAccountOwner,
-        constraint = claimer_token_account.mint == market.token_mint @ DarkPoolError::InvalidTokenMint
-    )]
-    pub claimer_token_account: Account<'info, TokenAccount>,
-
-    #[account(mut, constraint = vault.key() == market.vault @ DarkPoolError::InvalidVault)]
-    pub vault: Account<'info, TokenAccount>,
-
-    pub token_program: Program<'info, Token>,
-}

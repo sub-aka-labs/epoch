@@ -29,9 +29,6 @@ pub enum DarkPoolError {
     #[msg("Market has already been resolved")]
     MarketAlreadyResolved,
 
-    #[msg("Market is not cancelled")]
-    MarketNotCancelled,
-
     #[msg("Invalid market status for this operation")]
     InvalidMarketStatus,
 

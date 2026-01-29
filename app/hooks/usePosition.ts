@@ -60,7 +60,6 @@ function parsePositionStatus(status: unknown): PositionStatus {
     if ("processed" in status) return PositionStatus.Processed;
     if ("payoutComputed" in status) return PositionStatus.PayoutComputed;
     if ("claimed" in status) return PositionStatus.Claimed;
-    if ("refunded" in status) return PositionStatus.Refunded;
   }
   return PositionStatus.Pending;
 }
@@ -222,61 +221,6 @@ export function usePosition(marketId?: string) {
     [connection, wallet, fetchPosition],
   );
 
-  const claimRefund = useCallback(
-    async (marketPda: PublicKey): Promise<PositionResult> => {
-      if (!wallet.publicKey || !wallet.signTransaction) {
-        const err = "Wallet not connected";
-        setError(err);
-        return { success: false, error: err };
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        const walletAdapter = {
-          publicKey: wallet.publicKey,
-          signTransaction: wallet.signTransaction,
-          signAllTransactions: wallet.signAllTransactions,
-        };
-
-        const provider = new AnchorProvider(connection, walletAdapter as any, {
-          commitment: "confirmed",
-        });
-        const program = getProgram(provider);
-
-        const [positionPda] = getPositionPDA(marketPda, wallet.publicKey);
-        const market = await (program.account as any).darkMarket.fetch(
-          marketPda,
-        );
-
-        const tx = await program.methods
-          .claimRefund()
-          .accounts({
-            claimer: wallet.publicKey,
-            market: marketPda,
-            userPosition: positionPda,
-            claimerTokenAccount: await getAssociatedTokenAddress(
-              market.tokenMint,
-              wallet.publicKey,
-            ),
-            vault: market.vault,
-          })
-          .rpc();
-
-        await fetchPosition();
-        return { success: true, tx };
-      } catch (err) {
-        const errMsg = parseContractError(err);
-        setError(errMsg);
-        return { success: false, error: errMsg };
-      } finally {
-        setLoading(false);
-      }
-    },
-    [connection, wallet, fetchPosition],
-  );
-
   const computePayout = useCallback(
     async (
       marketPda: PublicKey,
@@ -409,7 +353,6 @@ export function usePosition(marketId?: string) {
     refetch: fetchPosition,
     refetchAll: fetchAllPositions,
     claimPayout,
-    claimRefund,
     computePayout,
   };
 }
