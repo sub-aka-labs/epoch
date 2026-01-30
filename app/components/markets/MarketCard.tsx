@@ -72,7 +72,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
   };
 
   return (
-    <Card className="cursor-pointer p-4">
+    <Card className="flex min-h-[12rem] cursor-pointer flex-col p-4">
       {/* Header - Clickable to go to detail page */}
       <Link href={`/markets/${market.publicKey.toBase58()}`}>
         <div className="group mb-3 flex items-start justify-between gap-3">
@@ -151,7 +151,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
       )}
 
       {/* Footer Info */}
-      <div className="flex items-center justify-between text-[13px]">
+      <div className="mt-auto flex items-center justify-between text-[13px]">
         <div className="flex items-center gap-4">
           <div className="text-muted-foreground">
             <span className="text-foreground font-medium">
