@@ -57,9 +57,9 @@ export function Header({ showLive }: HeaderProps) {
                 <Image
                   src="/logo.png"
                   alt="Epoch"
-                  width={48}
-                  height={48}
-                  className="shrink-0 invert dark:invert-0"
+                  width={40}
+                  height={40}
+                  className="shrink-0 invert dark:invert-0 mt-1"
                 />
                 <span className="text-foreground group-hover:text-muted-foreground text-lg font-semibold tracking-tight transition-colors">
                   Epoch
