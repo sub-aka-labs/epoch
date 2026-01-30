@@ -98,7 +98,7 @@ Epoch never has access to plaintext user bets.
 
 | Network | Program ID |
 |---------|------------|
-| Devnet  | `2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc` |
+| Devnet  | `8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn` |
 
 ---
 
