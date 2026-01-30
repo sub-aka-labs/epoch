@@ -15,12 +15,18 @@ export function getProgram(provider: AnchorProvider): Program {
   return new Program(idl as Idl, provider);
 }
 
-export function getMarketPDA(marketId: bigint | number): [PublicKey, number] {
-  const marketIdBuffer = Buffer.alloc(8);
-  marketIdBuffer.writeBigUInt64LE(BigInt(marketId));
+function toLeU64Buffer(value: bigint | number): Buffer {
+  const bigVal = BigInt(value);
+  const buf = Buffer.alloc(8);
+  for (let i = 0; i < 8; i++) {
+    buf[i] = Number((bigVal >> BigInt(i * 8)) & BigInt(0xff));
+  }
+  return buf;
+}
 
+export function getMarketPDA(marketId: bigint | number): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
-    [SEEDS.DARK_MARKET, marketIdBuffer],
+    [SEEDS.DARK_MARKET, toLeU64Buffer(marketId)],
     PROGRAM_ID,
   );
 }
@@ -28,21 +34,15 @@ export function getMarketPDA(marketId: bigint | number): [PublicKey, number] {
 export function getPoolStatePDA(
   marketId: bigint | number,
 ): [PublicKey, number] {
-  const marketIdBuffer = Buffer.alloc(8);
-  marketIdBuffer.writeBigUInt64LE(BigInt(marketId));
-
   return PublicKey.findProgramAddressSync(
-    [SEEDS.POOL_STATE, marketIdBuffer],
+    [SEEDS.POOL_STATE, toLeU64Buffer(marketId)],
     PROGRAM_ID,
   );
 }
 
 export function getVaultPDA(marketId: bigint | number): [PublicKey, number] {
-  const marketIdBuffer = Buffer.alloc(8);
-  marketIdBuffer.writeBigUInt64LE(BigInt(marketId));
-
   return PublicKey.findProgramAddressSync(
-    [SEEDS.VAULT, marketIdBuffer],
+    [SEEDS.VAULT, toLeU64Buffer(marketId)],
     PROGRAM_ID,
   );
 }
