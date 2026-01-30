@@ -1,19 +1,20 @@
-# Epoch 
+| <img src="https://github.com/user-attachments/assets/dbd19dc9-46af-417e-a68b-34c796f0d9e4" width="48" /> | **Epoch** |
+|---|---|
 
-**Epoch** is a privacy-preserving prediction market built on Solana, powered by **Arcium MPC**.
+<img width="1200" height="650" alt="image" src="https://github.com/user-attachments/assets/cb098658-393d-4b7d-b570-e7122b74d420" />
 
-Users can place bets on prediction markets without revealing their position (YES / NO) until the market resolves. This prevents front-running, copy trading, and outcome manipulation — enabling fair, trust-minimized markets.
+**Epoch** is a privacy-preserving prediction market built on Solana, powered by **Arcium MPC**. Users can place bets on prediction markets without revealing their position (YES / NO) until the market resolves. This prevents front-running, copy trading, and outcome manipulation, enabling fair, trust-minimized markets.
 
 ---
 
-## Why Epoch?
+## Why Epoch
 
 Traditional on-chain prediction markets leak user intent the moment a bet is placed. Epoch fixes this.
 
-- **Private Bets** — Bet direction is encrypted and hidden during the entire betting phase
-- **Fair Markets** — No front-running or strategy copying
-- **On-Chain Enforcement** — Market rules and payouts are enforced by Solana smart contracts
-- **Fast & Cheap** — Powered by Solana’s high-throughput runtime
+- **Private Bets**: Bet direction is encrypted and hidden during the entire betting phase
+- **Fair Markets**: No front-running or strategy copying
+- **On-Chain Enforcement**: Market rules and payouts are enforced by Solana smart contracts
+- **Fast & Cheap**: Powered by Solana's high-throughput runtime
 
 ---
 
@@ -33,11 +34,11 @@ At no point during betting can observers infer which side a user took.
 
 ### Market Lifecycle
 
-1. **Created** — Market initialized with a question and timeline  
-2. **Open** — Encrypted bets are accepted  
-3. **Betting Closed** — No new bets  
-4. **Resolved** — Outcome declared  
-5. **Settled** — Users claim payouts  
+1. **Created**: Market initialized with a question and timeline
+2. **Open**: Encrypted bets are accepted
+3. **Betting Closed**: No new bets
+4. **Resolved**: Outcome declared
+5. **Settled**: Users claim payouts
 
 ---
 
@@ -45,16 +46,16 @@ At no point during betting can observers infer which side a user took.
 
 ```
 epoch/
-├── app/                    # Next.js frontend
-│   ├── app/               # App router pages
-│   ├── components/        # React components
-│   ├── hooks/             # Custom React hooks
-│   ├── lib/               # Utilities and contract bindings
-│   └── types/             # TypeScript types
+├── app/                   # Next.js frontend
+│   ├── app/              # App router pages
+│   ├── components/       # React components
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utilities and contract bindings
+│   └── types/            # TypeScript types
 │
-└── contract/              # Solana smart contract
-    ├── programs/          # Anchor program
-    └── encrypted-ixs/     # Arcium encrypted instructions
+└── contract/             # Solana smart contract
+    ├── programs/         # Anchor program
+    └── encrypted-ixs/    # Arcium encrypted instructions
 ```
 
 - **Frontend** handles wallet authentication, encryption, and UX
@@ -96,15 +97,14 @@ Epoch never has access to plaintext user bets.
 ## Deployment
 
 | Network | Program ID |
-|--------|------------|
-| Devnet | `2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc` |
+|---------|------------|
+| Devnet  | `2PaVVL6ncwTXu9o13mNQ5VbaAeYmEQxNjMHCtctgLiCc` |
 
 ---
 
 ## Status
 
-Epoch is currently live on Solana devnet.  
-Mainnet deployment planned following audits and MPC scaling.
+Epoch is currently live on Solana devnet. Mainnet deployment planned following audits and MPC scaling.
 
 ---
 
