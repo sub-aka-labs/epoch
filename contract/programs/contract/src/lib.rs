@@ -12,7 +12,7 @@ use errors::DarkPoolError;
 use events::*;
 use state::*;
 
-declare_id!("8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn");
+declare_id!("JAycaSPgFD8hd4Ys7RuJ5pJFzBL8pf11BT8z5HMa1zhZ");
 
 #[error_code]
 pub enum ErrorCode {

@@ -3,6 +3,11 @@ import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import { Connection, Keypair } from "@solana/web3.js";
 import { uploadCircuit } from "@arcium-hq/client";
 import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
 const RPC_URL = HELIUS_API_KEY
@@ -10,7 +15,7 @@ const RPC_URL = HELIUS_API_KEY
   : "https://api.devnet.solana.com";
 
 const KEYPAIR_PATH = process.env.HOME + "/.config/solana/id.json";
-const PROGRAM_ID = "8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn";
+const PROGRAM_ID = "JAycaSPgFD8hd4Ys7RuJ5pJFzBL8pf11BT8z5HMa1zhZ";
 
 async function main() {
   console.log("Uploading circuits to Arcium devnet...\n");

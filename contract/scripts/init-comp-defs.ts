@@ -1,4 +1,3 @@
-import * as anchor from "@coral-xyz/anchor";
 import { Program, AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import {
@@ -14,7 +13,8 @@ import * as path from "path";
 import { Contract } from "../target/types/contract";
 
 const CLUSTER_OFFSET = 456;
-const RPC_URL = "https://devnet.helius-rpc.com/?api-key=ddb0234e-0765-42fa-88e8-41825d43dbdd";
+const RPC_URL =
+  "https://devnet.helius-rpc.com/?api-key=ca95699c-8ec3-49a6-94a7-6b86d6450b3d";
 const KEYPAIR_PATH = process.env.HOME + "/.config/solana/id.json";
 
 const PROCESS_BET_COMP_DEF = "process_bet";
@@ -45,7 +45,9 @@ async function main() {
   const balance = await connection.getBalance(owner.publicKey);
   console.log("Wallet balance:", balance / 1e9, "SOL\n");
 
-  const baseSeedCompDefAcc = getArciumAccountBaseSeed("ComputationDefinitionAccount");
+  const baseSeedCompDefAcc = getArciumAccountBaseSeed(
+    "ComputationDefinitionAccount"
+  );
   const arciumProgramId = getArciumProgramId();
 
   console.log("1. Initializing process_bet computation definition...");
@@ -59,7 +61,9 @@ async function main() {
 
     const accountInfo = await connection.getAccountInfo(processBetCompDefPDA);
     if (accountInfo !== null) {
-      console.log("   process_bet comp def already exists, skipping initialization.\n");
+      console.log(
+        "   process_bet comp def already exists, skipping initialization.\n"
+      );
     } else {
       const tx1 = await program.methods
         .initProcessBetCompDef()
@@ -84,12 +88,18 @@ async function main() {
         const finalizeSig = await provider.sendAndConfirm(finalizeTx);
         console.log("   Finalized process_bet comp def:", finalizeSig, "\n");
       } catch (e: any) {
-        console.log("   WARNING: Could not finalize process_bet comp def:", e.message);
+        console.log(
+          "   WARNING: Could not finalize process_bet comp def:",
+          e.message
+        );
         console.log("   On devnet, circuits need to be uploaded separately.\n");
       }
     }
   } catch (error: any) {
-    console.error("   Error initializing process_bet comp def:", error.message || error);
+    console.error(
+      "   Error initializing process_bet comp def:",
+      error.message || error
+    );
     if (error.logs) {
       console.log("   Logs:", error.logs.slice(-5).join("\n   "));
     }
@@ -105,9 +115,13 @@ async function main() {
     )[0];
     console.log("   Comp Def Account:", computePayoutCompDefPDA.toBase58());
 
-    const accountInfo = await connection.getAccountInfo(computePayoutCompDefPDA);
+    const accountInfo = await connection.getAccountInfo(
+      computePayoutCompDefPDA
+    );
     if (accountInfo !== null) {
-      console.log("   compute_payout comp def already exists, skipping initialization.\n");
+      console.log(
+        "   compute_payout comp def already exists, skipping initialization.\n"
+      );
     } else {
       const tx2 = await program.methods
         .initComputePayoutCompDef()
@@ -132,12 +146,18 @@ async function main() {
         const finalizeSig = await provider.sendAndConfirm(finalizeTx);
         console.log("   Finalized compute_payout comp def:", finalizeSig, "\n");
       } catch (e: any) {
-        console.log("   WARNING: Could not finalize compute_payout comp def:", e.message);
+        console.log(
+          "   WARNING: Could not finalize compute_payout comp def:",
+          e.message
+        );
         console.log("   On devnet, circuits need to be uploaded separately.\n");
       }
     }
   } catch (error: any) {
-    console.error("   Error initializing compute_payout comp def:", error.message || error);
+    console.error(
+      "   Error initializing compute_payout comp def:",
+      error.message || error
+    );
     if (error.logs) {
       console.log("   Logs:", error.logs.slice(-5).join("\n   "));
     }
@@ -152,8 +172,12 @@ async function main() {
   console.log("- Cluster Offset:", CLUSTER_OFFSET);
   console.log("========================================");
   console.log("\nNext steps:");
-  console.log("1. If comp defs were newly created, Arcium network needs to finalize them");
-  console.log("2. This requires circuit upload (may happen automatically or need manual upload)");
+  console.log(
+    "1. If comp defs were newly created, Arcium network needs to finalize them"
+  );
+  console.log(
+    "2. This requires circuit upload (may happen automatically or need manual upload)"
+  );
   console.log("3. Once finalized, encrypted betting will be available");
   console.log("4. Check Arcium Discord for devnet status updates");
 }

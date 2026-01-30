@@ -9,7 +9,7 @@ const RPC_URL = HELIUS_API_KEY
   : "https://api.devnet.solana.com";
 
 const KEYPAIR_PATH = process.env.HOME + "/.config/solana/id.json";
-const PROGRAM_ID = new PublicKey("8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn");
+const PROGRAM_ID = new PublicKey("JAycaSPgFD8hd4Ys7RuJ5pJFzBL8pf11BT8z5HMa1zhZ");
 
 async function main() {
   console.log("Finalizing computation definitions...\n");
@@ -46,6 +46,33 @@ async function main() {
       signature: sig,
       blockhash: latestBlockhash.blockhash,
       lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+    });
+    console.log("  Done!");
+  } catch (error: any) {
+    console.log("  Error:", error.message);
+  }
+
+  console.log("\nFinalizing compute_payout...");
+  try {
+    const computePayoutOffset = getCompDefAccOffset("compute_payout");
+    const offsetNumber2 = Buffer.from(computePayoutOffset).readUInt32LE();
+
+    const finalizeTx2 = await buildFinalizeCompDefTx(provider, offsetNumber2, PROGRAM_ID);
+
+    const latestBlockhash2 = await connection.getLatestBlockhash();
+    finalizeTx2.recentBlockhash = latestBlockhash2.blockhash;
+    finalizeTx2.lastValidBlockHeight = latestBlockhash2.lastValidBlockHeight;
+    finalizeTx2.sign(owner);
+
+    const sig2 = await connection.sendRawTransaction(finalizeTx2.serialize(), {
+      skipPreflight: true,
+    });
+    console.log("  Tx:", sig2);
+
+    await connection.confirmTransaction({
+      signature: sig2,
+      blockhash: latestBlockhash2.blockhash,
+      lastValidBlockHeight: latestBlockhash2.lastValidBlockHeight,
     });
     console.log("  Done!");
   } catch (error: any) {

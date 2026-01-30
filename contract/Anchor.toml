@@ -5,11 +5,11 @@ package_manager = "yarn"
 resolution = true
 skip-lint = false
 
-[programs.localnet]
-contract = "8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn"
-
 [programs.devnet]
-contract = "8yVkZEpzoqYtv34HEZ3cVXjmrYA8vZRf54x8pm8mRjFn"
+contract = "JAycaSPgFD8hd4Ys7RuJ5pJFzBL8pf11BT8z5HMa1zhZ"
+
+[programs.localnet]
+contract = "JAycaSPgFD8hd4Ys7RuJ5pJFzBL8pf11BT8z5HMa1zhZ"
 
 [registry]
 url = "https://api.apr.dev"
