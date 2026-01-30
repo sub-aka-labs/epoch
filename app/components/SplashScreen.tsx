@@ -17,7 +17,7 @@ export function SplashScreen() {
     target: targetRef,
   });
 
-  const yMotionValue = useTransform(scrollYProgress, [0, 1], [487, 0]);
+  const yMotionValue = useTransform(scrollYProgress, [0, 1], [300, 0]);
   const transform = useMotionTemplate`rotateX(30deg) translateY(${yMotionValue}px) translateZ(10px)`;
 
   return (
@@ -51,7 +51,7 @@ export function SplashScreen() {
               transformStyle: "preserve-3d",
               transform,
             }}
-            className="font-geist w-full max-w-4xl px-4 text-center text-xs font-bold tracking-tighter text-stone-300 sm:text-sm md:text-base lg:text-lg"
+            className="font-geist w-full max-w-4xl px-4 text-center text-xs font-bold tracking-tighter text-stone-600 sm:text-sm md:text-base lg:text-lg"
           >
             Privacy. Solana. Arcium. Prediction Markets. MPC. Crypto. Encrypted.
             Verifiable. Sealed. MEV-Resistant. On-Chain. Trustless.
