@@ -66,8 +66,10 @@ export function useBet() {
 
   const placeBet = useCallback(
     async (input: PlaceBetInput): Promise<BetResult> => {
+
       if (!wallet.publicKey || !wallet.signTransaction) {
         const err = "Wallet not connected";
+        console.error("placeBet error:", err);
         setError(err);
         return { success: false, error: err };
       }
@@ -88,9 +90,9 @@ export function useBet() {
         });
         const program = getProgram(provider);
 
-        // generate keypair and get MXE shared secret
         const privateKey = x25519.utils.randomPrivateKey();
         const publicKey = x25519.getPublicKey(privateKey);
+
         const mxePublicKey = await getMXEPublicKey(provider, PROGRAM_ID);
         if (!mxePublicKey) {
           throw new Error("MXE public key not available");
@@ -118,8 +120,8 @@ export function useBet() {
         const computationOffset = new BN(computationOffsetBytes);
         const depositAmount = new BN(Math.floor(input.amount * 1e9));
 
-        // derive PDAs
         const marketIdNum = parseInt(input.marketId);
+
         const [marketPda] = getMarketPDA(marketIdNum);
         const [poolStatePda] = getPoolStatePDA(marketIdNum);
         const [vaultPda] = getVaultPDA(marketIdNum);
@@ -185,6 +187,7 @@ export function useBet() {
           PROGRAM_ID,
         );
 
+
         const accounts = {
           payer: wallet.publicKey,
           bettor: wallet.publicKey,
@@ -234,6 +237,7 @@ export function useBet() {
         transaction.feePayer = wallet.publicKey;
 
         const signedTx = await wallet.signTransaction!(transaction);
+
         const txSignature = await connection.sendRawTransaction(
           signedTx.serialize(),
           {
@@ -249,12 +253,13 @@ export function useBet() {
 
         if (confirmation.value.err) {
           const errMsg = `Transaction failed: ${JSON.stringify(confirmation.value.err)}`;
+          console.error("Transaction confirmation error:", confirmation.value.err);
           setError(errMsg);
           return { success: false, error: errMsg, tx: txSignature };
         }
 
         return { success: true, tx: txSignature };
-      } catch (err) {
+      } catch (err:any) {
         const errMsg = parseContractError(err);
         setError(errMsg);
         return { success: false, error: errMsg };

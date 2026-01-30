@@ -74,7 +74,7 @@ export function MarketCard({ market, onBetPlaced }: MarketCardProps) {
   return (
     <Card className="cursor-pointer p-4">
       {/* Header - Clickable to go to detail page */}
-      <Link href={`/markets/${market.marketId}`}>
+      <Link href={`/markets/${market.publicKey.toBase58()}`}>
         <div className="group mb-3 flex items-start justify-between gap-3">
           <h3 className="text-foreground group-hover:text-muted-foreground line-clamp-2 text-sm leading-tight font-medium transition-colors">
             {market.question}

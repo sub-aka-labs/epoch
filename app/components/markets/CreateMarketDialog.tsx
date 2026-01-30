@@ -47,8 +47,8 @@ export function CreateMarketDialog({
   const getDefaultTimes = () => {
     const now = new Date();
     const start = new Date(now.getTime() + 5 * 60 * 1000);
-    const end = new Date(now.getTime() + 60 * 60 * 1000);
-    const resolution = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    const end = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    const resolution = new Date(now.getTime() + 3 * 60 * 60 * 1000);
     return {
       start: formatDateTimeLocal(start),
       end: formatDateTimeLocal(end),
@@ -59,6 +59,76 @@ export function CreateMarketDialog({
   const [bettingStart, setBettingStart] = useState("");
   const [bettingEnd, setBettingEnd] = useState("");
   const [resolutionEnd, setResolutionEnd] = useState("");
+  const [startTimeError, setStartTimeError] = useState("");
+  const [endTimeError, setEndTimeError] = useState("");
+  const [resolutionTimeError, setResolutionTimeError] = useState("");
+
+  const validateStartTime = (value: string, endValue?: string, resValue?: string) => {
+    if (!value) {
+      setStartTimeError("");
+      return;
+    }
+    const selectedTime = new Date(value).getTime();
+    const minTime = Date.now() + 5 * 60 * 1000;
+    if (selectedTime < minTime) {
+      setStartTimeError("Must be at least 5 minutes from now");
+    } else {
+      setStartTimeError("");
+    }
+    if (endValue) {
+      validateEndTime(endValue, value, resValue);
+    }
+  };
+
+  const validateEndTime = (value: string, startValue?: string, resValue?: string) => {
+    const start = startValue || bettingStart;
+    if (!value || !start) {
+      setEndTimeError("");
+      return;
+    }
+    const endTime = new Date(value).getTime();
+    const startTime = new Date(start).getTime();
+    const minGap = 15 * 60 * 1000; 
+    if (endTime < startTime + minGap) {
+      setEndTimeError("Must be at least 15 min after start");
+    } else {
+      setEndTimeError("");
+    }
+    if (resValue) {
+      validateResolutionTime(resValue, value);
+    }
+  };
+
+  const validateResolutionTime = (value: string, endValue?: string) => {
+    const end = endValue || bettingEnd;
+    if (!value || !end) {
+      setResolutionTimeError("");
+      return;
+    }
+    const resTime = new Date(value).getTime();
+    const endTime = new Date(end).getTime();
+    const minGap = 10 * 60 * 1000; // 10 minutes
+    if (resTime < endTime + minGap) {
+      setResolutionTimeError("Must be at least 10 min after betting ends");
+    } else {
+      setResolutionTimeError("");
+    }
+  };
+
+  const handleStartTimeChange = (value: string) => {
+    setBettingStart(value);
+    validateStartTime(value, bettingEnd, resolutionEnd);
+  };
+
+  const handleEndTimeChange = (value: string) => {
+    setBettingEnd(value);
+    validateEndTime(value, bettingStart, resolutionEnd);
+  };
+
+  const handleResolutionTimeChange = (value: string) => {
+    setResolutionEnd(value);
+    validateResolutionTime(value, bettingEnd);
+  };
 
   const handleOpenChange = (newOpen: boolean) => {
     if (newOpen && !bettingStart) {
@@ -93,6 +163,13 @@ export function CreateMarketDialog({
     }
 
     try {
+      const bettingStartTime = new Date(bettingStart).getTime();
+      const minStartTime = Date.now() + 5 * 60 * 1000; // 5 minutes buffer
+      if (bettingStartTime < minStartTime) {
+        toast.error("Betting start time must be at least 5 minutes in the future");
+        return;
+      }
+
       const marketId = new BN(Date.now());
       const bettingStartTs = new BN(
         Math.floor(new Date(bettingStart).getTime() / 1000),
@@ -107,7 +184,7 @@ export function CreateMarketDialog({
       let mintPubkey: PublicKey;
       try {
         mintPubkey = new PublicKey(tokenMint);
-      } catch {
+      } catch (e:any) {
         toast.error("Invalid token mint address");
         return;
       }
@@ -139,9 +216,13 @@ export function CreateMarketDialog({
 
         const [marketPda] = getMarketPDA(marketId.toNumber());
         router.push(`/markets/${marketPda.toBase58()}`);
+      } else {
+        toast.error(
+          error || "Failed to create market. Please refresh the page and try again.",
+        );
       }
-    } catch {
-      toast.error(error || "Failed to create market");
+    } catch (error: any) {
+      toast.error(error?.message || error || "Failed to create market");
     }
   };
 
@@ -152,6 +233,9 @@ export function CreateMarketDialog({
     setBettingStart(newDefaults.start);
     setBettingEnd(newDefaults.end);
     setResolutionEnd(newDefaults.resolution);
+    setStartTimeError("");
+    setEndTimeError("");
+    setResolutionTimeError("");
   };
 
   return (
@@ -226,9 +310,16 @@ export function CreateMarketDialog({
                   id="bettingStart"
                   type="datetime-local"
                   value={bettingStart}
-                  onChange={(e) => setBettingStart(e.target.value)}
-                  className="bg-muted/50 border-border focus:border-ring text-sm"
+                  onChange={(e) => handleStartTimeChange(e.target.value)}
+                  className={`bg-muted/50 focus:border-ring text-sm ${
+                    startTimeError
+                      ? "border-rose-500 focus:border-rose-500"
+                      : "border-border"
+                  }`}
                 />
+                {startTimeError && (
+                  <p className="text-xs text-rose-500">{startTimeError}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label
@@ -241,9 +332,16 @@ export function CreateMarketDialog({
                   id="bettingEnd"
                   type="datetime-local"
                   value={bettingEnd}
-                  onChange={(e) => setBettingEnd(e.target.value)}
-                  className="bg-muted/50 border-border focus:border-ring text-sm"
+                  onChange={(e) => handleEndTimeChange(e.target.value)}
+                  className={`bg-muted/50 focus:border-ring text-sm ${
+                    endTimeError
+                      ? "border-rose-500 focus:border-rose-500"
+                      : "border-border"
+                  }`}
                 />
+                {endTimeError && (
+                  <p className="text-xs text-rose-500">{endTimeError}</p>
+                )}
               </div>
             </div>
           </div>
@@ -259,12 +357,20 @@ export function CreateMarketDialog({
               id="resolutionEnd"
               type="datetime-local"
               value={resolutionEnd}
-              onChange={(e) => setResolutionEnd(e.target.value)}
-              className="bg-muted/50 border-border focus:border-ring text-sm"
+              onChange={(e) => handleResolutionTimeChange(e.target.value)}
+              className={`bg-muted/50 focus:border-ring text-sm ${
+                resolutionTimeError
+                  ? "border-rose-500 focus:border-rose-500"
+                  : "border-border"
+              }`}
             />
-            <p className="text-muted-foreground text-xs">
-              Deadline for the market to be resolved
-            </p>
+            {resolutionTimeError ? (
+              <p className="text-xs text-rose-500">{resolutionTimeError}</p>
+            ) : (
+              <p className="text-muted-foreground text-xs">
+                Deadline for the market to be resolved
+              </p>
+            )}
           </div>
         </div>
 
@@ -274,7 +380,13 @@ export function CreateMarketDialog({
           </Button>
           <Button
             onClick={handleCreate}
-            disabled={loading || !wallet.publicKey}
+            disabled={
+              loading ||
+              !wallet.publicKey ||
+              !!startTimeError ||
+              !!endTimeError ||
+              !!resolutionTimeError
+            }
           >
             <IconPlus size={16} stroke={2} />
             {loading ? "Creating..." : "Create Market"}
