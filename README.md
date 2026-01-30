@@ -46,7 +46,7 @@ At no point during betting can observers infer which side a user took.
 
 ```
 epoch/
-├── app/                   # Next.js frontend
+├── app/                  # Next.js frontend
 │   ├── app/              # App router pages
 │   ├── components/       # React components
 │   ├── hooks/            # Custom React hooks
