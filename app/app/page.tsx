@@ -1,5 +1,5 @@
-import { SplashScreen } from "@/components/SplashScreen";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <SplashScreen />;
+  redirect("/markets");
 }
